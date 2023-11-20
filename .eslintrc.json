@@ -28,7 +28,8 @@
     },
     {
       "extends": [
-        "@ribeirogab/eslint-config/react"
+        "@ribeirogab/eslint-config/react",
+        "plugin:tailwindcss/recommended"
       ],
       "files": [
         "src/renderer/**/*"
