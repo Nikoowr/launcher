@@ -73,7 +73,7 @@ export const SignIn = () => {
         <div className="absolute inset-0 -z-10 bg-zinc-900">
           <img
             src={SideImage}
-            className="h-full w-full object-cover blur-sm"
+            className="h-full w-full object-cover "
             alt="Side Image GF Chaos"
           />
         </div>
