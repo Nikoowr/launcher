@@ -1,0 +1,38 @@
+{
+  "overrides": [
+    {
+      "extends": [
+        "@ribeirogab/eslint-config/node"
+      ],
+      "files": [
+        "./.erb/configs/**/*"
+      ],
+      "parserOptions": {
+        "project": "./tsconfig.eslint.json"
+      },
+      "rules": {
+        "@typescript-eslint/no-non-null-assertion": "off",
+        "@typescript-eslint/no-var-requires": "off",
+        "import/no-named-as-default": "off",
+        "import/no-default-export": "off",
+        "import/extensions": "off"
+      }
+    },
+    {
+      "extends": [
+        "@ribeirogab/eslint-config/node"
+      ],
+      "files": [
+        "src/main/**/*"
+      ]
+    },
+    {
+      "extends": [
+        "@ribeirogab/eslint-config/react"
+      ],
+      "files": [
+        "src/renderer/**/*"
+      ]
+    }
+  ]
+}
