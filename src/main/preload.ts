@@ -1,6 +1,8 @@
 import { IpcRendererEvent, contextBridge, ipcRenderer } from 'electron';
 
-export type Channels = 'ipc-example';
+import { IpcEventsEnum } from './constants/ipc.constants';
+
+export type Channels = IpcEventsEnum;
 
 const electronHandler = {
   ipcRenderer: {
@@ -21,6 +23,10 @@ const electronHandler = {
     once(channel: Channels, func: (...args: unknown[]) => void) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ipcRenderer.once(channel, (_event: any, ...args: any) => func(...args));
+    },
+
+    windowEvent(action: 'close' | 'minimize-tray') {
+      ipcRenderer.send(IpcEventsEnum.WindowEvent, action);
     },
   },
 };

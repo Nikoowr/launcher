@@ -13,6 +13,7 @@ import { BrowserWindow, app, ipcMain, shell } from 'electron';
 import log from 'electron-log';
 import { autoUpdater } from 'electron-updater';
 
+import { IpcEventsEnum } from './constants/ipc.constants';
 import { MenuBuilder } from './menu';
 import { resolveHtmlPath } from './util';
 
@@ -68,7 +69,10 @@ const createWindow = async () => {
     show: false,
     width: 1024,
     height: 728,
+    minWidth: 1024,
+    minHeight: 728,
     icon: getAssetPath('icon.png'),
+    frame: false,
     webPreferences: {
       preload: app.isPackaged
         ? path.join(__dirname, 'preload.js')
@@ -117,6 +121,19 @@ ipcMain.on('ipc-example', async (event, arg) => {
   const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
   console.log(msgTemplate(arg));
   event.reply('ipc-example', msgTemplate('pong'));
+});
+
+ipcMain.on(IpcEventsEnum.WindowEvent, async (event, action) => {
+  if (action === 'minimize-tray') {
+    mainWindow?.hide();
+  }
+
+  if (action === 'close') {
+    mainWindow?.close();
+    app.quit();
+  }
+
+  event.reply(IpcEventsEnum.WindowEvent);
 });
 
 app.on('window-all-closed', () => {
