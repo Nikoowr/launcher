@@ -1,3 +1,6 @@
+// Controllers
+export * from './controllers/ipc-events.controller';
+
 // Services
 export * from './services/sign-out.service';
 export * from './services/sign-in.service';

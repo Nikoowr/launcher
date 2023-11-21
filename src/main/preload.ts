@@ -1,6 +1,6 @@
 import { IpcRendererEvent, contextBridge, ipcRenderer } from 'electron';
 
-import { IpcEventsEnum } from './constants/ipc.constants';
+import { IpcEventsEnum } from './constants/ipc-events.constants';
 
 export type Channels = IpcEventsEnum;
 
