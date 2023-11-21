@@ -1,4 +1,6 @@
 import { Settings } from 'lucide-react';
+import { SyntheticEvent, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import SideImage from '../../../assets/sign-in-side.gif';
 import { ExternalLink } from '../components/custom/external-link';
@@ -9,6 +11,19 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 
 export const SignIn = () => {
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const onSignIn = async (event: SyntheticEvent) => {
+    event.preventDefault();
+
+    setLoading(true);
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    setLoading(false);
+
+    navigate('/home');
+  };
+
   return (
     <main className="flex h-[100vh]">
       <div className="flex w-[30%] flex-col justify-between p-10">
@@ -19,7 +34,7 @@ export const SignIn = () => {
 
           <div className="mt-8">
             <h1 className="mb-8 text-center text-2xl font-bold">Fazer login</h1>
-            <form onSubmit={() => {}}>
+            <form onSubmit={onSignIn}>
               <div className="grid gap-2">
                 <div className="grid gap-1">
                   <Label className="" htmlFor="user">
@@ -31,7 +46,6 @@ export const SignIn = () => {
                     type="text"
                     name="user"
                     id="user"
-                    required
                   />
 
                   <Label className="mt-2" htmlFor="password">
@@ -43,12 +57,11 @@ export const SignIn = () => {
                     type="password"
                     name="password"
                     id="password"
-                    required
                   />
                 </div>
 
-                <Button disabled={false} className="mt-2">
-                  {false && (
+                <Button disabled={loading} className="mt-2">
+                  {loading && (
                     <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
                   )}
                   Entrar

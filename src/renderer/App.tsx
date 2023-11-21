@@ -3,6 +3,7 @@ import 'tailwindcss/tailwind.css';
 
 import { Navbar } from './components/custom/navbar';
 import './globals.css';
+import { Home } from './pages/home';
 import { SignIn } from './pages/sign-in';
 
 export default function App() {
@@ -12,6 +13,7 @@ export default function App() {
       <Router>
         <Routes>
           <Route path="/" element={<SignIn />} />
+          <Route path="/home" element={<Home />} />
         </Routes>
       </Router>
     </>
