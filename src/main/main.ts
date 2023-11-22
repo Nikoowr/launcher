@@ -111,3 +111,7 @@ ipcMain.on('ipc-example', async (event, arg) => {
 ipcMain.on(IpcEventsEnum.WindowEvent, async (event, action) =>
   ipcEventsController?.[IpcEventsEnum.WindowEvent](event, action, mainWindow),
 );
+
+ipcMain.on(IpcEventsEnum.SignIn, async (event, dto) =>
+  ipcEventsController?.[IpcEventsEnum.SignIn](event, dto),
+);

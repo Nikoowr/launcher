@@ -1,6 +1,9 @@
 import { IpcRendererEvent, contextBridge, ipcRenderer } from 'electron';
 
-import { IpcEventsEnum } from './constants/ipc-events.constants';
+import {
+  IpcEventSignInDto,
+  IpcEventsEnum,
+} from './constants/ipc-events.constants';
 
 export type Channels = IpcEventsEnum;
 
@@ -25,8 +28,12 @@ const electronHandler = {
       ipcRenderer.once(channel, (_event: any, ...args: any) => func(...args));
     },
 
-    windowEvent(action: 'close' | 'minimize-tray') {
+    [IpcEventsEnum.WindowEvent]: (action: 'close' | 'minimize-tray') => {
       ipcRenderer.send(IpcEventsEnum.WindowEvent, action);
+    },
+
+    [IpcEventsEnum.SignIn]: (dto: IpcEventSignInDto) => {
+      ipcRenderer.send(IpcEventsEnum.SignIn, dto);
     },
   },
 };

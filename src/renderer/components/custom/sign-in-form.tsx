@@ -1,23 +1,20 @@
 import { Label } from '@radix-ui/react-label';
 import { SyntheticEvent, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
+import { useAuth } from '../../hooks';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Icons } from './icons';
 
 export const SignInForm = () => {
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+  const [password, setPassword] = useState('');
+  const [user, setUser] = useState('');
+
+  const { login, loading } = useAuth();
 
   const onSignIn = async (event: SyntheticEvent) => {
     event.preventDefault();
-
-    setLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    setLoading(false);
-
-    navigate('/home');
+    login({ user, password });
   };
 
   return (
@@ -28,8 +25,10 @@ export const SignInForm = () => {
             Nome de usuário
           </Label>
           <Input
+            onChange={(event) => setUser(event.target.value)}
             autoCapitalize="none"
             autoCorrect="off"
+            value={user}
             type="text"
             name="user"
             id="user"
@@ -39,8 +38,10 @@ export const SignInForm = () => {
             Senha
           </Label>
           <Input
+            onChange={(event) => setPassword(event.target.value)}
             autoCapitalize="none"
             autoCorrect="off"
+            value={password}
             type="password"
             name="password"
             id="password"

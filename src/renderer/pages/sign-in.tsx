@@ -1,12 +1,26 @@
 import { Settings } from 'lucide-react';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { ExternalLink } from '../components/custom/external-link';
 import { Logo } from '../components/custom/logo';
 import { SignInForm } from '../components/custom/sign-in-form';
 import { SignInSideBackground } from '../components/custom/sign-in-side-background';
 import { Button } from '../components/ui/button';
+import { useAuth } from '../hooks';
 
 export const SignIn = () => {
+  const navigate = useNavigate();
+  const { loggedIn } = useAuth();
+
+  console.log('loggedIn', loggedIn);
+
+  useEffect(() => {
+    if (loggedIn) {
+      navigate('/');
+    }
+  }, [loggedIn, navigate]);
+
   return (
     <main className="flex h-[100vh]">
       <div className="flex w-[30%] flex-col justify-between p-10">

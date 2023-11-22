@@ -1,21 +1,25 @@
 import { Route, MemoryRouter as Router, Routes } from 'react-router-dom';
 import 'tailwindcss/tailwind.css';
 
-import { Navbar } from './components/custom/navbar';
-import './globals.css';
+import { ProtectedRoute } from './components/custom/protected-route';
+import { RoutesEnum } from './constants/routes.constants';
 import { Home } from './pages/home';
 import { SignIn } from './pages/sign-in';
 
-export default function App() {
+export const App = () => {
   return (
-    <>
-      <Navbar />
-      <Router>
-        <Routes>
-          <Route path="/" element={<SignIn />} />
-          <Route path="/home" element={<Home />} />
-        </Routes>
-      </Router>
-    </>
+    <Router>
+      <Routes>
+        <Route
+          path={RoutesEnum.Home}
+          element={
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>
+          }
+        />
+        <Route path={RoutesEnum.SignIn} element={<SignIn />} />
+      </Routes>
+    </Router>
   );
-}
+};

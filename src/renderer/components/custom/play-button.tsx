@@ -10,9 +10,6 @@ type PlayButtonProps = {
 export const PlayButton = ({ className = '' }: PlayButtonProps) => {
   const [isDownloading, setIsDownloading] = useState(true);
 
-  console.log('isDownloading', isDownloading);
-  console.log('setIsDownloading', setIsDownloading);
-
   return (
     <div className={`flex flex-col gap-2 ${className}`}>
       <div className="flex h-[64px]">

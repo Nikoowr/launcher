@@ -1,6 +1,7 @@
 import type { BrowserWindow, IpcMainEvent } from 'electron';
 
 import { IpcEventsEnum } from '../../constants/ipc-events.constants';
+import { SignInServiceDto } from '../services/sign-in.service';
 
 export interface IpcEventsController {
   [IpcEventsEnum.WindowEvent]: (
@@ -8,4 +9,6 @@ export interface IpcEventsController {
     action: 'minimize-tray' | 'close',
     mainWindow: BrowserWindow | null,
   ) => void;
+
+  [IpcEventsEnum.SignIn]: (event: IpcMainEvent, dto: SignInServiceDto) => void;
 }

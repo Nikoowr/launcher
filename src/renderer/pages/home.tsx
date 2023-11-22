@@ -1,15 +1,9 @@
-import { useState } from 'react';
-
 import { HomeBackground } from '../components/custom/home-background';
 import { Logo } from '../components/custom/logo';
 import { PlayButton } from '../components/custom/play-button';
 import { UserMenu } from '../components/custom/user-menu';
 
 export const Home = () => {
-  const [isDownloading, setIsDownloading] = useState(true);
-  console.log('isDownloading', isDownloading);
-  console.log('setIsDownloading', setIsDownloading);
-
   return (
     <main className="p-10">
       <HomeBackground />

@@ -5,7 +5,10 @@ import {
 } from 'electron';
 
 import { IpcEventsEnum } from '../constants/ipc-events.constants';
-import { IpcEventsController as IpcEventsControllerInterface } from '../interfaces';
+import {
+  IpcEventsController as IpcEventsControllerInterface,
+  SignInServiceDto,
+} from '../interfaces';
 
 export class IpcEventsController implements IpcEventsControllerInterface {
   constructor(private readonly app: typeof electronApp) {}
@@ -25,5 +28,13 @@ export class IpcEventsController implements IpcEventsControllerInterface {
     }
 
     event.reply(IpcEventsEnum.WindowEvent);
+  };
+
+  [IpcEventsEnum.SignIn] = (
+    event: Electron.IpcMainEvent,
+    dto: SignInServiceDto,
+  ) => {
+    console.log('dto', dto);
+    event.reply(IpcEventsEnum.SignIn);
   };
 }
