@@ -36,7 +36,7 @@ export const Home = () => {
         <PlayButton className="mt-8 w-[170px]" disabled={isDownloading} />
       </div>
 
-      <div className="flex w-full items-center gap-4 rounded-md bg-[#0005] p-6 shadow-sm">
+      <div className="flex w-full items-center gap-4 rounded-md bg-[#0008] p-6 shadow-sm">
         <RadialProgressBar className="h-20 w-20" value={progress}>
           {isDownloading ? (
             <Download className="text-[#fff5]" />

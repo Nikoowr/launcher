@@ -31,7 +31,7 @@ export const PlayButton = ({
           className="m-0 h-full w-[15%] rounded-none bg-pink-900 p-0 hover:bg-pink-950"
           disabled={disabled}
         >
-          <ChevronDown />
+          <ChevronDown size={18} />
         </Button>
       </div>
 
