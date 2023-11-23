@@ -7,6 +7,8 @@ type PlayButtonProps = {
   disabled?: boolean;
 };
 
+const { ipcRenderer } = window.electron;
+
 export const PlayButton = ({
   className = '',
   disabled = false,
@@ -17,6 +19,7 @@ export const PlayButton = ({
         <Button
           className="flex h-full w-[85%] justify-start rounded-s-full bg-pink-500 py-8 shadow-md hover:bg-pink-600"
           disabled={disabled}
+          onClick={() => ipcRenderer.play()}
         >
           <div className="right-0 flex rounded-full bg-zinc-800 p-2">
             <PlayCircle />

@@ -115,3 +115,7 @@ ipcMain.on(IpcEventsEnum.WindowEvent, async (event, action) =>
 ipcMain.on(IpcEventsEnum.SignIn, async (event, dto) =>
   ipcEventsController?.[IpcEventsEnum.SignIn](event, dto),
 );
+
+ipcMain.on(IpcEventsEnum.Play, async (event) =>
+  ipcEventsController?.[IpcEventsEnum.Play](event),
+);

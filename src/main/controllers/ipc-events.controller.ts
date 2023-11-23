@@ -1,3 +1,5 @@
+import child from 'node:child_process';
+
 import {
   type BrowserWindow,
   type IpcMainEvent,
@@ -36,5 +38,16 @@ export class IpcEventsController implements IpcEventsControllerInterface {
   ) => {
     console.log('dto', dto);
     event.reply(IpcEventsEnum.SignIn);
+  };
+
+  [IpcEventsEnum.Play] = (event: Electron.IpcMainEvent) => {
+    const executablePath =
+      'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe';
+    const parameters = ['EasyFun', '-a mosquito', '-p mosquito'];
+
+    child.execFile(executablePath, parameters, function (err, data) {
+      console.log(err);
+      console.log(data.toString());
+    });
   };
 }

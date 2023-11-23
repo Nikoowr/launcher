@@ -35,6 +35,10 @@ const electronHandler = {
     [IpcEventsEnum.SignIn]: (dto: IpcEventSignInDto) => {
       ipcRenderer.send(IpcEventsEnum.SignIn, dto);
     },
+
+    [IpcEventsEnum.Play]: () => {
+      ipcRenderer.send(IpcEventsEnum.Play);
+    },
   },
 };
 
