@@ -2,11 +2,23 @@
  * Base webpack config used across other specific configs
  */
 
+import { config as dotenvConfig } from 'dotenv';
 import TsconfigPathsPlugins from 'tsconfig-paths-webpack-plugin';
 import webpack from 'webpack';
 
 import { dependencies as externals } from '../../release/app/package.json';
 import webpackPaths from './webpack.paths';
+
+const getDotenvFile = () => {
+  switch (process.env.STAGE) {
+    case 'prod':
+      return '.env';
+    case 'ninja':
+      return '.env.dev';
+    default:
+      return '.env.dev';
+  }
+};
 
 const configuration: webpack.Configuration = {
   externals: [...Object.keys(externals || {})],
@@ -52,6 +64,9 @@ const configuration: webpack.Configuration = {
 
   plugins: [
     new webpack.EnvironmentPlugin({
+      ...dotenvConfig({
+        path: getDotenvFile(),
+      }).parsed,
       NODE_ENV: 'production',
     }),
   ],

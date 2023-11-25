@@ -11,4 +11,9 @@ export interface IpcEventsController {
   ) => void;
 
   [IpcEventsEnum.SignIn]: (event: IpcMainEvent, dto: SignInServiceDto) => void;
+
+  [IpcEventsEnum.UpdateGame]: (
+    event: IpcMainEvent,
+    mainWindow: BrowserWindow | null,
+  ) => void;
 }

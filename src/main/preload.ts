@@ -13,7 +13,8 @@ const electronHandler = {
       ipcRenderer.send(channel, ...args);
     },
 
-    on(channel: Channels, func: (...args: unknown[]) => void) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    on(channel: Channels, func: (...args: any[]) => void) {
       const subscription = (_event: IpcRendererEvent, ...args: unknown[]) =>
         func(...args);
       ipcRenderer.on(channel, subscription);
@@ -34,6 +35,10 @@ const electronHandler = {
 
     [IpcEventsEnum.SignIn]: (dto: IpcEventSignInDto) => {
       ipcRenderer.send(IpcEventsEnum.SignIn, dto);
+    },
+
+    [IpcEventsEnum.UpdateGame]: () => {
+      ipcRenderer.send(IpcEventsEnum.UpdateGame);
     },
 
     [IpcEventsEnum.Play]: () => {

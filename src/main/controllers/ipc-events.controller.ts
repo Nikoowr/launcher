@@ -1,5 +1,3 @@
-import child from 'node:child_process';
-
 import {
   type BrowserWindow,
   type IpcMainEvent,
@@ -8,12 +6,20 @@ import {
 
 import { IpcEventsEnum } from '../constants/ipc-events.constants';
 import {
+  DownloadGameService,
   IpcEventsController as IpcEventsControllerInterface,
   SignInServiceDto,
 } from '../interfaces';
 
+type ConstructorServices = {
+  downloadGameService: DownloadGameService;
+};
+
 export class IpcEventsController implements IpcEventsControllerInterface {
-  constructor(private readonly app: typeof electronApp) {}
+  constructor(
+    private readonly app: typeof electronApp,
+    private readonly services: ConstructorServices,
+  ) {}
 
   [IpcEventsEnum.WindowEvent] = (
     event: IpcMainEvent,
@@ -40,14 +46,19 @@ export class IpcEventsController implements IpcEventsControllerInterface {
     event.reply(IpcEventsEnum.SignIn);
   };
 
-  [IpcEventsEnum.Play] = (event: Electron.IpcMainEvent) => {
-    const executablePath =
-      'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe';
-    const parameters = ['EasyFun', '-a mosquito', '-p mosquito'];
+  [IpcEventsEnum.UpdateGame] = async (event: Electron.IpcMainEvent) => {
+    const gameAlreadyDownloaded = false;
 
-    child.execFile(executablePath, parameters, function (err, data) {
-      console.log(err);
-      console.log(data.toString());
+    if (gameAlreadyDownloaded) {
+      return;
+    }
+
+    await this.services.downloadGameService.execute({
+      ipcEvent: event,
     });
+  };
+
+  [IpcEventsEnum.Play] = (event: Electron.IpcMainEvent) => {
+    console.log(event);
   };
 }

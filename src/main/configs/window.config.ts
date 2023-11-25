@@ -4,7 +4,7 @@ import path from 'path';
 import { BrowserWindow, app, shell } from 'electron';
 
 import { MenuBuilder } from '../menu';
-import { resolveHtmlPath } from '../util';
+import { resolveHtmlPath } from '../utils';
 
 const isDebug =
   process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';

@@ -5,6 +5,7 @@ export type IpcEventSignInDto = {
 
 export enum IpcEventsEnum {
   WindowEvent = 'window-event',
+  UpdateGame = 'update-game',
   SignIn = 'sign-in',
   Play = 'play',
 }
