@@ -1,7 +1,10 @@
+import { exec } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
+import { promisify } from 'node:util';
 
 import axios from 'axios';
+import { app } from 'electron';
 import * as yauzl from 'yauzl';
 
 import { NODE_ENV } from '../constants/env.constants';
@@ -9,14 +12,16 @@ import {
   FileConfigDto,
   FileConfig as FileConfigInterface,
   OnProgress,
+  OpenExecutableDto,
 } from '../interfaces';
 
 export const GAME_DIRECTORY =
   NODE_ENV === 'development'
     ? path.resolve(__dirname, '..', '..', '..', 'tmp')
-    : path.resolve(__dirname);
+    : path.join(path.dirname(app.getPath('exe')), 'apps', 'gfchaos');
 
 export class FileConfig implements FileConfigInterface {
+  private readonly exec = promisify(exec);
   private unzipTotalRead = 0;
 
   public gameDirectory(): string {
@@ -46,7 +51,7 @@ export class FileConfig implements FileConfigInterface {
       let totalDownloaded = 0;
       const totalSize = Number(response.headers['content-length']);
 
-      response.data.on('data', (chunk) => {
+      response.data.on('data', (chunk: { length: number }) => {
         totalDownloaded += chunk.length;
 
         if (onProgress && totalSize) {
@@ -59,7 +64,7 @@ export class FileConfig implements FileConfigInterface {
         resolve(filepath);
       });
 
-      response.data.on('error', (error) => {
+      response.data.on('error', (error: unknown) => {
         reject(error);
       });
     });
@@ -81,6 +86,19 @@ export class FileConfig implements FileConfigInterface {
         }
       });
     });
+  }
+
+  public async openExecutable({
+    executable,
+    directory,
+    props = [],
+  }: OpenExecutableDto): Promise<void> {
+    await this.exec(
+      `start ${path.join(directory, executable)} ${props.join(' ')}`,
+      {
+        cwd: directory,
+      },
+    );
   }
 
   public async unzip({

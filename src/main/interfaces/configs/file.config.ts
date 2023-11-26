@@ -18,6 +18,12 @@ export type UnzipDto = {
   source: string;
 };
 
+export type OpenExecutableDto = {
+  executable: string;
+  directory: string;
+  props: string[];
+};
+
 export interface FileConfig {
   download(dto: FileConfigDto): Promise<string>;
 
@@ -28,4 +34,6 @@ export interface FileConfig {
   gameDirectory(): string;
 
   unzip(dto: UnzipDto): Promise<void>;
+
+  openExecutable(dto: OpenExecutableDto): Promise<void>;
 }

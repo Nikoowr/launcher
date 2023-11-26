@@ -8,11 +8,13 @@ import { IpcEventsEnum } from '../constants/ipc-events.constants';
 import {
   DownloadGameService,
   IpcEventsController as IpcEventsControllerInterface,
+  PlayGameService,
   SignInServiceDto,
 } from '../interfaces';
 
 type ConstructorServices = {
   downloadGameService: DownloadGameService;
+  playGameService: PlayGameService;
 };
 
 export class IpcEventsController implements IpcEventsControllerInterface {
@@ -58,7 +60,7 @@ export class IpcEventsController implements IpcEventsControllerInterface {
     });
   };
 
-  [IpcEventsEnum.Play] = (event: Electron.IpcMainEvent) => {
-    console.log(event);
+  [IpcEventsEnum.Play] = async () => {
+    await this.services.playGameService.execute();
   };
 }
