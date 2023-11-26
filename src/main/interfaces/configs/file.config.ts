@@ -1,7 +1,21 @@
+type OnProgressDto = {
+  progress: number;
+  filename?: string;
+};
+
+export type OnProgress = (dto: OnProgressDto) => void;
+
 export type FileConfigDto = {
+  onProgress?: OnProgress;
   directory: string;
   filename: string;
   url: string;
+};
+
+export type UnzipDto = {
+  onProgress?: OnProgress;
+  destination: string;
+  source: string;
 };
 
 export interface FileConfig {
@@ -9,5 +23,9 @@ export interface FileConfig {
 
   read(dto: { filepath: string }): Promise<string>;
 
+  delete(dto: { filepath: string }): Promise<void>;
+
   gameDirectory(): string;
+
+  unzip(dto: UnzipDto): Promise<void>;
 }

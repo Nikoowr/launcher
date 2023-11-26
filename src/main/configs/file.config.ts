@@ -2,11 +2,13 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import axios from 'axios';
+import * as yauzl from 'yauzl';
 
 import { NODE_ENV } from '../constants/env.constants';
 import {
   FileConfigDto,
   FileConfig as FileConfigInterface,
+  OnProgress,
 } from '../interfaces';
 
 export const GAME_DIRECTORY =
@@ -15,29 +17,186 @@ export const GAME_DIRECTORY =
     : path.resolve(__dirname);
 
 export class FileConfig implements FileConfigInterface {
+  private unzipTotalRead = 0;
+
   public gameDirectory(): string {
     return GAME_DIRECTORY;
   }
 
   public async download({
+    onProgress,
     directory,
     filename,
     url,
   }: FileConfigDto): Promise<string> {
-    const response = await axios.get(url, { responseType: 'arraybuffer' });
+    const response = await axios.get(url, {
+      responseType: 'stream',
+    });
 
     const filepath = path.resolve(directory, filename);
     const fileDirectory = path.dirname(filepath);
 
     fs.mkdirSync(fileDirectory, { recursive: true });
-    fs.writeFileSync(filepath, Buffer.from(response.data));
 
-    return filepath;
+    const writeStream = fs.createWriteStream(filepath);
+
+    return new Promise((resolve, reject) => {
+      response.data.pipe(writeStream);
+
+      let totalDownloaded = 0;
+      const totalSize = Number(response.headers['content-length']);
+
+      response.data.on('data', (chunk) => {
+        totalDownloaded += chunk.length;
+
+        if (onProgress && totalSize) {
+          const progress = Math.round((totalDownloaded * 100) / totalSize);
+          onProgress({ progress });
+        }
+      });
+
+      response.data.on('end', () => {
+        resolve(filepath);
+      });
+
+      response.data.on('error', (error) => {
+        reject(error);
+      });
+    });
   }
 
   public async read({ filepath }: { filepath: string }): Promise<string> {
     const file = fs.readFileSync(filepath, 'utf-8');
 
     return file.toString();
+  }
+
+  public async delete({ filepath }: { filepath: string }): Promise<void> {
+    return new Promise((resolve, reject) => {
+      fs.unlink(filepath, (error) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve();
+        }
+      });
+    });
+  }
+
+  public async unzip({
+    source,
+    destination,
+    onProgress,
+  }: {
+    source: string;
+    destination: string;
+    onProgress?: OnProgress;
+  }): Promise<void> {
+    const totalSize: number = await this.getZipTotalSize(source);
+
+    return new Promise((resolve, reject) => {
+      yauzl.open(source, { lazyEntries: true }, (err, zipfile) => {
+        if (err) {
+          reject(err);
+
+          return;
+        }
+
+        zipfile.readEntry();
+
+        this.unzipTotalRead = 0;
+
+        zipfile.on('entry', (entry) => {
+          this.extractZipEntry(
+            zipfile,
+            entry,
+            destination,
+            totalSize,
+            onProgress,
+          )
+            .then(() => {})
+            .catch((error) => reject(error));
+        });
+
+        zipfile.on('end', () => {
+          resolve();
+        });
+      });
+    });
+  }
+
+  private async getZipTotalSize(source: string): Promise<number> {
+    return new Promise((resolve, reject) => {
+      yauzl.open(source, { lazyEntries: true }, (err, zipfile) => {
+        if (err) {
+          reject(err);
+
+          return;
+        }
+
+        let totalSize = 0;
+
+        zipfile.readEntry();
+
+        zipfile.on('entry', (entry) => {
+          if (!/\/$/.test(entry.fileName)) {
+            totalSize += entry.uncompressedSize;
+          }
+
+          zipfile.readEntry();
+        });
+
+        zipfile.on('end', () => {
+          resolve(totalSize);
+        });
+      });
+    });
+  }
+
+  private async extractZipEntry(
+    zipfile: yauzl.ZipFile,
+    entry: yauzl.Entry,
+    destination: string,
+    totalSize: number,
+    onProgress?: OnProgress,
+  ): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const fileDestination = path.join(destination, entry.fileName);
+
+      if (/\/$/.test(entry.fileName)) {
+        fs.mkdirSync(fileDestination, { recursive: true });
+        zipfile.readEntry();
+
+        return;
+      }
+
+      zipfile.openReadStream(entry, (error, readStream) => {
+        if (error) {
+          reject(error);
+
+          return;
+        }
+
+        const writeStream = fs.createWriteStream(fileDestination);
+
+        readStream.on('data', (chunk) => {
+          this.unzipTotalRead += chunk.length;
+          this.unzipTotalRead = Math.min(this.unzipTotalRead, totalSize);
+
+          const progress = Math.round((this.unzipTotalRead * 100) / totalSize);
+
+          if (onProgress) {
+            onProgress({ progress, filename: entry?.fileName });
+          }
+        });
+
+        readStream.pipe(writeStream);
+
+        readStream.on('end', () => {
+          zipfile.readEntry();
+          resolve();
+        });
+      });
+    });
   }
 }

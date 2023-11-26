@@ -7,82 +7,52 @@ import {
   FileConfig,
 } from '../interfaces';
 
-enum FileActionsEnum {
-  Add = 'A',
-}
-
 export class DownloadGameService implements DownloadGameServiceInterface {
   constructor(private readonly fileConfig: FileConfig) {}
 
   public async execute({ ipcEvent }: DownloadGameServiceDto): Promise<void> {
-    const { total, files } = await this.getFileList();
+    const zipFilename = 'gfchaos-client.zip';
+    const fileUrl = `${CLIENT_BUCKET_URL}/${zipFilename}`;
 
-    for await (const [index, file] of files.entries()) {
-      if (!file) {
-        continue;
-      }
+    ipcEvent.reply(IpcEventsEnum.UpdateGame, {
+      status: GameStatusEnum.Downloading,
+      progress: 0,
+    });
 
-      const { action, filepath } = this.getFilepathAction(file);
+    const downloadedFilePath = await this.fileConfig.download({
+      directory: this.fileConfig.gameDirectory(),
+      filename: zipFilename,
+      url: fileUrl,
+      onProgress: ({ progress }) => {
+        ipcEvent.reply(IpcEventsEnum.UpdateGame, {
+          status: GameStatusEnum.Downloading,
+          progress,
+        });
+      },
+    });
 
-      ipcEvent.reply(IpcEventsEnum.UpdateGame, {
-        progress: Math.min(((index + 1) / total) * 100, 99),
-        status: GameStatusEnum.Downloading,
-        currentFile: filepath,
-      });
+    ipcEvent.reply(IpcEventsEnum.UpdateGame, {
+      status: GameStatusEnum.Extracting,
+      progress: 0,
+    });
 
-      await this.handleFileAction({ action, filepath });
-    }
+    await this.fileConfig.unzip({
+      destination: this.fileConfig.gameDirectory(),
+      source: downloadedFilePath,
+      onProgress: ({ progress, filename }) => {
+        ipcEvent.reply(IpcEventsEnum.UpdateGame, {
+          status: GameStatusEnum.Extracting,
+          currentFilename: filename,
+          progress,
+        });
+      },
+    });
+
+    await this.fileConfig.delete({ filepath: downloadedFilePath });
 
     return ipcEvent.reply(IpcEventsEnum.UpdateGame, {
       status: GameStatusEnum.Done,
       progress: 100,
     });
-  }
-
-  private async getFileList() {
-    const filename = 'GameDataFileList.txt';
-    const gameDataFileListUrl = `${CLIENT_BUCKET_URL}/${filename}`;
-
-    const gameDataFileListPath = await this.fileConfig.download({
-      directory: this.fileConfig.gameDirectory(),
-      url: gameDataFileListUrl,
-      filename,
-    });
-
-    const fileString = await this.fileConfig.read({
-      filepath: gameDataFileListPath,
-    });
-
-    const [total, ...files] = fileString.split('\n');
-
-    return { total: Number(total), files };
-  }
-
-  private getFilepathAction(file: string) {
-    const splitFile = file.split(' ');
-    const action = splitFile.shift();
-    const filepath = splitFile.join(' ').trim();
-
-    if (!action) {
-      throw new Error('Action is required');
-    }
-
-    return { filepath, action };
-  }
-
-  private async handleFileAction({
-    filepath,
-    action,
-  }: {
-    filepath: string;
-    action: string;
-  }) {
-    if (action === FileActionsEnum.Add) {
-      await this.fileConfig.download({
-        url: `${CLIENT_BUCKET_URL}/${filepath}`,
-        directory: this.fileConfig.gameDirectory(),
-        filename: filepath,
-      });
-    }
   }
 }

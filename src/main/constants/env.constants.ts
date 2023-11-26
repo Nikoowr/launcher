@@ -10,5 +10,4 @@ export const IS_DEBUG =
 export const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 
 export const CLIENT_BUCKET_URL =
-  process.env.CLIENT_BUCKET_URL ||
-  'https://gfchaos-client.s3.us-east-2.amazonaws.com';
+  process.env.CLIENT_BUCKET_URL || 'https://d23rkkda8ml1ab.cloudfront.net';

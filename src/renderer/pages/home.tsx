@@ -1,4 +1,4 @@
-import { Check, Download, Search, X } from 'lucide-react';
+import { Check, Download, Search, Share, X } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { GameStatusEnum } from '../../main/constants/game.constants';
@@ -27,6 +27,10 @@ export const Home = () => {
       return 'Baixando...';
     }
 
+    if (status === GameStatusEnum.Extracting) {
+      return 'Extraindo...';
+    }
+
     if (status === GameStatusEnum.Done) {
       return 'Tudo certo!';
     }
@@ -43,6 +47,10 @@ export const Home = () => {
       return <Download className="text-[#fff5]" />;
     }
 
+    if (status === GameStatusEnum.Extracting) {
+      return <Share className="text-[#fff5]" />;
+    }
+
     if (status === GameStatusEnum.Done) {
       return <Check className="text-white" />;
     }
@@ -52,13 +60,13 @@ export const Home = () => {
 
   const handleUpdate = useCallback(
     async (props: {
+      currentFilename: string;
       status: GameStatusEnum;
-      currentFile: string;
       progress: number;
     }) => {
       const progressValue = Math.floor(props.progress || 0);
 
-      setFileUpdating(progressValue >= 100 ? '' : props.currentFile || '');
+      setFileUpdating(progressValue >= 100 ? '' : props.currentFilename || '');
       setProgress(progressValue);
       setStatus(props.status);
     },
