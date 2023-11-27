@@ -10,6 +10,7 @@ export type FileConfigDto = {
   directory: string;
   filename: string;
   url: string;
+  id: string;
 };
 
 export type FileConfigWriteDto = {
@@ -37,7 +38,7 @@ export interface FileConfig {
 
   download(dto: FileConfigDto): Promise<string>;
 
-  read(dto: { directory: string; filename: string }): Promise<string>;
+  read(dto: { directory: string; filename: string }): Promise<string | null>;
 
   write(dto: FileConfigWriteDto): Promise<string>;
 

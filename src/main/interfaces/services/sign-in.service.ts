@@ -1,4 +1,7 @@
+import type { IpcMainEvent } from 'electron';
+
 export type SignInServiceDto = {
+  ipcEvent: IpcMainEvent;
   password: string;
   user: string;
 };

@@ -28,6 +28,7 @@ export const USER_DATA_DIRECTORY =
     : path.join(path.dirname(app.getPath('userData')));
 
 export class FileConfig implements FileConfigInterface {
+  private activeDownloads: Set<string> = new Set();
   private readonly exec = promisify(exec);
   private unzipTotalRead = 0;
 
@@ -44,7 +45,14 @@ export class FileConfig implements FileConfigInterface {
     directory,
     filename,
     url,
+    id,
   }: FileConfigDto): Promise<string> {
+    if (this.activeDownloads.has(id)) {
+      throw new Error(`Download with ID ${id} is already in progress.`);
+    }
+
+    this.activeDownloads.add(id);
+
     const response = await axios.get(url, {
       responseType: 'stream',
     });
@@ -78,6 +86,10 @@ export class FileConfig implements FileConfigInterface {
       response.data.on('error', (error: unknown) => {
         reject(error);
       });
+
+      writeStream.on('finish', () => {
+        this.activeDownloads.delete(id);
+      });
     });
   }
 
@@ -87,11 +99,15 @@ export class FileConfig implements FileConfigInterface {
   }: {
     directory: string;
     filename: string;
-  }): Promise<string> {
-    const filepath = path.join(directory, filename);
-    const file = fs.readFileSync(filepath, 'utf-8');
+  }): Promise<string | null> {
+    try {
+      const filepath = path.join(directory, filename);
+      const file = fs.readFileSync(filepath, 'utf-8');
 
-    return file.toString();
+      return file.toString();
+    } catch {
+      return null;
+    }
   }
 
   public async write({

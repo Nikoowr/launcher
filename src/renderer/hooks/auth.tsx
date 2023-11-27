@@ -20,11 +20,16 @@ type Credentials = {
   user: string;
 };
 
+type Session = {
+  user?: string;
+};
+
 type AuthContextData = {
   login: (credentials: Credentials) => void;
+  sessionLoading: boolean;
   logout: () => void;
-  recoverLoginLoading: boolean;
   loggedIn: boolean;
+  session: Session;
   loading: boolean;
   error: boolean;
 };
@@ -33,10 +38,12 @@ const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 const { ipcRenderer } = window.electron;
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  const [recoverLoginLoading, setRecoverLoginLoading] = useState(true);
   const [loggedIn, setLoggedIn] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+
+  const [sessionLoading, setSessionLoading] = useState(true);
+  const [session, setSession] = useState<Session>({});
 
   const { toast } = useToast();
 
@@ -47,49 +54,68 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, []);
 
   const logout = useCallback(() => {
-    setLoggedIn(false);
+    ipcRenderer[IpcEventsEnum.SignOut]();
   }, []);
 
-  const handleSignIn = useCallback(async () => {
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-      setLoggedIn(true);
-    } catch (error) {
-      setError(true);
-
-      toast({
-        variant: 'destructive',
-        title: 'Erro no login',
-        description:
-          'Ocorreu um erro ao realizar login, tente novamente mais tarde.',
-      });
-    } finally {
-      setLoading(false);
-    }
-  }, [toast]);
-
-  const isLoggedIn = useCallback(async () => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    return false;
+  const handleSession = useCallback((session?: Session) => {
+    setLoggedIn(!!session?.user);
+    setSession(session || {});
+    setSessionLoading(false);
   }, []);
 
+  const handleSignIn = useCallback(
+    async (session?: Session) => {
+      try {
+        handleSession(session);
+      } catch (error) {
+        setError(true);
+
+        toast({
+          variant: 'destructive',
+          title: 'Erro no login',
+          description:
+            'Ocorreu um erro ao realizar login, tente novamente mais tarde.',
+        });
+      } finally {
+        setLoading(false);
+      }
+    },
+    [toast, handleSession],
+  );
+
+  // Sign in / Sign out useEffects
   useEffect(() => {
-    ipcRenderer.on(IpcEventsEnum.SignIn, async () => {
-      await handleSignIn();
+    ipcRenderer.on(IpcEventsEnum.SignIn, async (dto?: Session) => {
+      await handleSignIn(dto);
     });
   }, [handleSignIn]);
 
   useEffect(() => {
-    isLoggedIn()
-      .then((logged) => setLoggedIn(logged))
-      .catch(() => setLoggedIn(false))
-      .finally(() => setRecoverLoginLoading(false));
-  }, [isLoggedIn]);
+    ipcRenderer.on(IpcEventsEnum.SignOut, () => {
+      setLoggedIn(false);
+    });
+  }, []);
+
+  // Session useEffects
+  useEffect(() => {
+    ipcRenderer[IpcEventsEnum.GetUserSession]();
+  }, []);
+
+  useEffect(() => {
+    ipcRenderer.on(IpcEventsEnum.GetUserSession, handleSession);
+  }, [handleSession]);
 
   const contextValue = useMemo(
-    () => ({ login, logout, loading, recoverLoginLoading, loggedIn, error }),
-    [login, logout, loading, recoverLoginLoading, loggedIn, error],
+    () => ({
+      sessionLoading,
+      loggedIn,
+      loading,
+      session,
+      logout,
+      login,
+      error,
+    }),
+    [sessionLoading, loggedIn, loading, session, logout, login, error],
   );
 
   return (

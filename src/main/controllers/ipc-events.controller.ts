@@ -7,15 +7,18 @@ import {
 import { IpcEventsEnum } from '../constants/ipc-events.constants';
 import {
   DownloadGameService,
+  GetUserSessionService,
   IpcEventsController as IpcEventsControllerInterface,
   PlayGameService,
-  SignInServiceDto,
+  SignOutService,
 } from '../interfaces';
 import { SignInService } from '../services';
 
 type ConstructorServices = {
+  getUserSessionService: GetUserSessionService;
   downloadGameService: DownloadGameService;
   playGameService: PlayGameService;
+  signOutService: SignOutService;
   signInService: SignInService;
 };
 
@@ -44,10 +47,16 @@ export class IpcEventsController implements IpcEventsControllerInterface {
 
   [IpcEventsEnum.SignIn] = async (
     event: Electron.IpcMainEvent,
-    dto: SignInServiceDto,
+    credentials: { user: string; password: string },
   ) => {
-    await this.services.signInService.execute(dto);
-    event.reply(IpcEventsEnum.SignIn);
+    await this.services.signInService.execute({
+      ...credentials,
+      ipcEvent: event,
+    });
+  };
+
+  [IpcEventsEnum.SignOut] = async (event: Electron.IpcMainEvent) => {
+    await this.services.signOutService.execute({ ipcEvent: event });
   };
 
   [IpcEventsEnum.UpdateGame] = async (event: Electron.IpcMainEvent) => {
@@ -63,8 +72,10 @@ export class IpcEventsController implements IpcEventsControllerInterface {
   };
 
   [IpcEventsEnum.Play] = async (event: Electron.IpcMainEvent) => {
-    await this.services.playGameService.execute();
+    await this.services.playGameService.execute({ ipcEvent: event });
+  };
 
-    event.reply(IpcEventsEnum.Play);
+  [IpcEventsEnum.GetUserSession] = async (event: Electron.IpcMainEvent) => {
+    await this.services.getUserSessionService.execute({ ipcEvent: event });
   };
 }

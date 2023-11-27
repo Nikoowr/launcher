@@ -13,8 +13,6 @@ export const SignIn = () => {
   const navigate = useNavigate();
   const { loggedIn } = useAuth();
 
-  console.log('loggedIn', loggedIn);
-
   useEffect(() => {
     if (loggedIn) {
       navigate('/');

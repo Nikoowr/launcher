@@ -1,3 +1,9 @@
+import type { IpcMainEvent } from 'electron';
+
+export type PlayGameServiceDto = {
+  ipcEvent: IpcMainEvent;
+};
+
 export interface PlayGameService {
-  execute(): Promise<void>;
+  execute(dto: PlayGameServiceDto): Promise<void>;
 }

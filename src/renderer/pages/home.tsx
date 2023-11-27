@@ -13,9 +13,10 @@ import { Progress } from '../components/ui/progress';
 const { ipcRenderer } = window.electron;
 
 export const Home = () => {
-  const [progress, setProgress] = useState(0);
   const [status, setStatus] = useState(GameStatusEnum.Checking);
   const [fileUpdating, setFileUpdating] = useState('');
+  const [progress, setProgress] = useState(0);
+
   const isDownloading = useMemo(() => progress < 100, [progress]);
 
   const statusText = useMemo(() => {
@@ -78,10 +79,7 @@ export const Home = () => {
   }, []);
 
   useEffect(() => {
-    ipcRenderer.on(IpcEventsEnum.UpdateGame, async (props) => {
-      console.log('props', props);
-      await handleUpdate(props);
-    });
+    ipcRenderer.on(IpcEventsEnum.UpdateGame, handleUpdate);
   }, [handleUpdate]);
 
   return (

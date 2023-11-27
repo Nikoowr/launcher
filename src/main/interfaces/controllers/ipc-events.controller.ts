@@ -12,10 +12,14 @@ export interface IpcEventsController {
 
   [IpcEventsEnum.SignIn]: (event: IpcMainEvent, dto: SignInServiceDto) => void;
 
+  [IpcEventsEnum.SignOut]: (event: IpcMainEvent) => void;
+
   [IpcEventsEnum.UpdateGame]: (
     event: IpcMainEvent,
     mainWindow: BrowserWindow | null,
   ) => void;
 
   [IpcEventsEnum.Play]: (event: IpcMainEvent) => void;
+
+  [IpcEventsEnum.GetUserSession]: (event: IpcMainEvent) => void;
 }

@@ -1,27 +1,27 @@
+import { FileConfig } from '../configs';
 import { IpcEventsEnum } from '../constants/ipc-events.constants';
 import { USER_DATA_ENCRYPTION_KEY } from '../constants/security.constants';
 import { UserDataStorageFilenamesEnum } from '../constants/store.constants';
 import {
   CryptographyConfig,
-  FileConfig,
-  PlayGameServiceDto,
-  PlayGameService as PlayGameServiceInterface,
+  GetUserSessionServiceDto,
+  GetUserSessionService as GetUserSessionServiceInterface,
 } from '../interfaces';
 
-export class PlayGameService implements PlayGameServiceInterface {
+export class GetUserSessionService implements GetUserSessionServiceInterface {
   constructor(
     private readonly cryptographyConfig: CryptographyConfig,
     private readonly fileConfig: FileConfig,
   ) {}
 
-  public async execute({ ipcEvent }: PlayGameServiceDto): Promise<void> {
+  public async execute({ ipcEvent }: GetUserSessionServiceDto): Promise<void> {
     const encryptedSession = await this.fileConfig.read({
       filename: UserDataStorageFilenamesEnum.UserSession,
       directory: this.fileConfig.userDataDirectory,
     });
 
     if (!encryptedSession) {
-      throw new Error('Session not found');
+      return ipcEvent.reply(IpcEventsEnum.GetUserSession, {});
     }
 
     const session = await this.cryptographyConfig.decrypt({
@@ -29,14 +29,8 @@ export class PlayGameService implements PlayGameServiceInterface {
       data: encryptedSession,
     });
 
-    const [user, password] = session.split('::');
+    const [user] = session.split('::');
 
-    await this.fileConfig.openExecutable({
-      props: ['EasyFun', `-a ${user}`, `-p ${password}`],
-      directory: this.fileConfig.gameDirectory,
-      executable: 'GrandFantasia.exe',
-    });
-
-    ipcEvent.reply(IpcEventsEnum.Play);
+    ipcEvent.reply(IpcEventsEnum.GetUserSession, { user });
   }
 }

@@ -10,9 +10,9 @@ export type ProtectedRouteProps = {
 };
 
 export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-  const { loggedIn, recoverLoginLoading } = useAuth();
+  const { loggedIn, sessionLoading } = useAuth();
 
-  if (recoverLoginLoading) {
+  if (sessionLoading) {
     return (
       <div className="flex h-[100vh] w-full items-center justify-center">
         <Icons.spinner />

@@ -12,7 +12,7 @@ import {
 } from '../ui/dropdown-menu';
 
 export const UserMenu = () => {
-  const { logout } = useAuth();
+  const { logout, session } = useAuth();
 
   return (
     <>
@@ -23,7 +23,7 @@ export const UserMenu = () => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="mr-4 w-40">
-          <DropdownMenuLabel>Mosquito</DropdownMenuLabel>
+          <DropdownMenuLabel>{session?.user || 'Babama'}</DropdownMenuLabel>
 
           <DropdownMenuSeparator />
 

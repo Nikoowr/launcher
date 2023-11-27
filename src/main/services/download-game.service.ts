@@ -11,6 +11,19 @@ export class DownloadGameService implements DownloadGameServiceInterface {
   constructor(private readonly fileConfig: FileConfig) {}
 
   public async execute({ ipcEvent }: DownloadGameServiceDto): Promise<void> {
+    const { zipFilename, downloadedFilePath } = await this.downloadZip({
+      ipcEvent,
+    });
+
+    await this.extractZip({ ipcEvent, zipFilename, downloadedFilePath });
+
+    return ipcEvent.reply(IpcEventsEnum.UpdateGame, {
+      status: GameStatusEnum.Done,
+      progress: 100,
+    });
+  }
+
+  private async downloadZip({ ipcEvent }: DownloadGameServiceDto) {
     const zipFilename = 'gfchaos-client.zip';
     const fileUrl = `${CLIENT_BUCKET_URL}/${zipFilename}`;
 
@@ -23,6 +36,7 @@ export class DownloadGameService implements DownloadGameServiceInterface {
       directory: this.fileConfig.gameDirectory,
       filename: zipFilename,
       url: fileUrl,
+      id: fileUrl,
       onProgress: ({ progress }) => {
         ipcEvent.reply(IpcEventsEnum.UpdateGame, {
           status: GameStatusEnum.Downloading,
@@ -31,6 +45,17 @@ export class DownloadGameService implements DownloadGameServiceInterface {
       },
     });
 
+    return { downloadedFilePath, zipFilename };
+  }
+
+  private async extractZip({
+    downloadedFilePath,
+    zipFilename,
+    ipcEvent,
+  }: DownloadGameServiceDto & {
+    downloadedFilePath: string;
+    zipFilename: string;
+  }) {
     ipcEvent.reply(IpcEventsEnum.UpdateGame, {
       status: GameStatusEnum.Extracting,
       progress: 0,
@@ -51,11 +76,6 @@ export class DownloadGameService implements DownloadGameServiceInterface {
     await this.fileConfig.delete({
       directory: this.fileConfig.gameDirectory,
       filename: zipFilename,
-    });
-
-    return ipcEvent.reply(IpcEventsEnum.UpdateGame, {
-      status: GameStatusEnum.Done,
-      progress: 100,
     });
   }
 }

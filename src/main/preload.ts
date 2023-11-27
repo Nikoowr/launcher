@@ -37,12 +37,20 @@ const electronHandler = {
       ipcRenderer.send(IpcEventsEnum.SignIn, dto);
     },
 
+    [IpcEventsEnum.SignOut]: () => {
+      ipcRenderer.send(IpcEventsEnum.SignOut);
+    },
+
     [IpcEventsEnum.UpdateGame]: () => {
       ipcRenderer.send(IpcEventsEnum.UpdateGame);
     },
 
     [IpcEventsEnum.Play]: () => {
       ipcRenderer.send(IpcEventsEnum.Play);
+    },
+
+    [IpcEventsEnum.GetUserSession]: () => {
+      ipcRenderer.send(IpcEventsEnum.GetUserSession);
     },
   },
 };

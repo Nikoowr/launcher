@@ -6,6 +6,7 @@ export * from './configs/file.config';
 export * from './controllers/ipc-events.controller';
 
 // Services
+export * from './services/get-user-session.service';
 export * from './services/download-game.service';
 export * from './services/play-game.service';
 export * from './services/sign-out.service';
