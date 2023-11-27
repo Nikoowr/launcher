@@ -11,10 +11,12 @@ import {
   PlayGameService,
   SignInServiceDto,
 } from '../interfaces';
+import { SignInService } from '../services';
 
 type ConstructorServices = {
   downloadGameService: DownloadGameService;
   playGameService: PlayGameService;
+  signInService: SignInService;
 };
 
 export class IpcEventsController implements IpcEventsControllerInterface {
@@ -40,11 +42,11 @@ export class IpcEventsController implements IpcEventsControllerInterface {
     event.reply(IpcEventsEnum.WindowEvent);
   };
 
-  [IpcEventsEnum.SignIn] = (
+  [IpcEventsEnum.SignIn] = async (
     event: Electron.IpcMainEvent,
     dto: SignInServiceDto,
   ) => {
-    console.log('dto', dto);
+    await this.services.signInService.execute(dto);
     event.reply(IpcEventsEnum.SignIn);
   };
 
@@ -60,7 +62,9 @@ export class IpcEventsController implements IpcEventsControllerInterface {
     });
   };
 
-  [IpcEventsEnum.Play] = async () => {
+  [IpcEventsEnum.Play] = async (event: Electron.IpcMainEvent) => {
     await this.services.playGameService.execute();
+
+    event.reply(IpcEventsEnum.Play);
   };
 }

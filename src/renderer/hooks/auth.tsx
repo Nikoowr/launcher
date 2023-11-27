@@ -71,7 +71,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const isLoggedIn = useCallback(async () => {
     await new Promise((resolve) => setTimeout(resolve, 500));
 
-    return true;
+    return false;
   }, []);
 
   useEffect(() => {

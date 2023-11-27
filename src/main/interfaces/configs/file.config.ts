@@ -12,28 +12,38 @@ export type FileConfigDto = {
   url: string;
 };
 
-export type UnzipDto = {
+export type FileConfigWriteDto = {
+  directory: string;
+  filename: string;
+  data: string;
+};
+
+export type FileConfigUnzipDto = {
   onProgress?: OnProgress;
   destination: string;
   source: string;
 };
 
-export type OpenExecutableDto = {
+export type FileConfigOpenExecutableDto = {
   executable: string;
   directory: string;
   props: string[];
 };
 
 export interface FileConfig {
+  userDataDirectory: string;
+
+  gameDirectory: string;
+
   download(dto: FileConfigDto): Promise<string>;
 
-  read(dto: { filepath: string }): Promise<string>;
+  read(dto: { directory: string; filename: string }): Promise<string>;
 
-  delete(dto: { filepath: string }): Promise<void>;
+  write(dto: FileConfigWriteDto): Promise<string>;
 
-  gameDirectory(): string;
+  delete(dto: { directory: string; filename: string }): Promise<void>;
 
-  unzip(dto: UnzipDto): Promise<void>;
+  unzip(dto: FileConfigUnzipDto): Promise<void>;
 
-  openExecutable(dto: OpenExecutableDto): Promise<void>;
+  openExecutable(dto: FileConfigOpenExecutableDto): Promise<void>;
 }

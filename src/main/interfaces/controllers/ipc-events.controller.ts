@@ -16,4 +16,6 @@ export interface IpcEventsController {
     event: IpcMainEvent,
     mainWindow: BrowserWindow | null,
   ) => void;
+
+  [IpcEventsEnum.Play]: (event: IpcMainEvent) => void;
 }

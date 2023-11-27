@@ -11,20 +11,31 @@ import { NODE_ENV } from '../constants/env.constants';
 import {
   FileConfigDto,
   FileConfig as FileConfigInterface,
+  FileConfigOpenExecutableDto,
+  FileConfigUnzipDto,
+  FileConfigWriteDto,
   OnProgress,
-  OpenExecutableDto,
 } from '../interfaces';
 
 export const GAME_DIRECTORY =
   NODE_ENV === 'development'
-    ? path.resolve(__dirname, '..', '..', '..', 'tmp')
+    ? path.resolve(__dirname, '..', '..', '..', 'tmp', 'gfchaos')
     : path.join(path.dirname(app.getPath('exe')), 'apps', 'gfchaos');
+
+export const USER_DATA_DIRECTORY =
+  NODE_ENV === 'development'
+    ? path.resolve(__dirname, '..', '..', '..', 'tmp', 'gfchaos')
+    : path.join(path.dirname(app.getPath('userData')));
 
 export class FileConfig implements FileConfigInterface {
   private readonly exec = promisify(exec);
   private unzipTotalRead = 0;
 
-  public gameDirectory(): string {
+  public get userDataDirectory() {
+    return USER_DATA_DIRECTORY;
+  }
+
+  public get gameDirectory() {
     return GAME_DIRECTORY;
   }
 
@@ -70,14 +81,42 @@ export class FileConfig implements FileConfigInterface {
     });
   }
 
-  public async read({ filepath }: { filepath: string }): Promise<string> {
+  public async read({
+    directory,
+    filename,
+  }: {
+    directory: string;
+    filename: string;
+  }): Promise<string> {
+    const filepath = path.join(directory, filename);
     const file = fs.readFileSync(filepath, 'utf-8');
 
     return file.toString();
   }
 
-  public async delete({ filepath }: { filepath: string }): Promise<void> {
+  public async write({
+    directory,
+    filename,
+    data,
+  }: FileConfigWriteDto): Promise<string> {
+    const filepath = path.join(directory, filename);
+
+    fs.mkdirSync(directory, { recursive: true });
+    fs.writeFileSync(filepath, data, 'utf-8');
+
+    return filepath;
+  }
+
+  public async delete({
+    directory,
+    filename,
+  }: {
+    directory: string;
+    filename: string;
+  }): Promise<void> {
     return new Promise((resolve, reject) => {
+      const filepath = path.join(directory, filename);
+
       fs.unlink(filepath, (error) => {
         if (error) {
           reject(error);
@@ -92,7 +131,7 @@ export class FileConfig implements FileConfigInterface {
     executable,
     directory,
     props = [],
-  }: OpenExecutableDto): Promise<void> {
+  }: FileConfigOpenExecutableDto): Promise<void> {
     await this.exec(
       `start ${path.join(directory, executable)} ${props.join(' ')}`,
       {
@@ -105,11 +144,7 @@ export class FileConfig implements FileConfigInterface {
     source,
     destination,
     onProgress,
-  }: {
-    source: string;
-    destination: string;
-    onProgress?: OnProgress;
-  }): Promise<void> {
+  }: FileConfigUnzipDto): Promise<void> {
     const totalSize: number = await this.getZipTotalSize(source);
 
     return new Promise((resolve, reject) => {

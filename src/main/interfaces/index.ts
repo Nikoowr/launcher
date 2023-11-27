@@ -1,4 +1,5 @@
 // Configs
+export * from './configs/cryptography.config';
 export * from './configs/file.config';
 
 // Controllers

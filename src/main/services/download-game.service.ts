@@ -20,7 +20,7 @@ export class DownloadGameService implements DownloadGameServiceInterface {
     });
 
     const downloadedFilePath = await this.fileConfig.download({
-      directory: this.fileConfig.gameDirectory(),
+      directory: this.fileConfig.gameDirectory,
       filename: zipFilename,
       url: fileUrl,
       onProgress: ({ progress }) => {
@@ -37,7 +37,7 @@ export class DownloadGameService implements DownloadGameServiceInterface {
     });
 
     await this.fileConfig.unzip({
-      destination: this.fileConfig.gameDirectory(),
+      destination: this.fileConfig.gameDirectory,
       source: downloadedFilePath,
       onProgress: ({ progress, filename }) => {
         ipcEvent.reply(IpcEventsEnum.UpdateGame, {
@@ -48,7 +48,10 @@ export class DownloadGameService implements DownloadGameServiceInterface {
       },
     });
 
-    await this.fileConfig.delete({ filepath: downloadedFilePath });
+    await this.fileConfig.delete({
+      directory: this.fileConfig.gameDirectory,
+      filename: zipFilename,
+    });
 
     return ipcEvent.reply(IpcEventsEnum.UpdateGame, {
       status: GameStatusEnum.Done,
