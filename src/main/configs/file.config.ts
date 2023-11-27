@@ -24,7 +24,7 @@ export const GAME_DIRECTORY =
 
 export const USER_DATA_DIRECTORY =
   NODE_ENV === 'development'
-    ? path.resolve(__dirname, '..', '..', '..', 'tmp', 'gfchaos')
+    ? path.resolve(__dirname, '..', '..', '..', 'tmp', 'userData')
     : path.join(path.dirname(app.getPath('userData')));
 
 export class FileConfig implements FileConfigInterface {
