@@ -19,6 +19,7 @@ import {
 } from '../interfaces';
 
 export class FileConfig implements FileConfigInterface {
+  public readonly resourcesDirectory: string;
   public readonly userDataDirectory: string;
   public readonly gameDirectory: string;
   private readonly exec = promisify(exec);
@@ -35,6 +36,10 @@ export class FileConfig implements FileConfigInterface {
       this.envConfig.NODE_ENV === NodeEnvsEnum.Development
         ? path.resolve(__dirname, '..', '..', '..', 'tmp', 'gfchaos')
         : path.join(path.dirname(app.getPath('exe')), 'apps', 'gfchaos');
+
+    this.resourcesDirectory = app.isPackaged
+      ? path.join(process.resourcesPath, 'assets')
+      : path.join(__dirname, '..', '..', '..', 'assets');
   }
 
   public async download({
@@ -189,6 +194,10 @@ export class FileConfig implements FileConfigInterface {
         });
       });
     });
+  }
+
+  public getAssetPath(asset: string) {
+    return path.join(this.resourcesDirectory, asset);
   }
 
   private async getZipTotalSize(source: string): Promise<number> {

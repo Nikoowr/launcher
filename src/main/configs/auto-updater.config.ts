@@ -1,10 +1,13 @@
 import { BrowserWindow, Notification } from 'electron';
-import log from 'electron-log';
 import { NsisUpdater } from 'electron-updater';
 
+import { IpcEventsEnum } from '../constants/ipc-events.constants';
 import {
   AutoUpdaterConfigCheckForUpdatesDto,
   AutoUpdaterConfig as AutoUpdaterConfigInterface,
+  EnvConfig,
+  FileConfig,
+  MenuConfig,
 } from '../interfaces';
 
 enum EventsEnum {
@@ -19,17 +22,16 @@ enum EventsEnum {
 export class AutoUpdaterConfig implements AutoUpdaterConfigInterface {
   private readonly autoUpdater: NsisUpdater;
 
-  constructor() {
-    log.transports.file.level = 'debug';
-
+  constructor(
+    private readonly fileConfig: FileConfig,
+    private readonly menuConfig: MenuConfig,
+    private readonly envConfig: EnvConfig,
+  ) {
     this.autoUpdater = new NsisUpdater({
-      url: 'https://gfchaos-launcher.s3.us-east-2.amazonaws.com/prod',
+      url: `${this.envConfig.AUTO_UPDATER_URL}${this.envConfig.STAGE}`,
+      channel: this.envConfig.AUTO_UPDATER_CHANNEL,
       provider: 'generic',
-      channel: 'latest',
     });
-
-    this.autoUpdater.logger = log;
-    this.autoUpdater.channel = 'latest';
   }
 
   public checkForUpdates({
@@ -38,36 +40,6 @@ export class AutoUpdaterConfig implements AutoUpdaterConfigInterface {
     this.autoUpdater?.logger?.info(
       `[AppUpdater] - currentVersion: ${this.autoUpdater.currentVersion}`,
     );
-
-    this.autoUpdater?.logger?.info(
-      `[AppUpdater] - autoDownload: ${this.autoUpdater.autoDownload}`,
-    );
-
-    this.autoUpdater?.logger?.info(
-      `[AppUpdater] - autoInstallOnAppQuit: ${this.autoUpdater.autoInstallOnAppQuit}`,
-    );
-
-    this.autoUpdater?.logger?.info(
-      `[AppUpdater] - autoRunAppAfterInstall: ${this.autoUpdater.autoRunAppAfterInstall}`,
-    );
-
-    this.autoUpdater?.logger?.info(
-      `[AppUpdater] - channel: ${this.autoUpdater.channel}`,
-    );
-
-    this.autoUpdater?.logger?.info(
-      `[AppUpdater] - fullChangelog: ${this.autoUpdater.fullChangelog}`,
-    );
-
-    this.autoUpdater?.logger?.info(
-      `[AppUpdater] - updateConfigPath: ${this.autoUpdater.updateConfigPath}`,
-    );
-
-    this.autoUpdater.checkForUpdatesAndNotify().then((results) => {
-      this.autoUpdater?.logger?.info(
-        `[AppUpdater] - results: ${JSON.stringify(results)}`,
-      );
-    });
 
     this.autoUpdater.on(EventsEnum.UpdateNotAvailable, () => {
       this.autoUpdater?.logger?.info('[AppUpdater] - Update not available');
@@ -84,6 +56,10 @@ export class AutoUpdaterConfig implements AutoUpdaterConfigInterface {
 
     this.autoUpdater.on(EventsEnum.UpdateDownloaded, () => {
       this.autoUpdater?.logger?.info('[AppUpdater] - Update downloaded');
+
+      this.menuConfig.buildTray({ updateFound: true, mainWindow });
+      mainWindow?.webContents?.send(IpcEventsEnum.AutoUpdaterFoundUpdate);
+
       this.notification({ mainWindow }).show();
 
       this.waitCheckForUpdates();
@@ -98,6 +74,10 @@ export class AutoUpdaterConfig implements AutoUpdaterConfigInterface {
     });
   }
 
+  public quitAndInstall(): void {
+    this.autoUpdater.quitAndInstall();
+  }
+
   private waitCheckForUpdates() {
     setTimeout(() => {
       this.autoUpdater.checkForUpdates();
@@ -106,8 +86,9 @@ export class AutoUpdaterConfig implements AutoUpdaterConfigInterface {
 
   private notification({ mainWindow }: { mainWindow: BrowserWindow }) {
     return new Notification({
+      body: 'Por favor, feche o Launcher e abra novamente para finalizar a atualização!',
       title: 'Nova versão disponível',
-      body: 'Por favor, feche o Atendente Virtual e abra novamente para finalizar a atualização!',
+      icon: this.fileConfig.getAssetPath('icon.png'),
     }).on('click', () => {
       mainWindow?.show();
     });

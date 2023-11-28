@@ -6,4 +6,6 @@ export type AutoUpdaterConfigCheckForUpdatesDto = {
 
 export interface AutoUpdaterConfig {
   checkForUpdates(dto: AutoUpdaterConfigCheckForUpdatesDto): void;
+
+  quitAndInstall(): void;
 }

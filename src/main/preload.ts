@@ -52,6 +52,10 @@ const electronHandler = {
     [IpcEventsEnum.GetUserSession]: () => {
       ipcRenderer.send(IpcEventsEnum.GetUserSession);
     },
+
+    [IpcEventsEnum.AutoUpdateQuitAndInstall]: () => {
+      ipcRenderer.send(IpcEventsEnum.AutoUpdateQuitAndInstall);
+    },
   },
 };
 

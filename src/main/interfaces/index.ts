@@ -2,6 +2,7 @@
 export * from './configs/cryptography.config';
 export * from './configs/auto-updater.config';
 export * from './configs/file.config';
+export * from './configs/menu.config';
 export * from './configs/env.config';
 
 // Controllers

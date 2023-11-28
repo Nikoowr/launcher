@@ -4,6 +4,7 @@ import {
   AutoUpdaterConfig,
   CryptographyConfig,
   FileConfig,
+  MenuConfig,
   envConfig,
 } from './configs';
 import { IpcEventsController } from './controllers';
@@ -21,8 +22,13 @@ type ContainerDto = {
 
 export const container = ({ app }: ContainerDto) => {
   const cryptographyConfig = new CryptographyConfig();
-  const autoUpdaterConfig = new AutoUpdaterConfig();
   const fileConfig = new FileConfig(envConfig);
+  const menuConfig = new MenuConfig(fileConfig);
+  const autoUpdaterConfig = new AutoUpdaterConfig(
+    fileConfig,
+    menuConfig,
+    envConfig,
+  );
 
   const playGameService = new PlayGameService(
     cryptographyConfig,
@@ -50,5 +56,5 @@ export const container = ({ app }: ContainerDto) => {
     signInService,
   });
 
-  return { ipcEventsController, autoUpdaterConfig };
+  return { ipcEventsController, autoUpdaterConfig, menuConfig };
 };

@@ -13,4 +13,6 @@ export type EnvConfig = {
   // Application
   CLIENT_BUCKET_URL: string;
   USER_DATA_ENCRYPTION_KEY: string;
+  AUTO_UPDATER_URL: string;
+  AUTO_UPDATER_CHANNEL: string;
 };

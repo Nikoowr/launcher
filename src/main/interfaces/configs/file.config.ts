@@ -32,8 +32,8 @@ export type FileConfigOpenExecutableDto = {
 };
 
 export interface FileConfig {
+  resourcesDirectory: string;
   userDataDirectory: string;
-
   gameDirectory: string;
 
   download(dto: FileConfigDto): Promise<string>;
@@ -47,4 +47,6 @@ export interface FileConfig {
   unzip(dto: FileConfigUnzipDto): Promise<void>;
 
   openExecutable(dto: FileConfigOpenExecutableDto): Promise<void>;
+
+  getAssetPath(asset: string): string;
 }

@@ -4,12 +4,13 @@ import { BrowserWindow, app, ipcMain, shell } from 'electron';
 
 import { IpcEventsEnum } from './constants/ipc-events.constants';
 import { container } from './container';
-import { MenuBuilder } from './menu';
 import { envSetup, installExtensions, resolveHtmlPath } from './utils';
 
 envSetup();
 
-const { ipcEventsController, autoUpdaterConfig } = container({ app });
+const { ipcEventsController, autoUpdaterConfig, menuConfig } = container({
+  app,
+});
 let mainWindow: BrowserWindow | null = null;
 
 const createWindow = async () => {
@@ -56,8 +57,7 @@ const createWindow = async () => {
     mainWindow = null;
   });
 
-  const menuBuilder = new MenuBuilder(mainWindow);
-  menuBuilder.buildMenu();
+  menuConfig.buildTray({ mainWindow });
 
   // Open urls in the user's browser
   mainWindow.webContents.setWindowOpenHandler((edata) => {
@@ -96,10 +96,8 @@ app.on('window-all-closed', () => {
  * Add event listeners...
  */
 
-ipcMain.on('ipc-example', async (event, arg) => {
-  const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
-  console.log(msgTemplate(arg));
-  event.reply('ipc-example', msgTemplate('pong'));
+ipcMain.on(IpcEventsEnum.AutoUpdateQuitAndInstall, async () => {
+  autoUpdaterConfig.quitAndInstall();
 });
 
 ipcMain.on(IpcEventsEnum.WindowEvent, async (event, action) =>

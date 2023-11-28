@@ -1,6 +1,10 @@
 import { get } from 'env-var';
 
-import { NodeEnvsEnum, StagesEnum } from '../constants/env.constants';
+import {
+  AutoUpdaterChannelsEnum,
+  NodeEnvsEnum,
+  StagesEnum,
+} from '../constants/env.constants';
 
 export const envConfig = {
   // Environment
@@ -22,4 +26,8 @@ export const envConfig = {
   USER_DATA_ENCRYPTION_KEY: get('USER_DATA_ENCRYPTION_KEY')
     .required()
     .asString(),
+  AUTO_UPDATER_URL: get('AUTO_UPDATER_URL').required().asUrlString(),
+  AUTO_UPDATER_CHANNEL: get('AUTO_UPDATER_CHANNEL')
+    .default(AutoUpdaterChannelsEnum.Latest)
+    .asEnum(Object.values(AutoUpdaterChannelsEnum)),
 };

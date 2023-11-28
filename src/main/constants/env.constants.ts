@@ -7,3 +7,7 @@ export enum StagesEnum {
   Prod = 'prod',
   Dev = 'dev',
 }
+
+export enum AutoUpdaterChannelsEnum {
+  Latest = 'latest',
+}
