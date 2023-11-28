@@ -41,6 +41,8 @@ export class AutoUpdaterConfig implements AutoUpdaterConfigInterface {
       `[AppUpdater] - currentVersion: ${this.autoUpdater.currentVersion}`,
     );
 
+    this.autoUpdater.checkForUpdates();
+
     this.autoUpdater.on(EventsEnum.UpdateNotAvailable, () => {
       this.autoUpdater?.logger?.info('[AppUpdater] - Update not available');
       this.waitCheckForUpdates();
