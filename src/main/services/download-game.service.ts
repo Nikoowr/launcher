@@ -24,7 +24,7 @@ export class DownloadGameService implements DownloadGameServiceInterface {
   }
 
   private async downloadZip({ ipcEvent }: DownloadGameServiceDto) {
-    const zipFilename = 'gfchaos-client.zip';
+    const zipFilename = 'gfchaos-client-test.zip';
     const fileUrl = `${CLIENT_BUCKET_URL}/${zipFilename}`;
 
     ipcEvent.reply(IpcEventsEnum.UpdateGame, {

@@ -11,6 +11,7 @@ import path from 'path';
 
 import { BrowserWindow, app, ipcMain, shell } from 'electron';
 
+import { AutoUpdaterConfig } from './configs/auto-updater.config';
 import './configs/setup.config';
 import { IpcEventsEnum } from './constants/ipc-events.constants';
 import { container } from './container';
@@ -73,6 +74,8 @@ const createWindow = async () => {
 
     return { action: 'deny' };
   });
+
+  new AutoUpdaterConfig();
 };
 
 app
