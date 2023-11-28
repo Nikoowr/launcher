@@ -52,8 +52,10 @@ export class AutoUpdaterConfig implements AutoUpdaterConfigInterface {
       this.autoUpdater?.logger?.info('[AppUpdater] - Checking for update');
     });
 
-    this.autoUpdater.on(EventsEnum.DownloadProgress, () => {
-      this.autoUpdater?.logger?.info('[AppUpdater] - Download progress');
+    this.autoUpdater.on(EventsEnum.DownloadProgress, (info) => {
+      this.autoUpdater?.logger?.info(
+        `[AppUpdater] - Download progress: ${info.percent}`,
+      );
     });
 
     this.autoUpdater.on(EventsEnum.UpdateDownloaded, () => {
@@ -88,8 +90,7 @@ export class AutoUpdaterConfig implements AutoUpdaterConfigInterface {
 
   private notification({ mainWindow }: { mainWindow: BrowserWindow }) {
     return new Notification({
-      body: 'Por favor, feche o Launcher e abra novamente para finalizar a atualização!',
-      title: 'Nova versão disponível',
+      title: 'Nova versão do Launcher disponível!',
       icon: this.fileConfig.getAssetPath('icon.png'),
     }).on('click', () => {
       mainWindow?.show();

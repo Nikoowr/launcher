@@ -15,7 +15,7 @@ export const Navbar = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    ipcRenderer.once(IpcEventsEnum.AutoUpdateQuitAndInstall, () => {
+    ipcRenderer.once(IpcEventsEnum.AutoUpdaterFoundUpdate, () => {
       setUpdateFound(true);
     });
   }, []);
