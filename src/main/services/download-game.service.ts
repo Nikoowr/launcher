@@ -1,14 +1,17 @@
-import { CLIENT_BUCKET_URL } from '../constants/env.constants';
 import { GameStatusEnum } from '../constants/game.constants';
 import { IpcEventsEnum } from '../constants/ipc-events.constants';
 import {
   DownloadGameServiceDto,
   DownloadGameService as DownloadGameServiceInterface,
+  EnvConfig,
   FileConfig,
 } from '../interfaces';
 
 export class DownloadGameService implements DownloadGameServiceInterface {
-  constructor(private readonly fileConfig: FileConfig) {}
+  constructor(
+    private readonly fileConfig: FileConfig,
+    private readonly envConfig: EnvConfig,
+  ) {}
 
   public async execute({ ipcEvent }: DownloadGameServiceDto): Promise<void> {
     const { zipFilename, downloadedFilePath } = await this.downloadZip({
@@ -25,7 +28,7 @@ export class DownloadGameService implements DownloadGameServiceInterface {
 
   private async downloadZip({ ipcEvent }: DownloadGameServiceDto) {
     const zipFilename = 'gfchaos-client-test.zip';
-    const fileUrl = `${CLIENT_BUCKET_URL}/${zipFilename}`;
+    const fileUrl = `${this.envConfig.CLIENT_BUCKET_URL}/${zipFilename}`;
 
     ipcEvent.reply(IpcEventsEnum.UpdateGame, {
       status: GameStatusEnum.Downloading,

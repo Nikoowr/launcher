@@ -1,6 +1,8 @@
 // Configs
 export * from './configs/cryptography.config';
+export * from './configs/auto-updater.config';
 export * from './configs/file.config';
+export * from './configs/env.config';
 
 // Controllers
 export * from './controllers/ipc-events.controller';

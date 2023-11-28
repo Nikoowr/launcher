@@ -1,8 +1,8 @@
 import { IpcEventsEnum } from '../constants/ipc-events.constants';
-import { USER_DATA_ENCRYPTION_KEY } from '../constants/security.constants';
 import { UserDataStorageFilenamesEnum } from '../constants/store.constants';
 import {
   CryptographyConfig,
+  EnvConfig,
   FileConfig,
   PlayGameServiceDto,
   PlayGameService as PlayGameServiceInterface,
@@ -12,6 +12,7 @@ export class PlayGameService implements PlayGameServiceInterface {
   constructor(
     private readonly cryptographyConfig: CryptographyConfig,
     private readonly fileConfig: FileConfig,
+    private readonly envConfig: EnvConfig,
   ) {}
 
   public async execute({ ipcEvent }: PlayGameServiceDto): Promise<void> {
@@ -25,7 +26,7 @@ export class PlayGameService implements PlayGameServiceInterface {
     }
 
     const session = await this.cryptographyConfig.decrypt({
-      key: USER_DATA_ENCRYPTION_KEY,
+      key: this.envConfig.USER_DATA_ENCRYPTION_KEY,
       data: encryptedSession,
     });
 

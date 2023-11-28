@@ -7,8 +7,9 @@ import axios from 'axios';
 import { app } from 'electron';
 import * as yauzl from 'yauzl';
 
-import { NODE_ENV } from '../constants/env.constants';
+import { NodeEnvsEnum } from '../constants/env.constants';
 import {
+  EnvConfig,
   FileConfigDto,
   FileConfig as FileConfigInterface,
   FileConfigOpenExecutableDto,
@@ -17,27 +18,23 @@ import {
   OnProgress,
 } from '../interfaces';
 
-export const GAME_DIRECTORY =
-  NODE_ENV === 'development'
-    ? path.resolve(__dirname, '..', '..', '..', 'tmp', 'gfchaos')
-    : path.join(path.dirname(app.getPath('exe')), 'apps', 'gfchaos');
-
-export const USER_DATA_DIRECTORY =
-  NODE_ENV === 'development'
-    ? path.resolve(__dirname, '..', '..', '..', 'tmp', 'userData')
-    : path.join(path.dirname(app.getPath('userData')));
-
 export class FileConfig implements FileConfigInterface {
-  private activeDownloads: Set<string> = new Set();
+  public readonly userDataDirectory: string;
+  public readonly gameDirectory: string;
   private readonly exec = promisify(exec);
+  private activeDownloads: Set<string> = new Set();
   private unzipTotalRead = 0;
 
-  public get userDataDirectory() {
-    return USER_DATA_DIRECTORY;
-  }
+  constructor(private readonly envConfig: EnvConfig) {
+    this.userDataDirectory =
+      this.envConfig.NODE_ENV === NodeEnvsEnum.Development
+        ? path.resolve(__dirname, '..', '..', '..', 'tmp', 'userData')
+        : path.join(path.dirname(app.getPath('userData')));
 
-  public get gameDirectory() {
-    return GAME_DIRECTORY;
+    this.gameDirectory =
+      this.envConfig.NODE_ENV === NodeEnvsEnum.Development
+        ? path.resolve(__dirname, '..', '..', '..', 'tmp', 'gfchaos')
+        : path.join(path.dirname(app.getPath('exe')), 'apps', 'gfchaos');
   }
 
   public async download({

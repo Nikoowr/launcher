@@ -1,9 +1,9 @@
 import { FileConfig } from '../configs';
 import { IpcEventsEnum } from '../constants/ipc-events.constants';
-import { USER_DATA_ENCRYPTION_KEY } from '../constants/security.constants';
 import { UserDataStorageFilenamesEnum } from '../constants/store.constants';
 import {
   CryptographyConfig,
+  EnvConfig,
   GetUserSessionServiceDto,
   GetUserSessionService as GetUserSessionServiceInterface,
 } from '../interfaces';
@@ -12,6 +12,7 @@ export class GetUserSessionService implements GetUserSessionServiceInterface {
   constructor(
     private readonly cryptographyConfig: CryptographyConfig,
     private readonly fileConfig: FileConfig,
+    private readonly envConfig: EnvConfig,
   ) {}
 
   public async execute({ ipcEvent }: GetUserSessionServiceDto): Promise<void> {
@@ -25,7 +26,7 @@ export class GetUserSessionService implements GetUserSessionServiceInterface {
     }
 
     const session = await this.cryptographyConfig.decrypt({
-      key: USER_DATA_ENCRYPTION_KEY,
+      key: this.envConfig.USER_DATA_ENCRYPTION_KEY,
       data: encryptedSession,
     });
 

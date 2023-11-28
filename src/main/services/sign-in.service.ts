@@ -1,8 +1,8 @@
 import { IpcEventsEnum } from '../constants/ipc-events.constants';
-import { USER_DATA_ENCRYPTION_KEY } from '../constants/security.constants';
 import { UserDataStorageFilenamesEnum } from '../constants/store.constants';
 import {
   CryptographyConfig,
+  EnvConfig,
   FileConfig,
   SignInServiceDto,
   SignInService as SignInServiceInterface,
@@ -12,6 +12,7 @@ export class SignInService implements SignInServiceInterface {
   constructor(
     private readonly cryptographyConfig: CryptographyConfig,
     private readonly fileConfig: FileConfig,
+    private readonly envConfig: EnvConfig,
   ) {}
 
   public async execute({
@@ -24,7 +25,7 @@ export class SignInService implements SignInServiceInterface {
     const combinedText = `${user}::${password}`;
 
     const encryptedText = await this.cryptographyConfig.encrypt({
-      key: USER_DATA_ENCRYPTION_KEY,
+      key: this.envConfig.USER_DATA_ENCRYPTION_KEY,
       data: combinedText,
     });
 

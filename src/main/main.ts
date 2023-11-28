@@ -1,24 +1,15 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-/**
- * This module executes inside of electron's main process. You can start
- * electron renderer process from here and communicate with the other processes
- * through IPC.
- *
- * When running `npm run build` or `npm run build:main`, this file is compiled to
- * `./src/main.js` using webpack. This gives us some performance wins.
- */
 import path from 'path';
 
 import { BrowserWindow, app, ipcMain, shell } from 'electron';
 
-import { AutoUpdaterConfig } from './configs/auto-updater.config';
-import './configs/setup.config';
 import { IpcEventsEnum } from './constants/ipc-events.constants';
 import { container } from './container';
 import { MenuBuilder } from './menu';
-import { installExtensions, resolveHtmlPath } from './utils';
+import { envSetup, installExtensions, resolveHtmlPath } from './utils';
 
-const { ipcEventsController } = container({ app });
+envSetup();
+
+const { ipcEventsController, autoUpdaterConfig } = container({ app });
 let mainWindow: BrowserWindow | null = null;
 
 const createWindow = async () => {
@@ -75,7 +66,7 @@ const createWindow = async () => {
     return { action: 'deny' };
   });
 
-  new AutoUpdaterConfig();
+  autoUpdaterConfig.checkForUpdates({ mainWindow });
 };
 
 app

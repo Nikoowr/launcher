@@ -1,11 +1,16 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import path from 'path';
 import { URL } from 'url';
 
-import { ELECTRON_PORT, IS_DEBUG, NODE_ENV } from './constants/env.constants';
+import { envConfig } from './configs/env.config';
+import { NodeEnvsEnum } from './constants/env.constants';
 
-export function resolveHtmlPath(htmlFileName: string) {
-  if (NODE_ENV === 'development') {
-    const url = new URL(`http://localhost:${ELECTRON_PORT}`);
+const IS_DEBUG =
+  envConfig.NODE_ENV === NodeEnvsEnum.Development || envConfig.DEBUG_PROD;
+
+export const resolveHtmlPath = (htmlFileName: string) => {
+  if (envConfig.NODE_ENV === NodeEnvsEnum.Development) {
+    const url = new URL(`http://localhost:${envConfig.ELECTRON_PORT}`);
 
     url.pathname = htmlFileName;
 
@@ -13,16 +18,15 @@ export function resolveHtmlPath(htmlFileName: string) {
   }
 
   return `file://${path.resolve(__dirname, '../renderer/', htmlFileName)}`;
-}
+};
 
 export const installExtensions = async () => {
   if (!IS_DEBUG) {
     return;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const installer = require('electron-devtools-installer');
-  const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
+  const forceDownload = !!envConfig.UPGRADE_EXTENSIONS;
   const extensions = ['REACT_DEVELOPER_TOOLS'];
 
   return installer
@@ -31,4 +35,17 @@ export const installExtensions = async () => {
       forceDownload,
     )
     .catch(console.log);
+};
+
+export const envSetup = () => {
+  const isProduction = envConfig.NODE_ENV === NodeEnvsEnum.Production;
+
+  if (isProduction) {
+    const sourceMapSupport = require('source-map-support');
+    sourceMapSupport.install();
+  }
+
+  if (IS_DEBUG) {
+    require('electron-debug')();
+  }
 };
