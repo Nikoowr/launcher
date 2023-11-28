@@ -1,7 +1,7 @@
 import { Label } from '@radix-ui/react-label';
 import { SyntheticEvent, useState } from 'react';
 
-import { useAuth } from '../../hooks';
+import { useAuth } from '../../hooks/auth';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Icons } from './icons';

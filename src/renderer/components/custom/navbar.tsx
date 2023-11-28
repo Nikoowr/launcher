@@ -1,45 +1,13 @@
 import { MinusIcon, RefreshCcw, X } from 'lucide-react';
-import { useEffect, useState } from 'react';
 
 import { IpcEventsEnum } from '../../../main/constants/ipc-events.constants';
+import { useApp } from '../../hooks/app';
 import { Button } from '../ui/button';
-import { ToastAction } from '../ui/toast';
-import { useToast } from '../ui/use-toast';
 
 const { ipcRenderer } = window.electron;
 
 export const Navbar = () => {
-  const [toastShowed, setToastShowed] = useState(false);
-  const [updateFound, setUpdateFound] = useState(false);
-
-  const { toast } = useToast();
-
-  useEffect(() => {
-    ipcRenderer.once(IpcEventsEnum.AutoUpdaterFoundUpdate, () => {
-      setUpdateFound(true);
-    });
-  }, []);
-
-  useEffect(() => {
-    if (updateFound && !toastShowed) {
-      toast({
-        title: 'Nova versão disponível',
-        description:
-          'Uma nova versão do Launcher está disponível. Atualize agora para obter as últimas melhorias!',
-        duration: 1000 * 60 * 60,
-        action: (
-          <ToastAction
-            onClick={ipcRenderer[IpcEventsEnum.AutoUpdateQuitAndInstall]}
-            altText="Atualizar"
-          >
-            Atualizar
-          </ToastAction>
-        ),
-      });
-
-      setToastShowed(true);
-    }
-  }, [updateFound, toastShowed, toast]);
+  const { updateFound } = useApp();
 
   return (
     <div className="titlebar absolute z-10 flex w-full justify-end p-2">

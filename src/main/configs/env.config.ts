@@ -21,13 +21,6 @@ const { get } = from(
   {},
 );
 
-console.log('process.env.CLIENT_BUCKET_URL', process.env.CLIENT_BUCKET_URL);
-
-console.log(
-  'envVar get CLIENT_BUCKET_URL',
-  get('CLIENT_BUCKET_URL').asString(),
-);
-
 export const envConfig = {
   // Environment
   NODE_ENV: get('NODE_ENV')

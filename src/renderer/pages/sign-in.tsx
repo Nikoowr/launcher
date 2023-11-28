@@ -7,7 +7,7 @@ import { Logo } from '../components/custom/logo';
 import { SignInForm } from '../components/custom/sign-in-form';
 import { SignInSideBackground } from '../components/custom/sign-in-side-background';
 import { Button } from '../components/ui/button';
-import { useAuth } from '../hooks';
+import { useAuth } from '../hooks/auth';
 
 export const SignIn = () => {
   const navigate = useNavigate();

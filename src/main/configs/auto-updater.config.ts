@@ -43,6 +43,10 @@ export class AutoUpdaterConfig implements AutoUpdaterConfigInterface {
 
     this.autoUpdater.checkForUpdates();
 
+    this.autoUpdater.on(EventsEnum.UpdateAvailable, () => {
+      this.autoUpdater?.logger?.info('[AppUpdater] - Update available');
+    });
+
     this.autoUpdater.on(EventsEnum.UpdateNotAvailable, () => {
       this.autoUpdater?.logger?.info('[AppUpdater] - Update not available');
       this.waitCheckForUpdates();
@@ -67,10 +71,6 @@ export class AutoUpdaterConfig implements AutoUpdaterConfigInterface {
       this.notification({ mainWindow }).show();
 
       this.waitCheckForUpdates();
-    });
-
-    this.autoUpdater.on(EventsEnum.UpdateAvailable, () => {
-      this.autoUpdater?.logger?.info('[AppUpdater] - Update available');
     });
 
     this.autoUpdater.on(EventsEnum.Error, () => {

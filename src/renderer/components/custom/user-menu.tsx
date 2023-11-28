@@ -1,6 +1,6 @@
 import { LogOut, Settings, User } from 'lucide-react';
 
-import { useAuth } from '../../hooks';
+import { useAuth } from '../../hooks/auth';
 import { Button } from '../ui/button';
 import {
   DropdownMenu,

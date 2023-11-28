@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import { Navigate } from 'react-router-dom';
 
 import { RoutesEnum } from '../../constants/routes.constants';
-import { useAuth } from '../../hooks';
+import { useAuth } from '../../hooks/auth';
 import { Icons } from './icons';
 
 export type ProtectedRouteProps = {
