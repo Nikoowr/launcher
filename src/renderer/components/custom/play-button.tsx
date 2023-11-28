@@ -35,7 +35,7 @@ export const PlayButton = ({
         </Button>
       </div>
 
-      <span className="self-end text-sm text-white">Versão 0.0.1</span>
+      <span className="self-end text-sm text-white">Versão 0.0.2</span>
     </div>
   );
 };
