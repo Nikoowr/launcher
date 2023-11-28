@@ -6,7 +6,8 @@ import { envConfig } from './configs/env.config';
 import { NodeEnvsEnum } from './constants/env.constants';
 
 const IS_DEBUG =
-  envConfig.NODE_ENV === NodeEnvsEnum.Development || envConfig.DEBUG_PROD;
+  envConfig.NODE_ENV === NodeEnvsEnum.Development ||
+  envConfig.DEBUG_PROD === 'true';
 
 export const resolveHtmlPath = (htmlFileName: string) => {
   if (envConfig.NODE_ENV === NodeEnvsEnum.Development) {

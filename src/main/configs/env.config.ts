@@ -1,10 +1,32 @@
-import { get } from 'env-var';
+import { from } from 'env-var';
 
 import {
   AutoUpdaterChannelsEnum,
   NodeEnvsEnum,
   StagesEnum,
 } from '../constants/env.constants';
+
+const { get } = from(
+  {
+    NODE_ENV: process.env.NODE_ENV,
+    STAGE: process.env.STAGE,
+    UPGRADE_EXTENSIONS: process.env.UPGRADE_EXTENSIONS,
+    ELECTRON_PORT: process.env.ELECTRON_PORT,
+    DEBUG_PROD: process.env.DEBUG_PROD,
+    CLIENT_BUCKET_URL: process.env.CLIENT_BUCKET_URL,
+    USER_DATA_ENCRYPTION_KEY: process.env.USER_DATA_ENCRYPTION_KEY,
+    AUTO_UPDATER_URL: process.env.AUTO_UPDATER_URL,
+    AUTO_UPDATER_CHANNEL: process.env.AUTO_UPDATER_CHANNEL,
+  },
+  {},
+);
+
+console.log('process.env.CLIENT_BUCKET_URL', process.env.CLIENT_BUCKET_URL);
+
+console.log(
+  'envVar get CLIENT_BUCKET_URL',
+  get('CLIENT_BUCKET_URL').asString(),
+);
 
 export const envConfig = {
   // Environment
@@ -19,7 +41,7 @@ export const envConfig = {
   // Electron
   UPGRADE_EXTENSIONS: get('UPGRADE_EXTENSIONS').asBool(),
   ELECTRON_PORT: get('ELECTRON_PORT').default(1212).asPortNumber(),
-  DEBUG_PROD: get('DEBUG_PROD').asBool(),
+  DEBUG_PROD: get('DEBUG_PROD').asString(),
 
   // Application
   CLIENT_BUCKET_URL: get('CLIENT_BUCKET_URL').required().asUrlString(),

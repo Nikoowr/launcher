@@ -10,12 +10,12 @@ const { ipcRenderer } = window.electron;
 
 export const Navbar = () => {
   const [toastShowed, setToastShowed] = useState(false);
-  const [updateFound, setUpdateFound] = useState(true);
+  const [updateFound, setUpdateFound] = useState(false);
 
   const { toast } = useToast();
 
   useEffect(() => {
-    ipcRenderer.once(IpcEventsEnum.AutoUpdaterFoundUpdate, () => {
+    ipcRenderer.once(IpcEventsEnum.AutoUpdateQuitAndInstall, () => {
       setUpdateFound(true);
     });
   }, []);
