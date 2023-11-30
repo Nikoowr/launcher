@@ -139,6 +139,7 @@
       ]
     },
     "win": {
+      "icon": "build/icon.ico",
       "target": [
         "nsis"
       ]
@@ -158,11 +159,11 @@
       "./assets/**"
     ],
     "nsis": {
-      "oneClick": false,
-      "allowElevation": true,
-      "perMachine": true,
       "allowToChangeInstallationDirectory": true,
-      "installerScript": "build/installer.nsh"
+      "createDesktopShortcut": true,
+      "oneClick": false,
+      "license": "license.txt",
+      "include": "build/installer.nsh"
     }
   },
   "devEngines": {
