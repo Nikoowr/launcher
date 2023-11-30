@@ -1,5 +1,9 @@
 import { ChevronDown, PlayCircle } from 'lucide-react';
 
+import { IpcEventsEnum } from '../../../main/constants/ipc-events.constants';
+import { useApp } from '../../hooks/app';
+import { useGame } from '../../hooks/game';
+import { cn } from '../../lib/utils';
 import { Button } from '../ui/button';
 
 type PlayButtonProps = {
@@ -13,13 +17,16 @@ export const PlayButton = ({
   className = '',
   disabled = false,
 }: PlayButtonProps) => {
+  const { readToPlay } = useGame();
+  const { appInfo } = useApp();
+
   return (
     <div className={`flex flex-col gap-2 ${className}`}>
       <div className="flex h-[64px]">
         <Button
           className="flex h-full w-[85%] justify-start rounded-s-full bg-pink-500 py-8 shadow-md hover:bg-pink-600"
           disabled={disabled}
-          onClick={() => ipcRenderer.play()}
+          onClick={() => ipcRenderer.sendMessage(IpcEventsEnum.Play)}
         >
           <div className="right-0 flex rounded-full bg-zinc-800 p-2">
             <PlayCircle />
@@ -35,7 +42,14 @@ export const PlayButton = ({
         </Button>
       </div>
 
-      <span className="self-end text-sm text-white">Versão 0.0.2</span>
+      <span
+        className={cn(
+          'self-end text-sm',
+          readToPlay ? 'text-white' : 'text-[#fff9]',
+        )}
+      >
+        Versão {appInfo?.version ?? '?'}
+      </span>
     </div>
   );
 };

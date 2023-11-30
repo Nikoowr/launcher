@@ -112,6 +112,10 @@ ipcMain.on(IpcEventsEnum.SignOut, async (event) =>
   ipcEventsController?.[IpcEventsEnum.SignOut](event),
 );
 
+ipcMain.on(IpcEventsEnum.DownloadGame, async (event) =>
+  ipcEventsController?.[IpcEventsEnum.DownloadGame](event),
+);
+
 ipcMain.on(IpcEventsEnum.UpdateGame, async (event) =>
   ipcEventsController?.[IpcEventsEnum.UpdateGame](event),
 );
@@ -122,4 +126,8 @@ ipcMain.on(IpcEventsEnum.Play, async (event) =>
 
 ipcMain.on(IpcEventsEnum.GetUserSession, async (event) =>
   ipcEventsController?.[IpcEventsEnum.GetUserSession](event),
+);
+
+ipcMain.on(IpcEventsEnum.GetAppInfo, async (event) =>
+  ipcEventsController?.[IpcEventsEnum.GetAppInfo](event),
 );

@@ -1,0 +1,19 @@
+Software License - GF Chaos Launcher
+
+This is an agreement between you and "GF Chaos".
+
+By using the GF Chaos Launcher ("the Software"), you agree to the following terms:
+
+1. The Software is a launcher designed to facilitate the download and update of a private server for the game GF. This private server is not affiliated with the official GF game.
+
+2. You are granted permission to use this Software for the purpose of accessing the private server for the game GF.
+
+3. The Software is provided "as is," without warranties of any kind, expressed or implied. GF Chaos is not responsible for any damages or issues caused by the use of this Software.
+
+4. The Software includes auto-update functionality to ensure you have the latest and most secure version.
+
+5. By using this Software, you agree to comply with all applicable laws and regulations related to the game Grand Fantasia and the use of private servers.
+
+By proceeding with the installation and use of the GF Chaos Launcher, you agree to the terms of this license.
+
+For support or contact information, visit https://gfchaos.com or send an email to gfchaosdev@gmail.com.

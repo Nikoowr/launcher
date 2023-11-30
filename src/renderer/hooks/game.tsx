@@ -1,4 +1,4 @@
-import { Check, Download, Search, Share, X } from 'lucide-react';
+import { Check, Download, Search, X } from 'lucide-react';
 import {
   JSX,
   ReactNode,
@@ -10,7 +10,10 @@ import {
   useState,
 } from 'react';
 
-import { GameStatusEnum } from '../../main/constants/game.constants';
+import {
+  GameDownloadStatusEnum,
+  GameUpdateStatusEnum,
+} from '../../main/constants/game.constants';
 import { IpcEventsEnum } from '../../main/constants/ipc-events.constants';
 import { useAuth } from './auth';
 
@@ -26,11 +29,20 @@ type GameContextData = {
   readToPlay: boolean;
 };
 
+type OnGameFilesChangeProps = {
+  status: GameDownloadStatusEnum | GameUpdateStatusEnum;
+  currentFilename: string;
+  progress: number;
+};
+
 const GameContext = createContext<GameContextData>({} as GameContextData);
 const { ipcRenderer } = window.electron;
 
 export function GameProvider({ children }: GameProviderProps) {
-  const [status, setStatus] = useState(GameStatusEnum.Checking);
+  const [isDownloaded, setIsDownloaded] = useState(false);
+  const [status, setStatus] = useState<
+    GameDownloadStatusEnum | GameUpdateStatusEnum
+  >(GameDownloadStatusEnum.Checking);
   const [fileUpdating, setFileUpdating] = useState('');
   const [readToPlay, setReadToPlay] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -38,27 +50,33 @@ export function GameProvider({ children }: GameProviderProps) {
   const { loggedIn } = useAuth();
 
   const statusText = useMemo(() => {
-    if (status === GameStatusEnum.Checking) {
+    // Download
+    if (status === GameDownloadStatusEnum.Checking) {
       return 'Verificando...';
     }
 
-    if (status === GameStatusEnum.Downloading) {
+    if (status === GameDownloadStatusEnum.Downloading) {
       return 'Baixando...';
     }
 
-    if (status === GameStatusEnum.Extracting) {
+    if (status === GameDownloadStatusEnum.Extracting) {
       return 'Extraindo...';
     }
 
-    // if (status === GameStatusEnum.CheckingUpdates) {
-    //   return 'Verificando atualizações...';
-    // }
+    // Update
+    if (status === GameUpdateStatusEnum.Checking) {
+      return 'Verificando se há atualizações...';
+    }
 
-    // if (status === GameStatusEnum.Updating) {
-    //   return 'Atualizando...';
-    // }
+    if (status === GameUpdateStatusEnum.Downloading) {
+      return 'Baixando atualizações...';
+    }
 
-    if (status === GameStatusEnum.Done) {
+    if (status === GameUpdateStatusEnum.Updating) {
+      return 'Atualizando...';
+    }
+
+    if (status === GameUpdateStatusEnum.Done) {
       return 'Tudo certo!';
     }
 
@@ -66,53 +84,85 @@ export function GameProvider({ children }: GameProviderProps) {
   }, [status]);
 
   const statusIcon = useMemo(() => {
-    if (status === GameStatusEnum.Checking) {
+    if (
+      [GameDownloadStatusEnum.Checking, GameUpdateStatusEnum.Checking].includes(
+        status,
+      )
+    ) {
       return <Search className="text-[#fff5]" />;
     }
 
-    if (status === GameStatusEnum.Downloading) {
+    if (
+      [
+        GameDownloadStatusEnum.Downloading,
+        GameUpdateStatusEnum.Downloading,
+      ].includes(status)
+    ) {
       return <Download className="text-[#fff5]" />;
     }
 
-    if (status === GameStatusEnum.Extracting) {
-      return <Share className="text-[#fff5]" />;
+    if (
+      [
+        GameDownloadStatusEnum.Extracting,
+        GameUpdateStatusEnum.Updating,
+      ].includes(status)
+    ) {
+      return <Download className="text-[#fff5]" />;
     }
 
-    if (status === GameStatusEnum.Done) {
+    if (status === GameUpdateStatusEnum.Done && readToPlay) {
       return <Check className="text-white" />;
     }
 
     return <X className="text-[#fff5]" />;
-  }, [status]);
+  }, [status, readToPlay]);
 
-  const handleDownload = useCallback(
-    async (props: {
-      currentFilename: string;
-      status: GameStatusEnum;
-      progress: number;
-    }) => {
-      const progressValue = Math.floor(props.progress || 0);
+  const onGameFilesChange = (props: OnGameFilesChangeProps) => {
+    const progressValue = Math.floor(props.progress || 0);
 
-      setFileUpdating(progressValue >= 100 ? '' : props.currentFilename || '');
-      setProgress(progressValue);
-      setStatus(props.status);
+    setFileUpdating(progressValue >= 100 ? '' : props.currentFilename || '');
+    setProgress(progressValue);
+    setStatus(props.status);
+    setReadToPlay(false);
+  };
 
-      if (props.status === GameStatusEnum.Done) {
-        setReadToPlay(true);
-      }
-    },
-    [],
-  );
+  const handleDownload = useCallback(async (props: OnGameFilesChangeProps) => {
+    onGameFilesChange(props);
+
+    if (props.status === GameDownloadStatusEnum.Done) {
+      setIsDownloaded(true);
+    }
+  }, []);
+
+  const handleUpdate = useCallback(async (props: OnGameFilesChangeProps) => {
+    onGameFilesChange(props);
+
+    if (props.status === GameUpdateStatusEnum.Done) {
+      setReadToPlay(true);
+    }
+  }, []);
 
   useEffect(() => {
+    ipcRenderer.on(IpcEventsEnum.DownloadGame, handleDownload);
+  }, [handleDownload]);
+
+  useEffect(() => {
+    ipcRenderer.on(IpcEventsEnum.UpdateGame, handleUpdate);
+  }, [handleUpdate]);
+
+  // Download useEffect
+  useEffect(() => {
     if (loggedIn) {
-      ipcRenderer[IpcEventsEnum.UpdateGame]();
+      ipcRenderer.sendMessage(IpcEventsEnum.DownloadGame);
     }
   }, [loggedIn]);
 
+  // Update useEffect
   useEffect(() => {
-    ipcRenderer.on(IpcEventsEnum.UpdateGame, handleDownload);
-  }, [handleDownload]);
+    if (loggedIn && isDownloaded) {
+      ipcRenderer.sendMessage(IpcEventsEnum.UpdateGame);
+    }
+  }, [loggedIn, isDownloaded]);
 
   const contextValue = useMemo(
     () => ({ statusIcon, readToPlay, fileUpdating, statusText, progress }),

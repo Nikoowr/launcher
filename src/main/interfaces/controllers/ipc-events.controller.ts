@@ -14,6 +14,11 @@ export interface IpcEventsController {
 
   [IpcEventsEnum.SignOut]: (event: IpcMainEvent) => void;
 
+  [IpcEventsEnum.DownloadGame]: (
+    event: IpcMainEvent,
+    mainWindow: BrowserWindow | null,
+  ) => void;
+
   [IpcEventsEnum.UpdateGame]: (
     event: IpcMainEvent,
     mainWindow: BrowserWindow | null,
@@ -22,4 +27,6 @@ export interface IpcEventsController {
   [IpcEventsEnum.Play]: (event: IpcMainEvent) => void;
 
   [IpcEventsEnum.GetUserSession]: (event: IpcMainEvent) => void;
+
+  [IpcEventsEnum.GetAppInfo]: (event: IpcMainEvent) => void;
 }

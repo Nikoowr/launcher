@@ -50,11 +50,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const login = useCallback((credentials: Credentials) => {
     setLoading(true);
     setError(false);
-    ipcRenderer[IpcEventsEnum.SignIn](credentials);
+    ipcRenderer.sendMessage(IpcEventsEnum.SignIn, credentials);
   }, []);
 
   const logout = useCallback(() => {
-    ipcRenderer[IpcEventsEnum.SignOut]();
+    ipcRenderer.sendMessage(IpcEventsEnum.SignOut);
   }, []);
 
   const handleSession = useCallback((session?: Session) => {
@@ -98,7 +98,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   // Session useEffects
   useEffect(() => {
-    ipcRenderer[IpcEventsEnum.GetUserSession]();
+    ipcRenderer.sendMessage(IpcEventsEnum.GetUserSession);
   }, []);
 
   useEffect(() => {

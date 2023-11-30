@@ -15,7 +15,9 @@ export const Navbar = () => {
         {updateFound && (
           <Button
             className="titlebar-button bg-transparent hover:bg-[#fff1]"
-            onClick={ipcRenderer[IpcEventsEnum.AutoUpdateQuitAndInstall]}
+            onClick={() =>
+              ipcRenderer.sendMessage(IpcEventsEnum.AutoUpdateQuitAndInstall)
+            }
           >
             <RefreshCcw width={18} height={18} />
           </Button>
@@ -23,14 +25,16 @@ export const Navbar = () => {
         <Button
           className="titlebar-button bg-transparent hover:bg-[#fff1]"
           onClick={() =>
-            ipcRenderer[IpcEventsEnum.WindowEvent]('minimize-tray')
+            ipcRenderer.sendMessage(IpcEventsEnum.WindowEvent, 'minimize-tray')
           }
         >
           <MinusIcon width={18} height={18} />
         </Button>
         <Button
           className="titlebar-button bg-transparent hover:bg-[#fff1]"
-          onClick={() => ipcRenderer[IpcEventsEnum.WindowEvent]('close')}
+          onClick={() =>
+            ipcRenderer.sendMessage(IpcEventsEnum.WindowEvent, 'close')
+          }
         >
           <X width={18} height={18} />
         </Button>

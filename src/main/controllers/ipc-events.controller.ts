@@ -4,6 +4,7 @@ import {
   app as electronApp,
 } from 'electron';
 
+import { GameUpdateStatusEnum } from '../constants/game.constants';
 import { IpcEventsEnum } from '../constants/ipc-events.constants';
 import {
   DownloadGameService,
@@ -59,15 +60,48 @@ export class IpcEventsController implements IpcEventsControllerInterface {
     await this.services.signOutService.execute({ ipcEvent: event });
   };
 
-  [IpcEventsEnum.UpdateGame] = async (event: Electron.IpcMainEvent) => {
-    const gameAlreadyDownloaded = false;
-
-    if (gameAlreadyDownloaded) {
-      return;
-    }
-
+  [IpcEventsEnum.DownloadGame] = async (event: Electron.IpcMainEvent) => {
     await this.services.downloadGameService.execute({
       ipcEvent: event,
+    });
+  };
+
+  [IpcEventsEnum.UpdateGame] = async (event: Electron.IpcMainEvent) => {
+    const checks = Array.from({ length: 30 });
+
+    // Checking
+    for (const [index] of checks.entries()) {
+      event.reply(IpcEventsEnum.UpdateGame, {
+        status: GameUpdateStatusEnum.Checking,
+        progress: ((index + 1) / checks.length) * 100,
+      });
+
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
+
+    // Downloading
+    for (const [index] of checks.entries()) {
+      event.reply(IpcEventsEnum.UpdateGame, {
+        status: GameUpdateStatusEnum.Downloading,
+        progress: ((index + 1) / checks.length) * 100,
+      });
+
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
+
+    // Updating
+    for (const [index] of checks.entries()) {
+      event.reply(IpcEventsEnum.UpdateGame, {
+        status: GameUpdateStatusEnum.Updating,
+        progress: ((index + 1) / checks.length) * 100,
+      });
+
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
+
+    event.reply(IpcEventsEnum.UpdateGame, {
+      status: GameUpdateStatusEnum.Done,
+      progress: 100,
     });
   };
 
@@ -77,5 +111,11 @@ export class IpcEventsController implements IpcEventsControllerInterface {
 
   [IpcEventsEnum.GetUserSession] = async (event: Electron.IpcMainEvent) => {
     await this.services.getUserSessionService.execute({ ipcEvent: event });
+  };
+
+  [IpcEventsEnum.GetAppInfo] = async (event: Electron.IpcMainEvent) => {
+    event.reply(IpcEventsEnum.GetAppInfo, {
+      version: this.app.getVersion(),
+    });
   };
 }

@@ -1,9 +1,6 @@
 import { IpcRendererEvent, contextBridge, ipcRenderer } from 'electron';
 
-import {
-  IpcEventSignInDto,
-  IpcEventsEnum,
-} from './constants/ipc-events.constants';
+import { IpcEventsEnum } from './constants/ipc-events.constants';
 
 export type Channels = IpcEventsEnum;
 
@@ -24,37 +21,10 @@ const electronHandler = {
       };
     },
 
-    once(channel: Channels, func: (...args: unknown[]) => void) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    once(channel: Channels, func: (...args: any[]) => void) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ipcRenderer.once(channel, (_event: any, ...args: any) => func(...args));
-    },
-
-    [IpcEventsEnum.WindowEvent]: (action: 'close' | 'minimize-tray') => {
-      ipcRenderer.send(IpcEventsEnum.WindowEvent, action);
-    },
-
-    [IpcEventsEnum.SignIn]: (dto: IpcEventSignInDto) => {
-      ipcRenderer.send(IpcEventsEnum.SignIn, dto);
-    },
-
-    [IpcEventsEnum.SignOut]: () => {
-      ipcRenderer.send(IpcEventsEnum.SignOut);
-    },
-
-    [IpcEventsEnum.UpdateGame]: () => {
-      ipcRenderer.send(IpcEventsEnum.UpdateGame);
-    },
-
-    [IpcEventsEnum.Play]: () => {
-      ipcRenderer.send(IpcEventsEnum.Play);
-    },
-
-    [IpcEventsEnum.GetUserSession]: () => {
-      ipcRenderer.send(IpcEventsEnum.GetUserSession);
-    },
-
-    [IpcEventsEnum.AutoUpdateQuitAndInstall]: () => {
-      ipcRenderer.send(IpcEventsEnum.AutoUpdateQuitAndInstall);
     },
   },
 };

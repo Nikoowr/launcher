@@ -156,7 +156,14 @@
     },
     "extraResources": [
       "./assets/**"
-    ]
+    ],
+    "nsis": {
+      "oneClick": false,
+      "allowElevation": true,
+      "perMachine": true,
+      "allowToChangeInstallationDirectory": true,
+      "installerScript": "build/installer.nsh"
+    }
   },
   "devEngines": {
     "node": "20.x",

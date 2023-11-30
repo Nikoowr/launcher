@@ -1,6 +1,7 @@
 import {
   ReactNode,
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -15,8 +16,13 @@ type AppProviderProps = {
   children: ReactNode;
 };
 
+type AppInfo = {
+  version?: string;
+};
+
 type AppContextData = {
   updateFound: boolean;
+  appInfo: AppInfo;
 };
 
 const AppContext = createContext<AppContextData>({} as AppContextData);
@@ -24,33 +30,54 @@ const { ipcRenderer } = window.electron;
 
 export function AppProvider({ children }: AppProviderProps) {
   const [updateFound, setUpdateFound] = useState(false);
+  const [appInfo, setAppInfo] = useState<AppInfo>({});
+
+  console.log('appInfo.version', appInfo.version);
 
   const { toast } = useToast();
 
-  useEffect(() => {
-    ipcRenderer.once(IpcEventsEnum.AutoUpdaterFoundUpdate, () => {
-      setUpdateFound(true);
+  const handleUpdateFound = useCallback(() => {
+    setUpdateFound(true);
 
-      toast({
-        title: 'Nova versão disponível',
-        description:
-          'Uma nova versão do Launcher está disponível. Atualize agora para obter as últimas melhorias!',
-        duration: 1000 * 60 * 60,
-        action: (
-          <ToastAction
-            onClick={ipcRenderer[IpcEventsEnum.AutoUpdateQuitAndInstall]}
-            altText="Atualizar"
-          >
-            Atualizar
-          </ToastAction>
-        ),
-      });
+    toast({
+      title: 'Nova versão disponível',
+      description:
+        'Uma nova versão do Launcher está disponível. Atualize agora para obter as últimas melhorias!',
+      duration: 1000 * 60 * 60,
+      action: (
+        <ToastAction
+          onClick={() =>
+            ipcRenderer.sendMessage(IpcEventsEnum.AutoUpdateQuitAndInstall)
+          }
+          altText="Atualizar"
+        >
+          Atualizar
+        </ToastAction>
+      ),
     });
   }, [toast]);
 
-  useEffect(() => {}, []);
+  const handleGetAppInfo = useCallback((appInfo: AppInfo = {}) => {
+    console.log('handleGetAppInfo', appInfo);
+    setAppInfo(appInfo);
+  }, []);
 
-  const contextValue = useMemo(() => ({ updateFound }), [updateFound]);
+  useEffect(() => {
+    ipcRenderer.sendMessage(IpcEventsEnum.GetAppInfo);
+  }, []);
+
+  useEffect(() => {
+    ipcRenderer.once(IpcEventsEnum.AutoUpdaterFoundUpdate, handleUpdateFound);
+  }, [handleUpdateFound]);
+
+  useEffect(() => {
+    ipcRenderer.once(IpcEventsEnum.GetAppInfo, handleGetAppInfo);
+  }, [handleGetAppInfo]);
+
+  const contextValue = useMemo(
+    () => ({ updateFound, appInfo }),
+    [updateFound, appInfo],
+  );
 
   return (
     <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>

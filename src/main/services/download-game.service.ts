@@ -1,4 +1,7 @@
-import { GameFilesEnum, GameStatusEnum } from '../constants/game.constants';
+import {
+  GameDownloadStatusEnum,
+  GameFilesEnum,
+} from '../constants/game.constants';
 import { IpcEventsEnum } from '../constants/ipc-events.constants';
 import {
   DownloadGameServiceDto,
@@ -17,8 +20,8 @@ export class DownloadGameService implements DownloadGameServiceInterface {
     const isAlreadyDownloaded = await this.isAlreadyDownloaded({ ipcEvent });
 
     if (isAlreadyDownloaded) {
-      return ipcEvent.reply(IpcEventsEnum.UpdateGame, {
-        status: GameStatusEnum.Done,
+      return ipcEvent.reply(IpcEventsEnum.DownloadGame, {
+        status: GameDownloadStatusEnum.Done,
         progress: 100,
       });
     }
@@ -35,16 +38,16 @@ export class DownloadGameService implements DownloadGameServiceInterface {
       filename: GameFilesEnum.GameInfo,
     });
 
-    return ipcEvent.reply(IpcEventsEnum.UpdateGame, {
-      status: GameStatusEnum.Done,
+    return ipcEvent.reply(IpcEventsEnum.DownloadGame, {
+      status: GameDownloadStatusEnum.Done,
       progress: 100,
     });
   }
 
   private async isAlreadyDownloaded({ ipcEvent }: DownloadGameServiceDto) {
     try {
-      ipcEvent.reply(IpcEventsEnum.UpdateGame, {
-        status: GameStatusEnum.Checking,
+      ipcEvent.reply(IpcEventsEnum.DownloadGame, {
+        status: GameDownloadStatusEnum.Checking,
         progress: 1,
       });
 
@@ -65,8 +68,8 @@ export class DownloadGameService implements DownloadGameServiceInterface {
 
       throw error;
     } finally {
-      ipcEvent.reply(IpcEventsEnum.UpdateGame, {
-        status: GameStatusEnum.Checking,
+      ipcEvent.reply(IpcEventsEnum.DownloadGame, {
+        status: GameDownloadStatusEnum.Checking,
         progress: 100,
       });
     }
@@ -76,8 +79,8 @@ export class DownloadGameService implements DownloadGameServiceInterface {
     const zipFilename = GameFilesEnum.ZipToDownload;
     const fileUrl = `${this.envConfig.CLIENT_BUCKET_URL}${zipFilename}`;
 
-    ipcEvent.reply(IpcEventsEnum.UpdateGame, {
-      status: GameStatusEnum.Downloading,
+    ipcEvent.reply(IpcEventsEnum.DownloadGame, {
+      status: GameDownloadStatusEnum.Downloading,
       progress: 0,
     });
 
@@ -87,8 +90,8 @@ export class DownloadGameService implements DownloadGameServiceInterface {
       url: fileUrl,
       id: fileUrl,
       onProgress: ({ progress }) => {
-        ipcEvent.reply(IpcEventsEnum.UpdateGame, {
-          status: GameStatusEnum.Downloading,
+        ipcEvent.reply(IpcEventsEnum.DownloadGame, {
+          status: GameDownloadStatusEnum.Downloading,
           progress,
         });
       },
@@ -105,8 +108,8 @@ export class DownloadGameService implements DownloadGameServiceInterface {
     downloadedFilePath: string;
     zipFilename: string;
   }) {
-    ipcEvent.reply(IpcEventsEnum.UpdateGame, {
-      status: GameStatusEnum.Extracting,
+    ipcEvent.reply(IpcEventsEnum.DownloadGame, {
+      status: GameDownloadStatusEnum.Extracting,
       progress: 0,
     });
 
@@ -114,8 +117,8 @@ export class DownloadGameService implements DownloadGameServiceInterface {
       destination: this.fileConfig.gameDirectory,
       source: downloadedFilePath,
       onProgress: ({ progress, filename }) => {
-        ipcEvent.reply(IpcEventsEnum.UpdateGame, {
-          status: GameStatusEnum.Extracting,
+        ipcEvent.reply(IpcEventsEnum.DownloadGame, {
+          status: GameDownloadStatusEnum.Extracting,
           currentFilename: filename,
           progress,
         });
