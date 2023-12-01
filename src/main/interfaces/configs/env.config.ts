@@ -16,4 +16,5 @@ export type EnvConfig = {
   AUTO_UPDATER_URL: string;
   GAME_UPDATER_URL: string;
   AUTO_UPDATER_CHANNEL: string;
+  AUTO_UPDATER_INTERVAL_HOURS: number;
 };

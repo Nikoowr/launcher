@@ -18,6 +18,7 @@ const { get } = from(
     AUTO_UPDATER_URL: process.env.AUTO_UPDATER_URL,
     GAME_UPDATER_URL: process.env.GAME_UPDATER_URL,
     AUTO_UPDATER_CHANNEL: process.env.AUTO_UPDATER_CHANNEL,
+    AUTO_UPDATER_INTERVAL_HOURS: process.env.AUTO_UPDATER_INTERVAL_HOURS,
   },
   {},
 );
@@ -47,4 +48,7 @@ export const envConfig = {
   AUTO_UPDATER_CHANNEL: get('AUTO_UPDATER_CHANNEL')
     .default(AutoUpdaterChannelsEnum.Latest)
     .asEnum(Object.values(AutoUpdaterChannelsEnum)),
+  AUTO_UPDATER_INTERVAL_HOURS: get('AUTO_UPDATER_INTERVAL_HOURS')
+    .default(3)
+    .asInt(),
 };

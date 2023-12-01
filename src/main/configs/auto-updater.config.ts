@@ -20,6 +20,7 @@ enum EventsEnum {
 }
 
 export class AutoUpdaterConfig implements AutoUpdaterConfigInterface {
+  private readonly autoUpdateInterval: number;
   private readonly autoUpdater: NsisUpdater;
 
   constructor(
@@ -32,15 +33,14 @@ export class AutoUpdaterConfig implements AutoUpdaterConfigInterface {
       channel: this.envConfig.AUTO_UPDATER_CHANNEL,
       provider: 'generic',
     });
+
+    this.autoUpdateInterval =
+      this.envConfig.AUTO_UPDATER_INTERVAL_HOURS * 3600000;
   }
 
   public checkForUpdates({
     mainWindow,
   }: AutoUpdaterConfigCheckForUpdatesDto): void {
-    this.autoUpdater?.logger?.info(
-      `[AppUpdater] - currentVersion: ${this.autoUpdater.currentVersion}`,
-    );
-
     this.autoUpdater.checkForUpdates();
 
     this.autoUpdater.on(EventsEnum.UpdateAvailable, () => {
@@ -85,7 +85,7 @@ export class AutoUpdaterConfig implements AutoUpdaterConfigInterface {
   private waitCheckForUpdates() {
     setTimeout(() => {
       this.autoUpdater.checkForUpdates();
-    }, 10000);
+    }, this.autoUpdateInterval);
   }
 
   private notification({ mainWindow }: { mainWindow: BrowserWindow }) {
