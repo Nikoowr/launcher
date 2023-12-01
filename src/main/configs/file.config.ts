@@ -30,16 +30,29 @@ export class FileConfig implements FileConfigInterface {
     this.userDataDirectory =
       this.envConfig.NODE_ENV === NodeEnvsEnum.Development
         ? path.resolve(__dirname, '..', '..', '..', 'tmp', 'userData')
-        : path.join(path.dirname(app.getPath('userData')));
+        : path.resolve(path.dirname(app.getPath('userData')));
+
+    console.log('this.userDataDirectory', this.userDataDirectory);
 
     this.gameDirectory =
       this.envConfig.NODE_ENV === NodeEnvsEnum.Development
         ? path.resolve(__dirname, '..', '..', '..', 'tmp', 'gfchaos')
-        : path.join(path.dirname(app.getPath('exe')), 'apps', 'gfchaos');
+        : path.resolve(path.dirname(app.getPath('exe')), 'apps', 'gfchaos');
+
+    console.log("app.getPath('exe')", app.getPath('exe'));
+
+    console.log(
+      "path.dirname(app.getPath('exe'))",
+      path.dirname(app.getPath('exe')),
+    );
+
+    console.log('this.gameDirectory', this.gameDirectory);
 
     this.resourcesDirectory = app.isPackaged
       ? path.join(process.resourcesPath, 'assets')
       : path.join(__dirname, '..', '..', '..', 'assets');
+
+    console.log('this.resourcesDirectory', this.resourcesDirectory);
   }
 
   public async download({
@@ -151,7 +164,7 @@ export class FileConfig implements FileConfigInterface {
     props = [],
   }: FileConfigOpenExecutableDto): Promise<void> {
     await this.exec(
-      `start ${path.join(directory, executable)} ${props.join(' ')}`,
+      `start "" "${path.join(directory, executable)}" ${props.join(' ')}`,
       {
         cwd: directory,
       },
