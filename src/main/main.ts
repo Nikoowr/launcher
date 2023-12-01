@@ -100,6 +100,10 @@ ipcMain.on(IpcEventsEnum.AutoUpdateQuitAndInstall, async () => {
   autoUpdaterConfig.quitAndInstall();
 });
 
+ipcMain.on(IpcEventsEnum.OpenExternalLink, async (_event, link) => {
+  shell.openExternal(link);
+});
+
 ipcMain.on(IpcEventsEnum.WindowEvent, async (event, action) =>
   ipcEventsController?.[IpcEventsEnum.WindowEvent](event, action, mainWindow),
 );

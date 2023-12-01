@@ -32,8 +32,6 @@ export function AppProvider({ children }: AppProviderProps) {
   const [updateFound, setUpdateFound] = useState(false);
   const [appInfo, setAppInfo] = useState<AppInfo>({});
 
-  console.log('appInfo.version', appInfo.version);
-
   const { toast } = useToast();
 
   const handleUpdateFound = useCallback(() => {
@@ -58,7 +56,6 @@ export function AppProvider({ children }: AppProviderProps) {
   }, [toast]);
 
   const handleGetAppInfo = useCallback((appInfo: AppInfo = {}) => {
-    console.log('handleGetAppInfo', appInfo);
     setAppInfo(appInfo);
   }, []);
 

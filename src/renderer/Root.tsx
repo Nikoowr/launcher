@@ -1,4 +1,5 @@
 import { App } from './App';
+import { AppVersion } from './components/custom/app-version';
 import { Navbar } from './components/custom/navbar';
 import { Toaster } from './components/ui/toaster';
 import './globals.css';
@@ -10,9 +11,8 @@ export const Root = () => {
       <>
         <Navbar />
         <Toaster />
-
-        <Navbar />
         <App />
+        <AppVersion />
       </>
     </Providers>
   );

@@ -33,7 +33,7 @@ export const SignIn = () => {
           </div>
         </div>
 
-        <div className="flex flex-col items-center text-zinc-500">
+        <div className="flex flex-col items-center text-center text-zinc-500">
           <span>Não possuí uma conta?</span>
           <ExternalLink
             href="https://gfchaos.com/beta"

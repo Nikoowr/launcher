@@ -1,6 +1,6 @@
 {
   "name": "gfchaos-launcher",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "",
   "main": "./src/main/main.ts",
   "scripts": {
@@ -26,6 +26,7 @@
     "@radix-ui/react-progress": "^1.0.3",
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-toast": "^1.1.5",
+    "@radix-ui/react-tooltip": "^1.0.7",
     "axios": "^1.6.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",

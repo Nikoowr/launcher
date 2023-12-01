@@ -22,6 +22,7 @@ export const Navbar = () => {
             <RefreshCcw width={18} height={18} />
           </Button>
         )}
+
         <Button
           className="titlebar-button bg-transparent hover:bg-[#fff1]"
           onClick={() =>
@@ -30,6 +31,7 @@ export const Navbar = () => {
         >
           <MinusIcon width={18} height={18} />
         </Button>
+
         <Button
           className="titlebar-button bg-transparent hover:bg-[#fff1]"
           onClick={() =>

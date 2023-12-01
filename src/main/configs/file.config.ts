@@ -32,27 +32,14 @@ export class FileConfig implements FileConfigInterface {
         ? path.resolve(__dirname, '..', '..', '..', 'tmp', 'userData')
         : path.resolve(path.dirname(app.getPath('userData')));
 
-    console.log('this.userDataDirectory', this.userDataDirectory);
-
     this.gameDirectory =
       this.envConfig.NODE_ENV === NodeEnvsEnum.Development
         ? path.resolve(__dirname, '..', '..', '..', 'tmp', 'gfchaos')
         : path.resolve(path.dirname(app.getPath('exe')), 'apps', 'gfchaos');
 
-    console.log("app.getPath('exe')", app.getPath('exe'));
-
-    console.log(
-      "path.dirname(app.getPath('exe'))",
-      path.dirname(app.getPath('exe')),
-    );
-
-    console.log('this.gameDirectory', this.gameDirectory);
-
     this.resourcesDirectory = app.isPackaged
       ? path.join(process.resourcesPath, 'assets')
       : path.join(__dirname, '..', '..', '..', 'assets');
-
-    console.log('this.resourcesDirectory', this.resourcesDirectory);
   }
 
   public async download({
@@ -67,7 +54,7 @@ export class FileConfig implements FileConfigInterface {
     }
 
     this.activeDownloads.add(id);
-    console.log('url', url);
+
     const response = await axios.get(url, {
       responseType: 'stream',
     });
@@ -145,17 +132,11 @@ export class FileConfig implements FileConfigInterface {
     directory: string;
     filename: string;
   }): Promise<void> {
-    return new Promise((resolve, reject) => {
-      const filepath = path.join(directory, filename);
+    const filepath = path.join(directory, filename);
 
-      fs.unlink(filepath, (error) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve();
-        }
-      });
-    });
+    if (fs.existsSync(filepath)) {
+      fs.unlinkSync(filepath);
+    }
   }
 
   public async openExecutable({

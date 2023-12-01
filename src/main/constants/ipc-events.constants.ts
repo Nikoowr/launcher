@@ -6,6 +6,7 @@ export type IpcEventSignInDto = {
 export enum IpcEventsEnum {
   AutoUpdateQuitAndInstall = 'auto-update-quit-and-install',
   AutoUpdaterFoundUpdate = 'auto-updater-found-update',
+  OpenExternalLink = 'open-external-link',
   GetUserSession = 'get-user-session',
   DownloadGame = 'download-game',
   GetGameInfo = 'get-game-info',

@@ -76,11 +76,18 @@ export class UpdateGameService implements UpdateGameServiceInterface {
       });
     }
 
+    const latestGameInfo = {
+      ...gameInfo,
+      version: latestVersion,
+    };
+
     await this.fileConfig.write({
       directory: this.fileConfig.gameDirectory,
       filename: GameFilesEnum.GameInfo,
-      data: JSON.stringify({ ...gameInfo, version: latestVersion }),
+      data: JSON.stringify(latestGameInfo),
     });
+
+    ipcEvent.reply(IpcEventsEnum.GetGameInfo, latestGameInfo);
 
     return ipcEvent.reply(IpcEventsEnum.UpdateGame, {
       status: GameUpdateStatusEnum.Done,
@@ -163,6 +170,8 @@ export class UpdateGameService implements UpdateGameServiceInterface {
 
   private async handleFileChange(fileChange: FileChange): Promise<void> {
     const mappedFilepath = this.mapFilePath(fileChange.filepath);
+
+    console.log(`[UpdateGameService] - ${fileChange.action} ${mappedFilepath}`);
 
     if (fileChange.action === GameUpdaterActionsEnum.Deleted) {
       await this.fileConfig.delete({
