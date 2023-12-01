@@ -8,10 +8,11 @@ export enum IpcEventsEnum {
   AutoUpdaterFoundUpdate = 'auto-updater-found-update',
   GetUserSession = 'get-user-session',
   DownloadGame = 'download-game',
-  UpdateGame = 'update-game',
+  GetGameInfo = 'get-game-info',
   WindowEvent = 'window-event',
+  GetAppInfo = 'get-app-info',
+  UpdateGame = 'update-game',
   SignOut = 'sign-out',
   SignIn = 'sign-in',
   Play = 'play',
-  GetAppInfo = 'get-app-info',
 }

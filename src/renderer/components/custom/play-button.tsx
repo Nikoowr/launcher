@@ -1,7 +1,6 @@
 import { ChevronDown, PlayCircle } from 'lucide-react';
 
 import { IpcEventsEnum } from '../../../main/constants/ipc-events.constants';
-import { useApp } from '../../hooks/app';
 import { useGame } from '../../hooks/game';
 import { cn } from '../../lib/utils';
 import { Button } from '../ui/button';
@@ -17,8 +16,7 @@ export const PlayButton = ({
   className = '',
   disabled = false,
 }: PlayButtonProps) => {
-  const { readToPlay } = useGame();
-  const { appInfo } = useApp();
+  const { readToPlay, gameInfo } = useGame();
 
   return (
     <div className={`flex flex-col gap-2 ${className}`}>
@@ -48,7 +46,7 @@ export const PlayButton = ({
           readToPlay ? 'text-white' : 'text-[#fff9]',
         )}
       >
-        Versão {appInfo?.version ?? '?'}
+        Versão {gameInfo?.version ?? '?'}
       </span>
     </div>
   );

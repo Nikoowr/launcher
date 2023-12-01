@@ -7,6 +7,7 @@ import {
 import { IpcEventsEnum } from '../constants/ipc-events.constants';
 import {
   DownloadGameService,
+  GetGameInfoService,
   GetUserSessionService,
   IpcEventsController as IpcEventsControllerInterface,
   PlayGameService,
@@ -18,6 +19,7 @@ import { SignInService } from '../services';
 type ConstructorServices = {
   getUserSessionService: GetUserSessionService;
   downloadGameService: DownloadGameService;
+  getGameInfoService: GetGameInfoService;
   updateGameService: UpdateGameService;
   playGameService: PlayGameService;
   signOutService: SignOutService;
@@ -85,5 +87,9 @@ export class IpcEventsController implements IpcEventsControllerInterface {
     event.reply(IpcEventsEnum.GetAppInfo, {
       version: this.app.getVersion(),
     });
+  };
+
+  [IpcEventsEnum.GetGameInfo] = async (event: Electron.IpcMainEvent) => {
+    await this.services.getGameInfoService.execute({ ipcEvent: event });
   };
 }

@@ -131,3 +131,7 @@ ipcMain.on(IpcEventsEnum.GetUserSession, async (event) =>
 ipcMain.on(IpcEventsEnum.GetAppInfo, async (event) =>
   ipcEventsController?.[IpcEventsEnum.GetAppInfo](event),
 );
+
+ipcMain.on(IpcEventsEnum.GetGameInfo, async (event) =>
+  ipcEventsController?.[IpcEventsEnum.GetGameInfo](event),
+);

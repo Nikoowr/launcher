@@ -11,6 +11,7 @@ export * from './controllers/ipc-events.controller';
 
 // Services
 export * from './services/get-user-session.service';
+export * from './services/get-game-info.service';
 export * from './services/download-game.service';
 export * from './services/update-game.service';
 export * from './services/play-game.service';

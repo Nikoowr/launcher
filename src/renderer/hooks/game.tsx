@@ -21,12 +21,17 @@ type GameProviderProps = {
   children: ReactNode;
 };
 
+type GameInfo = {
+  version?: string;
+};
+
 type GameContextData = {
   statusIcon: JSX.Element;
   fileUpdating: string;
-  statusText: string;
-  progress: number;
   readToPlay: boolean;
+  statusText: string;
+  gameInfo: GameInfo;
+  progress: number;
 };
 
 type OnGameFilesChangeProps = {
@@ -43,6 +48,7 @@ export function GameProvider({ children }: GameProviderProps) {
   const [status, setStatus] = useState<
     GameDownloadStatusEnum | GameUpdateStatusEnum
   >(GameDownloadStatusEnum.Checking);
+  const [gameInfo, setGameInfo] = useState<GameInfo>({});
   const [fileUpdating, setFileUpdating] = useState('');
   const [readToPlay, setReadToPlay] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -142,6 +148,10 @@ export function GameProvider({ children }: GameProviderProps) {
     }
   }, []);
 
+  const handleGameInfo = useCallback(async (props: { version?: string }) => {
+    setGameInfo(props);
+  }, []);
+
   useEffect(() => {
     ipcRenderer.on(IpcEventsEnum.DownloadGame, handleDownload);
   }, [handleDownload]);
@@ -149,6 +159,15 @@ export function GameProvider({ children }: GameProviderProps) {
   useEffect(() => {
     ipcRenderer.on(IpcEventsEnum.UpdateGame, handleUpdate);
   }, [handleUpdate]);
+
+  useEffect(() => {
+    ipcRenderer.on(IpcEventsEnum.GetGameInfo, handleGameInfo);
+  }, [handleGameInfo]);
+
+  // Get Game Info useEffects
+  useEffect(() => {
+    ipcRenderer.sendMessage(IpcEventsEnum.GetGameInfo);
+  }, []);
 
   // Download useEffect
   useEffect(() => {
@@ -165,8 +184,15 @@ export function GameProvider({ children }: GameProviderProps) {
   }, [loggedIn, isDownloaded]);
 
   const contextValue = useMemo(
-    () => ({ statusIcon, readToPlay, fileUpdating, statusText, progress }),
-    [statusIcon, readToPlay, fileUpdating, statusText, progress],
+    () => ({
+      statusIcon,
+      readToPlay,
+      fileUpdating,
+      statusText,
+      progress,
+      gameInfo,
+    }),
+    [statusIcon, readToPlay, fileUpdating, statusText, progress, gameInfo],
   );
 
   return (

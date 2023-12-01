@@ -11,6 +11,7 @@ import {
 import { IpcEventsController } from './controllers';
 import {
   DownloadGameService,
+  GetGameInfoService,
   GetUserSessionService,
   PlayGameService,
   SignInService,
@@ -55,10 +56,12 @@ export const container = ({ app }: ContainerDto) => {
     fileConfig,
     envConfig,
   );
+  const getGameInfoService = new GetGameInfoService(fileConfig);
 
   const ipcEventsController = new IpcEventsController(app, {
     getUserSessionService,
     downloadGameService,
+    getGameInfoService,
     updateGameService,
     playGameService,
     signOutService,
