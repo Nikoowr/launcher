@@ -16,3 +16,9 @@ export enum GameFilesEnum {
   ZipToDownload = 'gfchaos-client.zip',
   GameInfo = 'game.json',
 }
+
+export enum GameUpdaterActionsEnum {
+  Modified = 'M',
+  Deleted = 'D',
+  Added = 'A',
+}

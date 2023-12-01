@@ -4,7 +4,6 @@ import {
   app as electronApp,
 } from 'electron';
 
-import { GameUpdateStatusEnum } from '../constants/game.constants';
 import { IpcEventsEnum } from '../constants/ipc-events.constants';
 import {
   DownloadGameService,
@@ -12,12 +11,14 @@ import {
   IpcEventsController as IpcEventsControllerInterface,
   PlayGameService,
   SignOutService,
+  UpdateGameService,
 } from '../interfaces';
 import { SignInService } from '../services';
 
 type ConstructorServices = {
   getUserSessionService: GetUserSessionService;
   downloadGameService: DownloadGameService;
+  updateGameService: UpdateGameService;
   playGameService: PlayGameService;
   signOutService: SignOutService;
   signInService: SignInService;
@@ -67,41 +68,8 @@ export class IpcEventsController implements IpcEventsControllerInterface {
   };
 
   [IpcEventsEnum.UpdateGame] = async (event: Electron.IpcMainEvent) => {
-    const checks = Array.from({ length: 30 });
-
-    // Checking
-    for (const [index] of checks.entries()) {
-      event.reply(IpcEventsEnum.UpdateGame, {
-        status: GameUpdateStatusEnum.Checking,
-        progress: ((index + 1) / checks.length) * 100,
-      });
-
-      await new Promise((resolve) => setTimeout(resolve, 100));
-    }
-
-    // Downloading
-    for (const [index] of checks.entries()) {
-      event.reply(IpcEventsEnum.UpdateGame, {
-        status: GameUpdateStatusEnum.Downloading,
-        progress: ((index + 1) / checks.length) * 100,
-      });
-
-      await new Promise((resolve) => setTimeout(resolve, 100));
-    }
-
-    // Updating
-    for (const [index] of checks.entries()) {
-      event.reply(IpcEventsEnum.UpdateGame, {
-        status: GameUpdateStatusEnum.Updating,
-        progress: ((index + 1) / checks.length) * 100,
-      });
-
-      await new Promise((resolve) => setTimeout(resolve, 100));
-    }
-
-    event.reply(IpcEventsEnum.UpdateGame, {
-      status: GameUpdateStatusEnum.Done,
-      progress: 100,
+    await this.services.updateGameService.execute({
+      ipcEvent: event,
     });
   };
 

@@ -16,6 +16,7 @@ const { get } = from(
     CLIENT_BUCKET_URL: process.env.CLIENT_BUCKET_URL,
     USER_DATA_ENCRYPTION_KEY: process.env.USER_DATA_ENCRYPTION_KEY,
     AUTO_UPDATER_URL: process.env.AUTO_UPDATER_URL,
+    GAME_UPDATER_URL: process.env.GAME_UPDATER_URL,
     AUTO_UPDATER_CHANNEL: process.env.AUTO_UPDATER_CHANNEL,
   },
   {},
@@ -42,6 +43,7 @@ export const envConfig = {
     .required()
     .asString(),
   AUTO_UPDATER_URL: get('AUTO_UPDATER_URL').required().asUrlString(),
+  GAME_UPDATER_URL: get('GAME_UPDATER_URL').required().asUrlString(),
   AUTO_UPDATER_CHANNEL: get('AUTO_UPDATER_CHANNEL')
     .default(AutoUpdaterChannelsEnum.Latest)
     .asEnum(Object.values(AutoUpdaterChannelsEnum)),

@@ -8,11 +8,12 @@ export type EnvConfig = {
   // Electron
   UPGRADE_EXTENSIONS?: boolean;
   ELECTRON_PORT: number;
-  DEBUG_PROD?: boolean;
+  DEBUG_PROD?: string;
 
   // Application
   CLIENT_BUCKET_URL: string;
   USER_DATA_ENCRYPTION_KEY: string;
   AUTO_UPDATER_URL: string;
+  GAME_UPDATER_URL: string;
   AUTO_UPDATER_CHANNEL: string;
 };

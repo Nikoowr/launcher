@@ -1,0 +1,55 @@
+import axios, { AxiosInstance } from 'axios';
+
+import {
+  EnvConfig,
+  GameUpdaterConfigCheckForUpdatesResponse,
+  GameUpdaterConfigGetGameDataFileListResponse,
+  GameUpdaterConfig as GameUpdaterConfigInterface,
+} from '../interfaces';
+
+export class GameUpdaterConfig implements GameUpdaterConfigInterface {
+  private readonly api: AxiosInstance;
+
+  constructor(private readonly envConfig: EnvConfig) {
+    this.api = axios.create({
+      baseURL: `${this.envConfig.GAME_UPDATER_URL}${this.envConfig.STAGE}`,
+    });
+  }
+
+  public async getPatchInfo(): Promise<GameUpdaterConfigCheckForUpdatesResponse | null> {
+    try {
+      const { data } = await this.api.get('/latest.json');
+
+      if (!data) {
+        return null;
+      }
+
+      return data;
+    } catch {
+      return null;
+    }
+  }
+
+  public async getGameDataFileList({
+    version,
+  }: {
+    version: string;
+  }): Promise<GameUpdaterConfigGetGameDataFileListResponse | null> {
+    try {
+      const { data } = await this.api.get(`/${version}/GameDataFileList.txt`);
+
+      if (!data) {
+        return null;
+      }
+
+      const [totalFilesChanged, createdAt, ...fileChanges] = data
+        .split('\n')
+        .map((line: string) => line.trim().replace('\t', ' '))
+        .filter(Boolean);
+
+      return { fileChanges, createdAt, totalFilesChanged };
+    } catch {
+      return null;
+    }
+  }
+}

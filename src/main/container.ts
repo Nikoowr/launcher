@@ -4,6 +4,7 @@ import {
   AutoUpdaterConfig,
   CryptographyConfig,
   FileConfig,
+  GameUpdaterConfig,
   MenuConfig,
   envConfig,
 } from './configs';
@@ -14,6 +15,7 @@ import {
   PlayGameService,
   SignInService,
   SignOutService,
+  UpdateGameService,
 } from './services';
 
 type ContainerDto = {
@@ -29,6 +31,7 @@ export const container = ({ app }: ContainerDto) => {
     menuConfig,
     envConfig,
   );
+  const gameUpdaterConfig = new GameUpdaterConfig(envConfig);
 
   const playGameService = new PlayGameService(
     cryptographyConfig,
@@ -41,6 +44,11 @@ export const container = ({ app }: ContainerDto) => {
     envConfig,
   );
   const downloadGameService = new DownloadGameService(fileConfig, envConfig);
+  const updateGameService = new UpdateGameService(
+    gameUpdaterConfig,
+    fileConfig,
+    envConfig,
+  );
   const signOutService = new SignOutService(fileConfig);
   const getUserSessionService = new GetUserSessionService(
     cryptographyConfig,
@@ -51,6 +59,7 @@ export const container = ({ app }: ContainerDto) => {
   const ipcEventsController = new IpcEventsController(app, {
     getUserSessionService,
     downloadGameService,
+    updateGameService,
     playGameService,
     signOutService,
     signInService,

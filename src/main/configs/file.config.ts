@@ -67,7 +67,7 @@ export class FileConfig implements FileConfigInterface {
     }
 
     this.activeDownloads.add(id);
-
+    console.log('url', url);
     const response = await axios.get(url, {
       responseType: 'stream',
     });
