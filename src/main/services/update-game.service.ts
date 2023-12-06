@@ -195,8 +195,8 @@ export class UpdateGameService implements UpdateGameServiceInterface {
   private mapFilePath(filepath: string): string {
     const mapDirectories: [string, string][] = [
       ['Data/client/', ''],
-      ['Data/db', 'data/db'],
-      ['Data/scene', 'data/scene'],
+      ['Data/db/S_', 'data/db/c_'],
+      ['Data/scene/S', 'data/scene/s'],
       ['Data/Translate', 'data/translate'],
     ];
 
