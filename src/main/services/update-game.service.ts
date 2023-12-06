@@ -116,8 +116,8 @@ export class UpdateGameService implements UpdateGameServiceInterface {
     const gameInfo = gameInfoJson ? JSON.parse(gameInfoJson) : {};
 
     const currentVersion = gameInfo?.version ?? 'v0.0.0';
-    const versionsToDownload = (patchInfo?.versions ?? []).filter(
-      (version) => version > currentVersion,
+    const versionsToDownload = (patchInfo?.versions ?? []).filter((version) =>
+      this.versionIsGreater(version, currentVersion),
     );
 
     ipcEvent.reply(IpcEventsEnum.UpdateGame, {
@@ -150,7 +150,10 @@ export class UpdateGameService implements UpdateGameServiceInterface {
 
         if (
           fileChangesByVersion[filepath] &&
-          fileChangesByVersion[filepath].version >= versionToDownload
+          this.versionIsGreater(
+            fileChangesByVersion[filepath].version,
+            versionToDownload,
+          )
         ) {
           return fileChangesByVersion;
         }
@@ -193,21 +196,57 @@ export class UpdateGameService implements UpdateGameServiceInterface {
   }
 
   private mapFilePath(filepath: string): string {
-    const mapDirectories: [string, string][] = [
-      ['Data/client/', ''],
-      ['Data/db/S_', 'data/db/c_'],
-      ['Data/scene/S', 'data/scene/s'],
-      ['Data/Translate', 'data/translate'],
+    const mapDirectories: [string, string, { lower?: boolean }][] = [
+      ['Data/client/', '', {}],
+      ['Data/db/S_', 'data/db/c_', { lower: true }],
+      ['Data/scene/S', 'data/scene/s', {}],
+      ['Data/Translate', 'data/translate', {}],
     ];
 
-    for (const [origin, destination] of mapDirectories) {
+    for (const [origin, destination, options] of mapDirectories) {
       if (filepath.startsWith(origin)) {
         filepath = filepath.replace(origin, destination);
+
+        if (options.lower) {
+          filepath = filepath.toLowerCase();
+        }
 
         break;
       }
     }
 
     return filepath;
+  }
+
+  private versionIsGreater(versionOne: string, versionTwo: string) {
+    const components1 = versionOne.split('.');
+    const components2 = versionTwo.split('.');
+
+    for (let i = 0; i < Math.max(components1.length, components2.length); i++) {
+      const part1 = components1[i] || '0';
+      const part2 = components2[i] || '0';
+
+      if (/^\d+$/.test(part1) && /^\d+$/.test(part2)) {
+        // Compare numeric components as integers
+        const num1 = parseInt(part1, 10);
+        const num2 = parseInt(part2, 10);
+
+        if (num1 > num2) {
+          return true;
+        } else if (num1 < num2) {
+          return false;
+        }
+      } else {
+        // Compare non-numeric components lexicographically
+        if (part1 > part2) {
+          return true;
+        } else if (part1 < part2) {
+          return false;
+        }
+      }
+    }
+
+    // If all components are equal, consider the versions equal
+    return false;
   }
 }
