@@ -13,7 +13,7 @@ export const AppVersion = () => {
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <div className="absolute bottom-3 left-3">
+          <div className="fixed bottom-3 left-3">
             <span className="text-sm text-zinc-500">
               {appInfo?.version ? `v${appInfo.version}` : ''}
             </span>

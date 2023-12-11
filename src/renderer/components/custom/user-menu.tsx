@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { RoutesEnum } from '../../constants/routes.constants';
 import { useAuth } from '../../hooks/auth';
+import { useGame } from '../../hooks/game';
 import { Button } from '../ui/button';
 import {
   DropdownMenu,
@@ -16,12 +17,16 @@ import {
 export const UserMenu = () => {
   const navigate = useNavigate();
   const { logout, session } = useAuth();
+  const { readToPlay } = useGame();
 
   return (
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button className="titlebar-button bg-[#fff2] p-4 hover:bg-[#fff4]">
+          <Button
+            className="titlebar-button bg-[#fff2] p-4 hover:bg-[#fff4]"
+            disabled={!readToPlay}
+          >
             <User />
           </Button>
         </DropdownMenuTrigger>

@@ -2,19 +2,28 @@ import { MinusIcon, RefreshCcw, X } from 'lucide-react';
 
 import { IpcEventsEnum } from '../../../main/constants/ipc-events.constants';
 import { useApp } from '../../hooks/app';
+import { cn } from '../../lib/utils';
 import { Button } from '../ui/button';
 
 const { ipcRenderer } = window.electron;
 
-export const Navbar = () => {
+type NavbarProps = {
+  btnClassName?: string;
+};
+
+export const Navbar = ({
+  btnClassName = 'bg-transparent hover:bg-[#fff1]',
+}: NavbarProps) => {
   const { updateFound } = useApp();
+
+  const buttonsClassName = cn('titlebar-button', btnClassName);
 
   return (
     <div className="titlebar absolute z-10 flex w-full justify-end p-2">
-      <div>
+      <div className="flex gap-1">
         {updateFound && (
           <Button
-            className="titlebar-button bg-transparent hover:bg-[#fff1]"
+            className={buttonsClassName}
             onClick={() =>
               ipcRenderer.sendMessage(IpcEventsEnum.AutoUpdateQuitAndInstall)
             }
@@ -24,7 +33,7 @@ export const Navbar = () => {
         )}
 
         <Button
-          className="titlebar-button bg-transparent hover:bg-[#fff1]"
+          className={buttonsClassName}
           onClick={() =>
             ipcRenderer.sendMessage(IpcEventsEnum.WindowEvent, 'minimize-tray')
           }
@@ -33,7 +42,7 @@ export const Navbar = () => {
         </Button>
 
         <Button
-          className="titlebar-button bg-transparent hover:bg-[#fff1]"
+          className={buttonsClassName}
           onClick={() =>
             ipcRenderer.sendMessage(IpcEventsEnum.WindowEvent, 'close')
           }

@@ -1,6 +1,7 @@
 import { Route, MemoryRouter as Router, Routes } from 'react-router-dom';
 import 'tailwindcss/tailwind.css';
 
+import { Navbar } from './components/custom/navbar';
 import { ProtectedRoute } from './components/custom/protected-route';
 import { RoutesEnum } from './constants/routes.constants';
 import { Home } from './pages/home';
@@ -15,6 +16,7 @@ export const App = () => {
           path={RoutesEnum.Home}
           element={
             <ProtectedRoute>
+              <Navbar />
               <Home />
             </ProtectedRoute>
           }
@@ -24,12 +26,21 @@ export const App = () => {
           path={RoutesEnum.Settings}
           element={
             <ProtectedRoute>
+              <Navbar btnClassName="bg-transparent hover:bg-[#0001] text-black" />
               <Settings />
             </ProtectedRoute>
           }
         />
 
-        <Route path={RoutesEnum.SignIn} element={<SignIn />} />
+        <Route
+          path={RoutesEnum.SignIn}
+          element={
+            <>
+              <Navbar />
+              <SignIn />
+            </>
+          }
+        />
       </Routes>
     </Router>
   );

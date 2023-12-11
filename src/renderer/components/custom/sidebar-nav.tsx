@@ -1,24 +1,22 @@
 import React from 'react';
 
 import { cn } from '../../lib/utils';
+import { Tab } from '../../pages/settings';
 import { buttonVariants } from '../ui/button';
 
 interface SidebarNavProps extends React.HTMLAttributes<HTMLElement> {
-  currentPath: string;
-  items: {
-    href: string;
-    title: string;
-  }[];
+  onSelectTab: (tab: Tab) => void;
+  selectedTab: Tab;
+  tabs: Tab[];
 }
 
 export function SidebarNav({
+  onSelectTab,
+  selectedTab,
   className,
-  currentPath,
-  items,
+  tabs,
   ...props
 }: SidebarNavProps) {
-  const pathname = currentPath;
-
   return (
     <nav
       className={cn(
@@ -27,19 +25,20 @@ export function SidebarNav({
       )}
       {...props}
     >
-      {items.map((item) => (
+      {tabs.map((tab) => (
         <a
-          key={item.href}
-          href={item.href}
+          onClick={() => onSelectTab(tab)}
+          type="button"
+          key={tab.id}
           className={cn(
             buttonVariants({ variant: 'ghost' }),
-            pathname === item.href
+            selectedTab.id === tab.id
               ? 'bg-muted hover:bg-muted'
               : 'hover:bg-transparent hover:underline',
-            'justify-start',
+            'justify-start cursor-pointer',
           )}
         >
-          {item.title}
+          {tab.title}
         </a>
       ))}
     </nav>
