@@ -1,12 +1,12 @@
-import { Settings } from 'lucide-react';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { ExternalLink } from '../components/custom/external-link';
+import { LocaleSwitcher } from '../components/custom/locale-switcher';
 import { Logo } from '../components/custom/logo';
 import { SignInForm } from '../components/custom/sign-in-form';
 import { SignInSideBackground } from '../components/custom/sign-in-side-background';
-import { Button } from '../components/ui/button';
+import { RoutesEnum } from '../constants/routes.constants';
 import { useAuth } from '../hooks/auth';
 
 export const SignIn = () => {
@@ -15,7 +15,7 @@ export const SignIn = () => {
 
   useEffect(() => {
     if (loggedIn) {
-      navigate('/');
+      navigate(RoutesEnum.Home);
     }
   }, [loggedIn, navigate]);
 
@@ -47,9 +47,9 @@ export const SignIn = () => {
       <div className="relative flex-1">
         <SignInSideBackground />
 
-        <Button className="absolute bottom-0 right-0 mb-4 mr-4 bg-[#f2469850] hover:bg-pink-500">
-          <Settings />
-        </Button>
+        <div className="absolute bottom-0 right-0 mb-4 mr-4">
+          <LocaleSwitcher />
+        </div>
       </div>
     </main>
   );

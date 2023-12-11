@@ -1,5 +1,7 @@
 import { LogOut, Settings, User } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
+import { RoutesEnum } from '../../constants/routes.constants';
 import { useAuth } from '../../hooks/auth';
 import { Button } from '../ui/button';
 import {
@@ -12,6 +14,7 @@ import {
 } from '../ui/dropdown-menu';
 
 export const UserMenu = () => {
+  const navigate = useNavigate();
   const { logout, session } = useAuth();
 
   return (
@@ -27,7 +30,10 @@ export const UserMenu = () => {
 
           <DropdownMenuSeparator />
 
-          <DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => navigate(RoutesEnum.Settings)}
+            className="cursor-pointer"
+          >
             <Settings className="mr-2 h-4 w-4" />
             <span>Settings</span>
           </DropdownMenuItem>
