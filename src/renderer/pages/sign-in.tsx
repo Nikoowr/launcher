@@ -2,16 +2,18 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { ExternalLink } from '../components/custom/external-link';
-import { LocaleSwitcher } from '../components/custom/locale-switcher';
+import { LangSwitcher } from '../components/custom/lang-switcher';
 import { Logo } from '../components/custom/logo';
 import { SignInForm } from '../components/custom/sign-in-form';
 import { SignInSideBackground } from '../components/custom/sign-in-side-background';
 import { RoutesEnum } from '../constants/routes.constants';
 import { useAuth } from '../hooks/auth';
+import { useLang } from '../hooks/lang';
 
 export const SignIn = () => {
   const navigate = useNavigate();
   const { loggedIn } = useAuth();
+  const { dictionary } = useLang();
 
   useEffect(() => {
     if (loggedIn) {
@@ -28,18 +30,20 @@ export const SignIn = () => {
           </div>
 
           <div className="mt-8">
-            <h1 className="mb-8 text-center text-2xl font-bold">Fazer login</h1>
+            <h1 className="mb-8 text-center text-2xl font-bold">
+              {dictionary.pages['sign-in'].LOGIN}
+            </h1>
             <SignInForm />
           </div>
         </div>
 
         <div className="flex flex-col items-center text-center text-zinc-500">
-          <span>Não possuí uma conta?</span>
+          <span> {dictionary.pages['sign-in'].DO_NOT_HAVE_AN_ACCOUNT}</span>
           <ExternalLink
             href="https://gfchaos.com/beta"
             className="cursor-pointer text-pink-500 hover:text-pink-600"
           >
-            Criar conta
+            {dictionary.pages['sign-in'].CREATE_AN_ACCOUNT}
           </ExternalLink>
         </div>
       </div>
@@ -48,7 +52,7 @@ export const SignIn = () => {
         <SignInSideBackground />
 
         <div className="absolute bottom-0 right-0 mb-4 mr-4">
-          <LocaleSwitcher />
+          <LangSwitcher />
         </div>
       </div>
     </main>

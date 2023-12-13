@@ -1,4 +1,4 @@
-export enum LocalesEnum {
+export enum LangsEnum {
   ES = 'es',
   EN = 'en',
   FR = 'fr',
@@ -6,8 +6,23 @@ export enum LocalesEnum {
 }
 
 export const i18n = {
-  defaultLocale: LocalesEnum.PT,
-  locales: Object.values(LocalesEnum),
+  defaultLocale: LangsEnum.PT,
+  locales: Object.values(LangsEnum),
 } as const;
 
-export type Dictionary = {};
+export type Dictionary = {
+  pages: {
+    'sign-in': {
+      LOGIN: string;
+      CREATE_AN_ACCOUNT: string;
+      DO_NOT_HAVE_AN_ACCOUNT: string;
+    };
+  };
+  components: {
+    custom: {
+      USER: string;
+      PASSWORD: string;
+      LOGIN: string;
+    };
+  };
+};

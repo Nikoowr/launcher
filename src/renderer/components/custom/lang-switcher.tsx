@@ -1,4 +1,5 @@
-import { LocalesEnum, i18n } from '../../i18n';
+import { useLang } from '../../hooks/lang';
+import { LangsEnum, i18n } from '../../i18n';
 import { Button } from '../ui/button';
 import {
   DropdownMenu,
@@ -8,20 +9,20 @@ import {
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
 
-export const LocaleSwitcher = () => {
-  const locale = LocalesEnum.PT;
+export const LangSwitcher = () => {
+  const { lang, changeLang } = useLang();
 
-  const onLocaleChange = (locale: string) => {
-    console.log('locale', locale);
+  const onLangChange = (language: string) => {
+    changeLang(language as LangsEnum);
   };
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline">{locale}</Button>
+        <Button variant="outline">{lang}</Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuRadioGroup value={locale} onValueChange={onLocaleChange}>
+        <DropdownMenuRadioGroup value={lang} onValueChange={onLangChange}>
           {i18n.locales.map((i18nLocale) => (
             <DropdownMenuRadioItem key={i18nLocale} value={i18nLocale}>
               {i18nLocale}

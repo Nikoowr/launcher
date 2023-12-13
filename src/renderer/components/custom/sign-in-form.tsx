@@ -2,6 +2,7 @@ import { Label } from '@radix-ui/react-label';
 import { SyntheticEvent, useState } from 'react';
 
 import { useAuth } from '../../hooks/auth';
+import { useLang } from '../../hooks/lang';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Icons } from './icons';
@@ -10,6 +11,7 @@ export const SignInForm = () => {
   const [password, setPassword] = useState('');
   const [user, setUser] = useState('');
 
+  const { dictionary } = useLang();
   const { login, loading } = useAuth();
 
   const onSignIn = async (event: SyntheticEvent) => {
@@ -22,7 +24,7 @@ export const SignInForm = () => {
       <div className="grid gap-2">
         <div className="grid gap-1">
           <Label className="" htmlFor="user">
-            Nome de usuário
+            {dictionary.components.custom.USER}
           </Label>
           <Input
             onChange={(event) => setUser(event.target.value)}
@@ -35,7 +37,7 @@ export const SignInForm = () => {
           />
 
           <Label className="mt-2" htmlFor="password">
-            Senha
+            {dictionary.components.custom.PASSWORD}
           </Label>
           <Input
             onChange={(event) => setPassword(event.target.value)}
@@ -50,7 +52,7 @@ export const SignInForm = () => {
 
         <Button disabled={loading} className="mt-2">
           {loading && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />}
-          Entrar
+          {dictionary.components.custom.LOGIN}
         </Button>
       </div>
     </form>
