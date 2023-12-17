@@ -16,6 +16,7 @@ import {
 } from '../../main/constants/game.constants';
 import { IpcEventsEnum } from '../../main/constants/ipc-events.constants';
 import { useAuth } from './auth';
+import { useLang } from './lang';
 
 type GameProviderProps = {
   children: ReactNode;
@@ -53,41 +54,42 @@ export function GameProvider({ children }: GameProviderProps) {
   const [readToPlay, setReadToPlay] = useState(false);
   const [progress, setProgress] = useState(0);
 
+  const { dictionary } = useLang();
   const { loggedIn } = useAuth();
 
   const statusText = useMemo(() => {
     // Download
     if (status === GameDownloadStatusEnum.Checking) {
-      return 'Verificando...';
+      return `${dictionary.hooks.game.GAME_STATUS_CHECKING}...`;
     }
 
     if (status === GameDownloadStatusEnum.Downloading) {
-      return 'Baixando...';
+      return `${dictionary.hooks.game.GAME_STATUS_DOWNLOADING}...`;
     }
 
     if (status === GameDownloadStatusEnum.Extracting) {
-      return 'Extraindo...';
+      return `${dictionary.hooks.game.GAME_STATUS_EXTRACTING}...`;
     }
 
     // Update
     if (status === GameUpdateStatusEnum.Checking) {
-      return 'Verificando se há atualizações...';
+      return `${dictionary.hooks.game.GAME_STATUS_CHECKING_UPDATES}...`;
     }
 
     if (status === GameUpdateStatusEnum.Downloading) {
-      return 'Baixando atualizações...';
+      return `${dictionary.hooks.game.GAME_STATUS_DOWNLOADING_UPDATES}...`;
     }
 
     if (status === GameUpdateStatusEnum.Updating) {
-      return 'Atualizando...';
+      return `${dictionary.hooks.game.GAME_STATUS_UPDATING}...`;
     }
 
     if (status === GameUpdateStatusEnum.Done) {
-      return 'Tudo certo!';
+      return `${dictionary.hooks.game.GAME_STATUS_DONE}!`;
     }
 
     return '';
-  }, [status]);
+  }, [status, dictionary]);
 
   const statusIcon = useMemo(() => {
     if (

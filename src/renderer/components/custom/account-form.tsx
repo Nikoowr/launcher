@@ -4,6 +4,7 @@ import { CalendarIcon } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 
+import { useLang } from '../../hooks/lang';
 import { cn } from '../../lib/utils';
 import { Button } from '../ui/button';
 import { Calendar } from '../ui/calendar';
@@ -18,7 +19,6 @@ import {
 } from '../ui/form';
 import { Input } from '../ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
-import { toast } from '../ui/use-toast';
 
 const accountFormSchema = z.object({
   name: z
@@ -48,16 +48,11 @@ export const AccountForm = () => {
     defaultValues,
   });
 
-  function onSubmit(data: AccountFormValues) {
-    toast({
-      title: 'You submitted the following values:',
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
-  }
+  const { dictionary } = useLang();
+
+  const onSubmit = (data: AccountFormValues) => {
+    console.log('data', data);
+  };
 
   return (
     <Form {...form}>
@@ -67,13 +62,21 @@ export const AccountForm = () => {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Name</FormLabel>
+              <FormLabel>
+                {dictionary.components.custom['account-form'].NAME}
+              </FormLabel>
               <FormControl>
-                <Input placeholder="Your name" {...field} disabled />
+                <Input
+                  placeholder={
+                    dictionary.components.custom['account-form']
+                      .NAME_PLACEHOLDER
+                  }
+                  {...field}
+                  disabled
+                />
               </FormControl>
               <FormDescription>
-                This is the name that will be displayed on your profile and in
-                emails.
+                {dictionary.components.custom['account-form'].NAME_DESCRIPTION}
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -84,7 +87,9 @@ export const AccountForm = () => {
           name="dob"
           render={({ field }) => (
             <FormItem className="flex flex-col">
-              <FormLabel>Date of birth</FormLabel>
+              <FormLabel>
+                {dictionary.components.custom['account-form'].DOB}
+              </FormLabel>
               <Popover>
                 <PopoverTrigger asChild>
                   <FormControl>
@@ -98,7 +103,12 @@ export const AccountForm = () => {
                       {field.value ? (
                         format(field.value, 'PPP')
                       ) : (
-                        <span>Pick a date</span>
+                        <span>
+                          {
+                            dictionary.components.custom['account-form']
+                              .DOB_PICK_A_DATE
+                          }
+                        </span>
                       )}
                       <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                     </Button>
@@ -118,14 +128,14 @@ export const AccountForm = () => {
                 </PopoverContent>
               </Popover>
               <FormDescription>
-                Your date of birth is used to calculate your age.
+                {dictionary.components.custom['account-form'].DOB_DESCRIPTION}
               </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
         <Button type="submit" disabled>
-          Update account
+          {dictionary.components.custom['account-form'].UPDATE_ACCOUNT}
         </Button>
       </form>
     </Form>

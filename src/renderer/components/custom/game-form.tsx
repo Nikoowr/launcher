@@ -1,3 +1,3 @@
 export const GameForm = () => {
-  return <p>Em construção...</p>;
+  return <p>Coming soon...</p>;
 };

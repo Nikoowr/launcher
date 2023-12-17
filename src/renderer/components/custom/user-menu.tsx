@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { RoutesEnum } from '../../constants/routes.constants';
 import { useAuth } from '../../hooks/auth';
 import { useGame } from '../../hooks/game';
+import { useLang } from '../../hooks/lang';
 import { Button } from '../ui/button';
 import {
   DropdownMenu,
@@ -16,6 +17,7 @@ import {
 
 export const UserMenu = () => {
   const navigate = useNavigate();
+  const { dictionary } = useLang();
   const { logout, session } = useAuth();
   const { readToPlay } = useGame();
 
@@ -40,14 +42,14 @@ export const UserMenu = () => {
             className="cursor-pointer"
           >
             <Settings className="mr-2 h-4 w-4" />
-            <span>Settings</span>
+            <span>{dictionary.components.custom['user-menu'].SETTINGS}</span>
           </DropdownMenuItem>
 
           <DropdownMenuSeparator />
 
           <DropdownMenuItem className="cursor-pointer" onClick={logout}>
             <LogOut className="mr-2 h-4 w-4" />
-            <span>Log out</span>
+            <span>{dictionary.components.custom['user-menu'].LOGOUT}</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

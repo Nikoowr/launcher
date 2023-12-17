@@ -2,6 +2,7 @@ import { PlayCircle } from 'lucide-react';
 
 import { IpcEventsEnum } from '../../../main/constants/ipc-events.constants';
 import { useGame } from '../../hooks/game';
+import { useLang } from '../../hooks/lang';
 import { cn } from '../../lib/utils';
 import { Button } from '../ui/button';
 
@@ -17,6 +18,7 @@ export const PlayButton = ({
   disabled = false,
 }: PlayButtonProps) => {
   const { readToPlay, gameInfo } = useGame();
+  const { dictionary } = useLang();
 
   return (
     <div className={`flex flex-col gap-2 ${className}`}>
@@ -30,7 +32,9 @@ export const PlayButton = ({
             <PlayCircle width={24} height={24} />
           </div>
 
-          <span className="ml-3 text-xl font-bold">Jogar</span>
+          <span className="ml-3 text-xl font-bold">
+            {dictionary.components.custom['play-button'].PLAY}
+          </span>
         </Button>
         {/* <Button
           className="m-0 h-full w-[15%] rounded-none bg-pink-900 p-0 hover:bg-pink-950"
@@ -40,14 +44,17 @@ export const PlayButton = ({
         </Button> */}
       </div>
 
-      <span
-        className={cn(
-          'self-end text-sm',
-          readToPlay ? 'text-[#eee]' : 'text-[#fff9]',
-        )}
-      >
-        Versão do jogo: {gameInfo?.version ?? '?'}
-      </span>
+      {gameInfo?.version && (
+        <span
+          className={cn(
+            'self-end text-sm',
+            readToPlay ? 'text-[#eee]' : 'text-[#fff9]',
+          )}
+        >
+          {dictionary.components.custom['play-button'].GAME_VERSION}{' '}
+          {gameInfo?.version}
+        </span>
+      )}
     </div>
   );
 };

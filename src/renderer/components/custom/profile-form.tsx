@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 
 import { useAuth } from '../../hooks/auth';
+import { useLang } from '../../hooks/lang';
 import { Button } from '../ui/button';
 import {
   Form,
@@ -13,7 +14,6 @@ import {
   FormMessage,
 } from '../ui/form';
 import { Input } from '../ui/input';
-import { toast } from '../ui/use-toast';
 
 const profileFormSchema = z.object({
   username: z
@@ -35,6 +35,7 @@ type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
 export const ProfileForm = () => {
   const { session } = useAuth();
+  const { dictionary } = useLang();
 
   const defaultValues: Partial<ProfileFormValues> = {
     username: session.user,
@@ -47,14 +48,7 @@ export const ProfileForm = () => {
   });
 
   const onSubmit = (data: ProfileFormValues) => {
-    toast({
-      title: 'You submitted the following values:',
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
+    console.log('data', data);
   };
 
   return (
@@ -65,9 +59,11 @@ export const ProfileForm = () => {
           name="username"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Username</FormLabel>
+              <FormLabel>
+                {dictionary.components.custom['profile-form'].USERNAME}
+              </FormLabel>
               <FormControl>
-                <Input placeholder="shadcn" {...field} disabled />
+                <Input placeholder="babama" {...field} disabled />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -78,7 +74,9 @@ export const ProfileForm = () => {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>
+                {dictionary.components.custom['profile-form'].EMAIL}
+              </FormLabel>
               <Input placeholder="babama@saphael.com" {...field} disabled />
               <FormMessage />
             </FormItem>
@@ -86,7 +84,7 @@ export const ProfileForm = () => {
         />
 
         <Button type="submit" disabled>
-          Update profile
+          {dictionary.components.custom['profile-form'].UPDATE_PROFILE}
         </Button>
       </form>
     </Form>

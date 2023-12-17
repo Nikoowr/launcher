@@ -24,7 +24,7 @@ export const SignInForm = () => {
       <div className="grid gap-2">
         <div className="grid gap-1">
           <Label className="" htmlFor="user">
-            {dictionary.components.custom.USER}
+            {dictionary.components.custom['sign-in-form'].USER}
           </Label>
           <Input
             onChange={(event) => setUser(event.target.value)}
@@ -37,7 +37,7 @@ export const SignInForm = () => {
           />
 
           <Label className="mt-2" htmlFor="password">
-            {dictionary.components.custom.PASSWORD}
+            {dictionary.components.custom['sign-in-form'].PASSWORD}
           </Label>
           <Input
             onChange={(event) => setPassword(event.target.value)}
@@ -52,7 +52,7 @@ export const SignInForm = () => {
 
         <Button disabled={loading} className="mt-2">
           {loading && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />}
-          {dictionary.components.custom.LOGIN}
+          {dictionary.components.custom['sign-in-form'].LOGIN}
         </Button>
       </div>
     </form>

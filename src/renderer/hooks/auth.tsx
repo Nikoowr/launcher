@@ -10,6 +10,7 @@ import {
 
 import { IpcEventsEnum } from '../../main/constants/ipc-events.constants';
 import { useToast } from '../components/ui/use-toast';
+import { useLang } from './lang';
 
 type AuthProviderProps = {
   children: ReactNode;
@@ -45,6 +46,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [sessionLoading, setSessionLoading] = useState(true);
   const [session, setSession] = useState<Session>({});
 
+  const { dictionary } = useLang();
   const { toast } = useToast();
 
   const login = useCallback((credentials: Credentials) => {
@@ -72,15 +74,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
         toast({
           variant: 'destructive',
-          title: 'Erro no login',
-          description:
-            'Ocorreu um erro ao realizar login, tente novamente mais tarde.',
+          title: dictionary.hooks.auth.LOGIN_ERROR_TOAST_TITLE,
+          description: dictionary.hooks.auth.LOGIN_ERROR_TOAST_DESCRIPTION,
         });
       } finally {
         setLoading(false);
       }
     },
-    [toast, handleSession],
+    [toast, handleSession, dictionary],
   );
 
   // Sign in / Sign out useEffects

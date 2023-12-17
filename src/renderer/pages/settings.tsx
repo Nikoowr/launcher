@@ -4,11 +4,11 @@ import { useNavigate } from 'react-router-dom';
 
 import { SettingsAccountPage } from '../components/custom/settings-account-page';
 import { SettingsGamePage } from '../components/custom/settings-game-page';
-import { SettingsProfilePage } from '../components/custom/settings-profile-page';
 import { SidebarNav } from '../components/custom/sidebar-nav';
 import { Button } from '../components/ui/button';
 import { Separator } from '../components/ui/separator';
 import { RoutesEnum } from '../constants/routes.constants';
+import { useLang } from '../hooks/lang';
 
 export type Tab = {
   Tab: ReactNode;
@@ -16,26 +16,28 @@ export type Tab = {
   id: string;
 };
 
-const sidebarTabItems: Tab[] = [
-  {
-    Tab: <SettingsProfilePage />,
-    title: 'Profile',
-    id: 'profile',
-  },
-  {
-    Tab: <SettingsAccountPage />,
-    title: 'Account',
-    id: 'account',
-  },
-  {
-    Tab: <SettingsGamePage />,
-    title: 'Game',
-    id: 'game',
-  },
-];
-
 export const Settings = () => {
   const navigate = useNavigate();
+  const { dictionary } = useLang();
+
+  const sidebarTabItems: Tab[] = [
+    // {
+    //   Tab: <SettingsProfilePage />,
+    //   title: 'Profile',
+    //   id: 'profile',
+    // },
+    {
+      Tab: <SettingsAccountPage />,
+      title: dictionary.pages.settings.TAB_ACCOUNT,
+      id: 'account',
+    },
+    {
+      Tab: <SettingsGamePage />,
+      title: dictionary.pages.settings.TAB_GAME,
+      id: 'game',
+    },
+  ];
+
   const [selectedTab, setSelectedTab] = useState(sidebarTabItems[0]);
 
   const onSelectTab = (tab: Tab) => {
@@ -52,10 +54,12 @@ export const Settings = () => {
           >
             <ArrowLeft />
           </Button>
-          <h2 className="text-2xl font-bold tracking-tight">Settings</h2>
+          <h2 className="text-2xl font-bold tracking-tight">
+            {dictionary.pages.settings.TITLE}
+          </h2>
         </div>
         <p className="text-muted-foreground">
-          Manage your account settings and set e-mail preferences.
+          {dictionary.pages.settings.DESCRIPTION}
         </p>
       </div>
       <Separator className="my-6" />
