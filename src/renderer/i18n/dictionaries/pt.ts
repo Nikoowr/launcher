@@ -55,9 +55,15 @@ export const ptDictionary: Dictionary = {
         DESCRIPTION: 'É assim que outras pessoas verão você no site.',
       },
       'sign-in-form': {
-        USER: 'Nome de usuário',
+        EMAIL: 'E-mail',
         PASSWORD: 'Senha',
         LOGIN: 'Entrar',
+        FORM_EMAIL_ERROR: 'Por favor, preencha um e-mail válido',
+        FORM_PASSWORD_ERROR: 'Por favor, preencha uma senha válida',
+        FORM_PASSWORD_LENGTH_ERROR: 'A senha deve ter no mínimo 6 caracteres',
+        TOAST_ERROR_TITLE: 'Ocorreu um erro ao fazer login',
+        TOAST_ERROR_DESCRIPTION:
+          'Por favor, tente novamente mais tarde. Se o problema persistir, entre em contato com nossos administradores via Discord.',
       },
       'user-menu': {
         SETTINGS: 'Configurações',

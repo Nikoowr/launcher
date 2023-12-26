@@ -55,9 +55,16 @@ export const esDictionary: Dictionary = {
         DESCRIPTION: 'Así es como te verán otras personas en el sitio.',
       },
       'sign-in-form': {
-        USER: 'Nombre de usuario',
+        EMAIL: 'Email',
         PASSWORD: 'Contraseña',
         LOGIN: 'Iniciar sesión',
+        FORM_EMAIL_ERROR: 'Por favor, ingrese un correo electrónico válido',
+        FORM_PASSWORD_ERROR: 'Por favor, ingrese una contraseña válida',
+        FORM_PASSWORD_LENGTH_ERROR:
+          'La contraseña debe tener al menos 6 caracteres',
+        TOAST_ERROR_TITLE: 'Se produjo un error al iniciar sesión',
+        TOAST_ERROR_DESCRIPTION:
+          'Por favor, inténtelo de nuevo más tarde. Si el problema persiste, póngase en contacto con nuestros administradores a través de Discord.',
       },
       'user-menu': {
         SETTINGS: 'Configuraciones',

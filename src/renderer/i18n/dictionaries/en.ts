@@ -54,9 +54,16 @@ export const enDictionary: Dictionary = {
         DESCRIPTION: 'This is how others will see you on the site.',
       },
       'sign-in-form': {
-        USER: 'Username',
+        EMAIL: 'Email',
         PASSWORD: 'Password',
         LOGIN: 'Log in',
+        FORM_EMAIL_ERROR: 'Please enter a valid email',
+        FORM_PASSWORD_ERROR: 'Please enter a valid password',
+        FORM_PASSWORD_LENGTH_ERROR:
+          'Password must be at least 6 characters long',
+        TOAST_ERROR_TITLE: 'An error occurred while logging in',
+        TOAST_ERROR_DESCRIPTION:
+          'Please try again later. If the problem persists, contact our administrators via Discord.',
       },
       'user-menu': {
         SETTINGS: 'Settings',

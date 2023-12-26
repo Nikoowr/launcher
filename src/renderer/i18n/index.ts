@@ -60,9 +60,14 @@ export type Dictionary = {
         DESCRIPTION: string;
       };
       'sign-in-form': {
-        USER: string;
+        EMAIL: string;
         PASSWORD: string;
         LOGIN: string;
+        FORM_EMAIL_ERROR: string;
+        FORM_PASSWORD_ERROR: string;
+        FORM_PASSWORD_LENGTH_ERROR: string;
+        TOAST_ERROR_TITLE: string;
+        TOAST_ERROR_DESCRIPTION: string;
       };
       'user-menu': {
         SETTINGS: string;

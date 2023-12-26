@@ -55,9 +55,16 @@ export const frDictionary: Dictionary = {
         DESCRIPTION: 'Voici comment les autres vous verront sur le site.',
       },
       'sign-in-form': {
-        USER: "Nom d'utilisateur",
+        EMAIL: 'Email',
         PASSWORD: 'Mot de passe',
         LOGIN: 'Se connecter',
+        FORM_EMAIL_ERROR: 'Veuillez entrer une adresse e-mail valide',
+        FORM_PASSWORD_ERROR: 'Veuillez entrer un mot de passe valide',
+        FORM_PASSWORD_LENGTH_ERROR:
+          'Le mot de passe doit comporter au moins 6 caractères',
+        TOAST_ERROR_TITLE: "Une erreur s'est produite lors de la connexion",
+        TOAST_ERROR_DESCRIPTION:
+          'Veuillez réessayer plus tard. Si le problème persiste, contactez nos administrateurs via Discord.',
       },
       'user-menu': {
         SETTINGS: 'Paramètres',
