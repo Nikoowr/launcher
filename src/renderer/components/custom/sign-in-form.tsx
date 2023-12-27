@@ -28,11 +28,9 @@ export const SignInForm = () => {
         required_error: dictionary.FORM_EMAIL_ERROR,
       })
       .email({ message: dictionary.FORM_EMAIL_ERROR }),
-    password: z
-      .string({
-        required_error: dictionary.FORM_PASSWORD_ERROR,
-      })
-      .min(6, { message: dictionary.FORM_PASSWORD_LENGTH_ERROR }),
+    password: z.string({
+      required_error: dictionary.FORM_PASSWORD_ERROR,
+    }),
   });
 
   type SignInFormValues = z.infer<typeof signInSchema>;

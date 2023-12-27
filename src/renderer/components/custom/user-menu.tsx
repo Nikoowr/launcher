@@ -5,6 +5,7 @@ import { RoutesEnum } from '../../constants/routes.constants';
 import { useAuth } from '../../hooks/auth';
 import { useGame } from '../../hooks/game';
 import { useLang } from '../../hooks/lang';
+import { useUser } from '../../hooks/user';
 import { Button } from '../ui/button';
 import {
   DropdownMenu,
@@ -18,7 +19,8 @@ import {
 export const UserMenu = () => {
   const navigate = useNavigate();
   const { dictionary } = useLang();
-  const { logout, session } = useAuth();
+  const { logout } = useAuth();
+  const { user } = useUser();
   const { readToPlay } = useGame();
 
   return (
@@ -33,7 +35,7 @@ export const UserMenu = () => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="mr-4 w-40">
-          <DropdownMenuLabel>{session?.user || 'Babama'}</DropdownMenuLabel>
+          <DropdownMenuLabel>{user?.name || user?.email}</DropdownMenuLabel>
 
           <DropdownMenuSeparator />
 
