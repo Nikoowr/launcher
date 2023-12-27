@@ -8,9 +8,8 @@ import {
   useState,
 } from 'react';
 
-import { IpcEventsEnum } from '../../main/constants/ipc-events.constants';
-import { useToast } from '../components/ui/use-toast';
-import { useLang } from './lang';
+import { api } from '../services/api/functions';
+import { securityUtils } from '../services/api/utils';
 
 type AuthProviderProps = {
   children: ReactNode;
@@ -18,11 +17,7 @@ type AuthProviderProps = {
 
 type Credentials = {
   password: string;
-  user: string;
-};
-
-type Session = {
-  user?: string;
+  email: string;
 };
 
 type AuthContextData = {
@@ -30,80 +25,47 @@ type AuthContextData = {
   sessionLoading: boolean;
   logout: () => void;
   loggedIn: boolean;
-  session: Session;
   loading: boolean;
-  error: boolean;
 };
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
-const { ipcRenderer } = window.electron;
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [loggedIn, setLoggedIn] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
 
   const [sessionLoading, setSessionLoading] = useState(true);
-  const [session, setSession] = useState<Session>({});
 
-  const { dictionary } = useLang();
-  const { toast } = useToast();
+  const handleSession = useCallback(async () => {
+    setSessionLoading(true);
 
-  const login = useCallback((credentials: Credentials) => {
-    setLoading(true);
-    setError(false);
-    ipcRenderer.sendMessage(IpcEventsEnum.SignIn, credentials);
-  }, []);
+    const session = await securityUtils.getUserSession();
 
-  const logout = useCallback(() => {
-    ipcRenderer.sendMessage(IpcEventsEnum.SignOut);
-  }, []);
-
-  const handleSession = useCallback((session?: Session) => {
-    setLoggedIn(!!session?.user);
-    setSession(session || {});
     setSessionLoading(false);
+    setLoggedIn(!!session);
   }, []);
 
-  const handleSignIn = useCallback(
-    async (session?: Session) => {
-      try {
-        handleSession(session);
-      } catch (error) {
-        setError(true);
+  const login = useCallback(
+    async (credentials: Credentials) => {
+      setLoading(true);
+      const session = await api.createSession(credentials);
 
-        toast({
-          variant: 'destructive',
-          title: dictionary.hooks.auth.LOGIN_ERROR_TOAST_TITLE,
-          description: dictionary.hooks.auth.LOGIN_ERROR_TOAST_DESCRIPTION,
-        });
-      } finally {
-        setLoading(false);
-      }
+      await securityUtils.saveUserAuth({ session, credentials });
+
+      await handleSession();
+
+      setLoading(false);
     },
-    [toast, handleSession, dictionary],
+    [handleSession],
   );
 
-  // Sign in / Sign out useEffects
-  useEffect(() => {
-    ipcRenderer.on(IpcEventsEnum.SignIn, async (dto?: Session) => {
-      await handleSignIn(dto);
-    });
-  }, [handleSignIn]);
-
-  useEffect(() => {
-    ipcRenderer.on(IpcEventsEnum.SignOut, () => {
-      setLoggedIn(false);
-    });
-  }, []);
-
-  // Session useEffects
-  useEffect(() => {
-    ipcRenderer.sendMessage(IpcEventsEnum.GetUserSession);
+  const logout = useCallback(async () => {
+    await securityUtils.deleteUserAuth();
+    setLoggedIn(false);
   }, []);
 
   useEffect(() => {
-    ipcRenderer.on(IpcEventsEnum.GetUserSession, handleSession);
+    handleSession();
   }, [handleSession]);
 
   const contextValue = useMemo(
@@ -111,12 +73,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
       sessionLoading,
       loggedIn,
       loading,
-      session,
       logout,
       login,
-      error,
     }),
-    [sessionLoading, loggedIn, loading, session, logout, login, error],
+    [sessionLoading, loggedIn, loading, logout, login],
   );
 
   return (

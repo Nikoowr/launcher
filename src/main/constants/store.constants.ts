@@ -1,3 +1,4 @@
 export enum UserDataStorageFilenamesEnum {
-  UserSession = 'session.txt',
+  UserSession = 'session.json',
+  UserLogin = 'login.txt',
 }

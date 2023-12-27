@@ -4,6 +4,7 @@ import { AppProvider } from './app';
 import { AuthProvider } from './auth';
 import { GameProvider } from './game';
 import { LangProvider } from './lang';
+import { UserProvider } from './user';
 
 type ProvidersProps = {
   children: ReactNode;
@@ -14,7 +15,9 @@ export const Providers = ({ children }: ProvidersProps) => {
     <LangProvider>
       <AppProvider>
         <AuthProvider>
-          <GameProvider>{children}</GameProvider>
+          <UserProvider>
+            <GameProvider>{children}</GameProvider>
+          </UserProvider>
         </AuthProvider>
       </AppProvider>
     </LangProvider>

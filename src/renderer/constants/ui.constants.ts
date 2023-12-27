@@ -14,6 +14,6 @@ export enum LogoColorsByThemeEnum {
 }
 
 export const LOGO_COLORS_BY_THEME = {
-  [ThemesEnum.Dark]: LogoColorsByThemeEnum.Dark,
   [ThemesEnum.Light]: LogoColorsByThemeEnum.Light,
+  [ThemesEnum.Dark]: LogoColorsByThemeEnum.Dark,
 };

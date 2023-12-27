@@ -10,10 +10,17 @@ export class SignOutService implements SignOutServiceInterface {
   constructor(private readonly fileConfig: FileConfig) {}
 
   public async execute({ ipcEvent }: SignOutServiceDto): Promise<void> {
-    await this.fileConfig.delete({
+    const userSessionPromise = this.fileConfig.delete({
       filename: UserDataStorageFilenamesEnum.UserSession,
       directory: this.fileConfig.userDataDirectory,
     });
+
+    const userLoginPromise = this.fileConfig.delete({
+      filename: UserDataStorageFilenamesEnum.UserLogin,
+      directory: this.fileConfig.userDataDirectory,
+    });
+
+    await Promise.all([userSessionPromise, userLoginPromise]);
 
     ipcEvent.reply(IpcEventsEnum.SignOut);
   }

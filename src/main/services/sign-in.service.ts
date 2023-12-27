@@ -1,8 +1,7 @@
 import { IpcEventsEnum } from '../constants/ipc-events.constants';
 import { UserDataStorageFilenamesEnum } from '../constants/store.constants';
 import {
-  CryptographyConfig,
-  EnvConfig,
+  ApiConfig,
   FileConfig,
   SignInServiceDto,
   SignInService as SignInServiceInterface,
@@ -10,31 +9,34 @@ import {
 
 export class SignInService implements SignInServiceInterface {
   constructor(
-    private readonly cryptographyConfig: CryptographyConfig,
     private readonly fileConfig: FileConfig,
-    private readonly envConfig: EnvConfig,
+    private readonly apiConfig: ApiConfig,
   ) {}
 
   public async execute({
-    password,
+    credentials,
+    session,
     ipcEvent,
-    user,
   }: SignInServiceDto): Promise<void> {
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-
-    const combinedText = `${user}::${password}`;
-
-    const encryptedText = await this.cryptographyConfig.encrypt({
-      key: this.envConfig.USER_DATA_ENCRYPTION_KEY,
-      data: combinedText,
+    const { login } = await this.apiConfig.gameLogin({
+      accessToken: session.accessToken,
+      password: credentials.password,
     });
 
-    await this.fileConfig.write({
+    const userLoginPromise = this.fileConfig.write({
+      filename: UserDataStorageFilenamesEnum.UserLogin,
+      directory: this.fileConfig.userDataDirectory,
+      data: login,
+    });
+
+    const userSessionPromise = this.fileConfig.write({
       filename: UserDataStorageFilenamesEnum.UserSession,
       directory: this.fileConfig.userDataDirectory,
-      data: encryptedText,
+      data: JSON.stringify(session),
     });
 
-    ipcEvent.reply(IpcEventsEnum.SignIn, { user });
+    await Promise.all([userLoginPromise, userSessionPromise]);
+
+    ipcEvent.reply(IpcEventsEnum.SignIn);
   }
 }

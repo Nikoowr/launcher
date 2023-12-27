@@ -20,7 +20,7 @@ import { Icons } from './icons';
 export const SignInForm = () => {
   const { dictionary: localeDictionary } = useLang();
   const dictionary = localeDictionary.components.custom['sign-in-form'];
-  const { loading } = useAuth();
+  const { login, loading } = useAuth();
 
   const signInSchema = z.object({
     email: z
@@ -43,12 +43,9 @@ export const SignInForm = () => {
     mode: 'onSubmit',
   });
 
-  const onSubmit = async (data: SignInFormValues) => {
+  const onSubmit = async ({ email, password }: SignInFormValues) => {
     try {
-      console.log('data', data);
-
-      throw new Error();
-      // login()
+      login({ password, email });
     } catch (error) {
       toast({
         title: dictionary.TOAST_ERROR_TITLE,

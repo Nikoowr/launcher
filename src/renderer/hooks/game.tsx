@@ -187,14 +187,14 @@ export function GameProvider({ children }: GameProviderProps) {
 
   const contextValue = useMemo(
     () => ({
+      fileUpdating,
       statusIcon,
       readToPlay,
-      fileUpdating,
       statusText,
       progress,
       gameInfo,
     }),
-    [statusIcon, readToPlay, fileUpdating, statusText, progress, gameInfo],
+    [fileUpdating, statusIcon, readToPlay, statusText, progress, gameInfo],
   );
 
   return (

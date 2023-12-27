@@ -5,9 +5,13 @@ export * from './configs/game-updater.config';
 export * from './configs/file.config';
 export * from './configs/menu.config';
 export * from './configs/env.config';
+export * from './configs/api.config';
 
 // Controllers
 export * from './controllers/ipc-events.controller';
+
+// Models
+export * from './models/session.model';
 
 // Services
 export * from './services/get-user-session.service';

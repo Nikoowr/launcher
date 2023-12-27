@@ -61,6 +61,7 @@ export class UpdateGameService implements UpdateGameServiceInterface {
       ipcEvent.reply(IpcEventsEnum.UpdateGame, {
         progress: ((index + 1) / versionsToDownload.length) * 50,
         status: GameUpdateStatusEnum.Downloading,
+        currentFilename: versionToDownload,
       });
     }
 
@@ -70,9 +71,13 @@ export class UpdateGameService implements UpdateGameServiceInterface {
     for (const [index, fileChange] of fileChangesValues.entries()) {
       await this.handleFileChange(fileChange);
 
+      const splitFilepath = fileChange.filepath.split('/');
+      const filename = splitFilepath[splitFilepath.length - 1];
+
       ipcEvent.reply(IpcEventsEnum.UpdateGame, {
         progress: ((index + 1) / fileChangesValues.length) * 99,
         status: GameUpdateStatusEnum.Updating,
+        currentFilename: filename,
       });
     }
 
@@ -83,8 +88,8 @@ export class UpdateGameService implements UpdateGameServiceInterface {
 
     await this.fileConfig.write({
       directory: this.fileConfig.gameDirectory,
-      filename: GameFilesEnum.GameInfo,
       data: JSON.stringify(latestGameInfo),
+      filename: GameFilesEnum.GameInfo,
     });
 
     ipcEvent.reply(IpcEventsEnum.GetGameInfo, latestGameInfo);
@@ -190,8 +195,8 @@ export class UpdateGameService implements UpdateGameServiceInterface {
     await this.fileConfig.download({
       directory: this.fileConfig.gameDirectory,
       filename: mappedFilepath,
-      url,
       id: url,
+      url,
     });
   }
 

@@ -4,3 +4,4 @@ export * from './game-updater.config';
 export * from './file.config';
 export * from './menu.config';
 export * from './env.config';
+export * from './api.config';

@@ -2,36 +2,26 @@ import { FileConfig } from '../configs';
 import { IpcEventsEnum } from '../constants/ipc-events.constants';
 import { UserDataStorageFilenamesEnum } from '../constants/store.constants';
 import {
-  CryptographyConfig,
-  EnvConfig,
   GetUserSessionServiceDto,
   GetUserSessionService as GetUserSessionServiceInterface,
+  Session,
 } from '../interfaces';
 
 export class GetUserSessionService implements GetUserSessionServiceInterface {
-  constructor(
-    private readonly cryptographyConfig: CryptographyConfig,
-    private readonly fileConfig: FileConfig,
-    private readonly envConfig: EnvConfig,
-  ) {}
+  constructor(private readonly fileConfig: FileConfig) {}
 
   public async execute({ ipcEvent }: GetUserSessionServiceDto): Promise<void> {
-    const encryptedSession = await this.fileConfig.read({
+    const sessionJson = await this.fileConfig.read({
       filename: UserDataStorageFilenamesEnum.UserSession,
       directory: this.fileConfig.userDataDirectory,
     });
 
-    if (!encryptedSession) {
-      return ipcEvent.reply(IpcEventsEnum.GetUserSession, {});
+    if (!sessionJson) {
+      return ipcEvent.reply(IpcEventsEnum.GetUserSession, null);
     }
 
-    const session = await this.cryptographyConfig.decrypt({
-      key: this.envConfig.USER_DATA_ENCRYPTION_KEY,
-      data: encryptedSession,
-    });
+    const session = JSON.parse(sessionJson) as Session;
 
-    const [user] = session.split('::');
-
-    ipcEvent.reply(IpcEventsEnum.GetUserSession, { user });
+    ipcEvent.reply(IpcEventsEnum.GetUserSession, session);
   }
 }

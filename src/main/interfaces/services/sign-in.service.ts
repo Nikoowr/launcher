@@ -1,9 +1,14 @@
 import type { IpcMainEvent } from 'electron';
 
+import { Session } from '../models/session.model';
+
 export type SignInServiceDto = {
   ipcEvent: IpcMainEvent;
-  password: string;
-  user: string;
+  session: Session;
+  credentials: {
+    password: string;
+    email: string;
+  };
 };
 
 export interface SignInService {

@@ -1,6 +1,7 @@
 import { app as electronApp } from 'electron';
 
 import {
+  ApiConfig,
   AutoUpdaterConfig,
   CryptographyConfig,
   FileConfig,
@@ -33,17 +34,14 @@ export const container = ({ app }: ContainerDto) => {
     envConfig,
   );
   const gameUpdaterConfig = new GameUpdaterConfig(envConfig);
+  const apiConfig = new ApiConfig(envConfig);
 
   const playGameService = new PlayGameService(
     cryptographyConfig,
     fileConfig,
     envConfig,
   );
-  const signInService = new SignInService(
-    cryptographyConfig,
-    fileConfig,
-    envConfig,
-  );
+  const signInService = new SignInService(fileConfig, apiConfig);
   const downloadGameService = new DownloadGameService(fileConfig, envConfig);
   const updateGameService = new UpdateGameService(
     gameUpdaterConfig,
@@ -51,11 +49,7 @@ export const container = ({ app }: ContainerDto) => {
     envConfig,
   );
   const signOutService = new SignOutService(fileConfig);
-  const getUserSessionService = new GetUserSessionService(
-    cryptographyConfig,
-    fileConfig,
-    envConfig,
-  );
+  const getUserSessionService = new GetUserSessionService(fileConfig);
   const getGameInfoService = new GetGameInfoService(fileConfig);
 
   const ipcEventsController = new IpcEventsController(app, {

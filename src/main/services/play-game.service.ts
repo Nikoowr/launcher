@@ -16,21 +16,21 @@ export class PlayGameService implements PlayGameServiceInterface {
   ) {}
 
   public async execute({ ipcEvent }: PlayGameServiceDto): Promise<void> {
-    const encryptedSession = await this.fileConfig.read({
-      filename: UserDataStorageFilenamesEnum.UserSession,
+    const encryptedLogin = await this.fileConfig.read({
+      filename: UserDataStorageFilenamesEnum.UserLogin,
       directory: this.fileConfig.userDataDirectory,
     });
 
-    if (!encryptedSession) {
-      throw new Error('Session not found');
+    if (!encryptedLogin) {
+      throw new Error('Login not found');
     }
 
-    const session = await this.cryptographyConfig.decrypt({
+    const login = await this.cryptographyConfig.decrypt({
       key: this.envConfig.USER_DATA_ENCRYPTION_KEY,
-      data: encryptedSession,
+      data: encryptedLogin,
     });
 
-    const [user, password] = session.split('::');
+    const [user, password] = login.split(':');
 
     await this.fileConfig.openExecutable({
       props: ['EasyFun', `-a ${user}`, `-p ${password}`],
