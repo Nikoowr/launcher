@@ -6,24 +6,28 @@ import {
 
 import { IpcEventsEnum } from '../constants/ipc-events.constants';
 import {
+  CreateGameLoginService,
+  CreateGameLoginServiceDto,
   DownloadGameService,
   GetGameInfoService,
   GetUserSessionService,
   IpcEventsController as IpcEventsControllerInterface,
   PlayGameService,
+  SaveUserSessionService,
+  SaveUserSessionServiceDto,
   SignOutService,
   UpdateGameService,
 } from '../interfaces';
-import { SignInService } from '../services';
 
 type ConstructorServices = {
+  createGameLoginService: CreateGameLoginService;
+  saveUserSessionService: SaveUserSessionService;
   getUserSessionService: GetUserSessionService;
   downloadGameService: DownloadGameService;
   getGameInfoService: GetGameInfoService;
   updateGameService: UpdateGameService;
   playGameService: PlayGameService;
   signOutService: SignOutService;
-  signInService: SignInService;
 };
 
 export class IpcEventsController implements IpcEventsControllerInterface {
@@ -31,6 +35,22 @@ export class IpcEventsController implements IpcEventsControllerInterface {
     private readonly app: typeof electronApp,
     private readonly services: ConstructorServices,
   ) {}
+
+  public async [IpcEventsEnum.SaveUserSession](
+    event: Electron.IpcMainEvent,
+    dto: SaveUserSessionServiceDto,
+  ) {
+    await this.services.saveUserSessionService.execute(dto);
+    event.reply(IpcEventsEnum.SaveUserSession);
+  }
+
+  public async [IpcEventsEnum.CreateGameLogin](
+    event: Electron.IpcMainEvent,
+    dto: CreateGameLoginServiceDto,
+  ) {
+    await this.services.createGameLoginService.execute(dto);
+    event.reply(IpcEventsEnum.CreateGameLogin);
+  }
 
   [IpcEventsEnum.WindowEvent] = (
     event: IpcMainEvent,
@@ -47,16 +67,6 @@ export class IpcEventsController implements IpcEventsControllerInterface {
     }
 
     event.reply(IpcEventsEnum.WindowEvent);
-  };
-
-  [IpcEventsEnum.SignIn] = async (
-    event: Electron.IpcMainEvent,
-    credentials: { user: string; password: string },
-  ) => {
-    await this.services.signInService.execute({
-      ...credentials,
-      ipcEvent: event,
-    });
   };
 
   [IpcEventsEnum.SignOut] = async (event: Electron.IpcMainEvent) => {

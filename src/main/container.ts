@@ -11,11 +11,12 @@ import {
 } from './configs';
 import { IpcEventsController } from './controllers';
 import {
+  CreateGameLoginService,
   DownloadGameService,
   GetGameInfoService,
   GetUserSessionService,
   PlayGameService,
-  SignInService,
+  SaveUserSessionService,
   SignOutService,
   UpdateGameService,
 } from './services';
@@ -41,7 +42,10 @@ export const container = ({ app }: ContainerDto) => {
     fileConfig,
     envConfig,
   );
-  const signInService = new SignInService(fileConfig, apiConfig);
+  const createGameLoginService = new CreateGameLoginService(
+    fileConfig,
+    apiConfig,
+  );
   const downloadGameService = new DownloadGameService(fileConfig, envConfig);
   const updateGameService = new UpdateGameService(
     gameUpdaterConfig,
@@ -51,15 +55,17 @@ export const container = ({ app }: ContainerDto) => {
   const signOutService = new SignOutService(fileConfig);
   const getUserSessionService = new GetUserSessionService(fileConfig);
   const getGameInfoService = new GetGameInfoService(fileConfig);
+  const saveUserSessionService = new SaveUserSessionService(fileConfig);
 
   const ipcEventsController = new IpcEventsController(app, {
+    saveUserSessionService,
+    createGameLoginService,
     getUserSessionService,
     downloadGameService,
     getGameInfoService,
     updateGameService,
     playGameService,
     signOutService,
-    signInService,
   });
 
   return { ipcEventsController, autoUpdaterConfig, menuConfig };

@@ -60,9 +60,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
       try {
         setLoading(true);
         const session = await api.createSession(credentials);
-        await sessionUtils.saveUserAuth({ session, credentials });
+        await sessionUtils.saveSession({ session });
+        await sessionUtils.createGameLogin({ session, credentials });
         await handleSession();
-      } catch {
+      } catch (loginError) {
+        console.error(loginError);
+
         if (error) {
           toast({
             title: error.title,

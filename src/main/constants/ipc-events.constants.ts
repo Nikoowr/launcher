@@ -7,6 +7,8 @@ export enum IpcEventsEnum {
   AutoUpdateQuitAndInstall = 'auto-update-quit-and-install',
   AutoUpdaterFoundUpdate = 'auto-updater-found-update',
   OpenExternalLink = 'open-external-link',
+  SaveUserSession = 'save-user-session',
+  CreateGameLogin = 'create-game-login',
   GetUserSession = 'get-user-session',
   DownloadGame = 'download-game',
   GetGameInfo = 'get-game-info',
@@ -14,6 +16,5 @@ export enum IpcEventsEnum {
   GetAppInfo = 'get-app-info',
   UpdateGame = 'update-game',
   SignOut = 'sign-out',
-  SignIn = 'sign-in',
   Play = 'play',
 }

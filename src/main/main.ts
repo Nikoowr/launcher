@@ -108,8 +108,12 @@ ipcMain.on(IpcEventsEnum.WindowEvent, async (event, action) =>
   ipcEventsController?.[IpcEventsEnum.WindowEvent](event, action, mainWindow),
 );
 
-ipcMain.on(IpcEventsEnum.SignIn, async (event, dto) =>
-  ipcEventsController?.[IpcEventsEnum.SignIn](event, dto),
+ipcMain.on(IpcEventsEnum.SaveUserSession, async (event, dto) =>
+  ipcEventsController?.[IpcEventsEnum.SaveUserSession](event, dto),
+);
+
+ipcMain.on(IpcEventsEnum.CreateGameLogin, async (event, dto) =>
+  ipcEventsController?.[IpcEventsEnum.CreateGameLogin](event, dto),
 );
 
 ipcMain.on(IpcEventsEnum.SignOut, async (event) =>

@@ -1,9 +1,6 @@
 import axios, { AxiosError } from 'axios';
 
 import { interceptors } from './interceptors';
-import { securityUtils, sessionUtils } from './utils';
-
-console.log(securityUtils, sessionUtils);
 
 export const apiConfig = axios.create({
   baseURL: process.env.API_URL,

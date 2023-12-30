@@ -14,10 +14,11 @@ export * from './controllers/ipc-events.controller';
 export * from './models/session.model';
 
 // Services
+export * from './services/save-user-session.service';
+export * from './services/create-game-login.service';
 export * from './services/get-user-session.service';
 export * from './services/get-game-info.service';
 export * from './services/download-game.service';
 export * from './services/update-game.service';
 export * from './services/play-game.service';
 export * from './services/sign-out.service';
-export * from './services/sign-in.service';

@@ -18,21 +18,22 @@ export const refreshTokenInterceptor: ResponseInterceptor = async (
         throw new Error('Refresh token does not exist');
       }
 
-      const refreshToken = session?.refreshToken;
+      const refreshedSession = await sessionUtils.refreshSession(
+        session.refreshToken,
+      );
 
-      const refreshedSession = await sessionUtils.refreshSession(refreshToken);
+      await new Promise((resolve) => setTimeout(resolve, 3000));
 
       if (!refreshedSession) {
         throw new Error('Session cannot be refreshed');
       }
 
-      apiConfig.defaults.headers.common.Authorization = `Bearer ${refreshedSession.accessToken}`;
-
-      // await securityUtils.saveUserSession(session);
+      await sessionUtils.saveSession({ session: refreshedSession });
 
       return apiConfig(originalRequest);
     } catch (refreshSessionError) {
-      // await securityUtils.deleteUserAuth();
+      await sessionUtils.deleteSession();
+
       return Promise.reject(refreshSessionError);
     }
   }

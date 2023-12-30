@@ -41,24 +41,30 @@ export class SessionUtils {
     });
   }
 
-  public async saveSession(session: Session): Promise<void> {
-    console.log('session', session);
-    ///
+  public async saveSession({ session }: { session: Session }): Promise<void> {
+    return new Promise((resolve) => {
+      ipcRenderer.once(IpcEventsEnum.SaveUserSession, resolve);
+      ipcRenderer.sendMessage(IpcEventsEnum.SaveUserSession, { session });
+    });
   }
 
   public async deleteSession() {
     const session = await this.getSession();
 
     if (session?.accessToken) {
-      await this.api.delete(ApiRoutesEnum.DeleteSessionRoute, {
-        headers: { Authorization: `Bearer ${session.accessToken}` },
-      });
+      try {
+        await this.api.delete(ApiRoutesEnum.DeleteSessionRoute, {
+          headers: { Authorization: `Bearer ${session.accessToken}` },
+        });
+      } catch {}
     }
 
     await new Promise((resolve) => {
       ipcRenderer.once(IpcEventsEnum.SignOut, resolve);
       ipcRenderer.sendMessage(IpcEventsEnum.SignOut);
     });
+
+    // window.location.pathname = '/';
   }
 
   public async refreshSession(refreshToken: string): Promise<Session | null> {
@@ -76,7 +82,7 @@ export class SessionUtils {
     }
   }
 
-  public async saveUserAuth({
+  public async createGameLogin({
     credentials,
     session,
   }: {
@@ -84,9 +90,9 @@ export class SessionUtils {
     session: Session;
   }) {
     return new Promise((resolve) => {
-      ipcRenderer.once(IpcEventsEnum.SignIn, resolve);
+      ipcRenderer.once(IpcEventsEnum.CreateGameLogin, resolve);
 
-      ipcRenderer.sendMessage(IpcEventsEnum.SignIn, {
+      ipcRenderer.sendMessage(IpcEventsEnum.CreateGameLogin, {
         credentials,
         session,
       });

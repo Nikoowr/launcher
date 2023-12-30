@@ -26,8 +26,10 @@ export const UserProvider = ({ children }: UserProviderProps) => {
   const { loggedIn, logout } = useAuth();
 
   const getUser = async () => {
-    const data = await api.getUserMe();
-    setUser(data?.user);
+    try {
+      const data = await api.getUserMe();
+      setUser(data?.user);
+    } catch {}
   };
 
   useEffect(() => {
