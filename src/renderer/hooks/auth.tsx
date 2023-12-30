@@ -63,9 +63,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         await sessionUtils.saveSession({ session });
         await sessionUtils.createGameLogin({ session, credentials });
         await handleSession();
-      } catch (loginError) {
-        console.error(loginError);
-
+      } catch {
         if (error) {
           toast({
             title: error.title,

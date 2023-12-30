@@ -8,6 +8,7 @@ import {
 
 import { User } from '../interfaces';
 import { api } from '../services/api/functions';
+import { UpdateUserDto } from '../services/api/functions/updateUser';
 import { useAuth } from './auth';
 
 type UserProviderProps = {
@@ -15,6 +16,7 @@ type UserProviderProps = {
 };
 
 type UserContextData = {
+  updateUser: (dto: UpdateUserDto) => Promise<void>;
   user: User;
 };
 
@@ -32,6 +34,13 @@ export const UserProvider = ({ children }: UserProviderProps) => {
     } catch {}
   };
 
+  const updateUser = async ({ user }: UpdateUserDto) => {
+    try {
+      await api.updateUser({ user });
+      setUser((oldState) => ({ ...oldState, ...user }));
+    } catch (error) {}
+  };
+
   useEffect(() => {
     if (loggedIn) {
       getUser();
@@ -45,7 +54,9 @@ export const UserProvider = ({ children }: UserProviderProps) => {
   });
 
   return (
-    <UserContext.Provider value={{ user }}>{children}</UserContext.Provider>
+    <UserContext.Provider value={{ user, updateUser }}>
+      {children}
+    </UserContext.Provider>
   );
 };
 

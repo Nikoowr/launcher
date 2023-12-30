@@ -1,10 +1,12 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 
 import { useLang } from '../../hooks/lang';
+import { useUser } from '../../hooks/user';
 import { cn } from '../../lib/utils';
 import { Button } from '../ui/button';
 import { Calendar } from '../ui/calendar';
@@ -19,6 +21,8 @@ import {
 } from '../ui/form';
 import { Input } from '../ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+import { toast } from '../ui/use-toast';
+import { Icons } from './icons';
 
 const accountFormSchema = z.object({
   name: z
@@ -29,18 +33,22 @@ const accountFormSchema = z.object({
     .max(30, {
       message: 'Name must not be longer than 30 characters.',
     }),
-  dob: z.date({
-    required_error: 'A date of birth is required.',
-  }),
+  dob: z
+    .date({
+      required_error: 'A date of birth is required.',
+    })
+    .optional(),
 });
 
 type AccountFormValues = z.infer<typeof accountFormSchema>;
 
 export const AccountForm = () => {
-  // This can come from your database or API.
+  const [loading, setLoading] = useState(false);
+  const { user, updateUser } = useUser();
+
   const defaultValues: Partial<AccountFormValues> = {
-    // name: "Your name",
-    // dob: new Date("2023-01-23"),
+    dob: user.dof ? new Date(user.dof) : undefined,
+    name: user.name,
   };
 
   const form = useForm<AccountFormValues>({
@@ -50,8 +58,32 @@ export const AccountForm = () => {
 
   const { dictionary } = useLang();
 
-  const onSubmit = (data: AccountFormValues) => {
-    console.log('data', data);
+  const onSubmit = async (data: AccountFormValues) => {
+    setLoading(true);
+
+    try {
+      await updateUser({
+        user: {
+          dof: data?.dob?.toISOString(),
+          name: data.name,
+        },
+      });
+
+      toast({
+        title: 'Dados atualizados!',
+        type: 'foreground',
+        duration: 2000,
+      });
+    } catch (error) {
+      toast({
+        title: 'Error',
+        variant: 'destructive',
+        type: 'foreground',
+        duration: 5000,
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -72,7 +104,6 @@ export const AccountForm = () => {
                       .NAME_PLACEHOLDER
                   }
                   {...field}
-                  disabled
                 />
               </FormControl>
               <FormDescription>
@@ -122,8 +153,8 @@ export const AccountForm = () => {
                     // disabled={(date) =>
                     //   date > new Date() || date < new Date('1900-01-01')
                     // }
-                    disabled
                     initialFocus
+                    disabled
                   />
                 </PopoverContent>
               </Popover>
@@ -134,7 +165,8 @@ export const AccountForm = () => {
             </FormItem>
           )}
         />
-        <Button type="submit" disabled>
+        <Button type="submit" disabled={loading}>
+          {loading && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />}
           {dictionary.components.custom['account-form'].UPDATE_ACCOUNT}
         </Button>
       </form>

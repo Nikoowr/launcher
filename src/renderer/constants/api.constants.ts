@@ -5,4 +5,5 @@ export enum ApiRoutesEnum {
   CreateSessionRoute = '/v1/user/session',
   DeleteSessionRoute = '/v1/user/session',
   GetUserMeRoute = '/v1/user/me',
+  UpdateUserRoute = '/v1/user',
 }
