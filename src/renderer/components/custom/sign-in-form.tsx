@@ -14,7 +14,6 @@ import {
   FormMessage,
 } from '../ui/form';
 import { Input } from '../ui/input';
-import { toast } from '../ui/use-toast';
 import { Icons } from './icons';
 
 export const SignInForm = () => {
@@ -42,17 +41,15 @@ export const SignInForm = () => {
   });
 
   const onSubmit = async ({ email, password }: SignInFormValues) => {
-    try {
-      login({ password, email });
-    } catch (error) {
-      toast({
-        title: dictionary.TOAST_ERROR_TITLE,
-        description: dictionary.TOAST_ERROR_DESCRIPTION,
-        variant: 'destructive',
-        type: 'foreground',
-        duration: 5000,
-      });
-    }
+    await login(
+      { password, email },
+      {
+        error: {
+          title: dictionary.TOAST_ERROR_TITLE,
+          description: dictionary.TOAST_ERROR_DESCRIPTION,
+        },
+      },
+    );
   };
 
   return (

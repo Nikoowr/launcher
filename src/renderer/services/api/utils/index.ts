@@ -1,3 +1,7 @@
-import * as securityUtils from './security.utils';
+import { SecurityUtils } from './security.utils';
+import { SessionUtils } from './session.utils';
 
-export { securityUtils };
+const securityUtils = new SecurityUtils();
+const sessionUtils = new SessionUtils();
+
+export { sessionUtils, securityUtils };

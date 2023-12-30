@@ -8,8 +8,9 @@ import {
   useState,
 } from 'react';
 
+import { toast } from '../components/ui/use-toast';
 import { api } from '../services/api/functions';
-import { securityUtils } from '../services/api/utils';
+import { sessionUtils } from '../services/api/utils';
 
 type AuthProviderProps = {
   children: ReactNode;
@@ -20,8 +21,15 @@ type Credentials = {
   email: string;
 };
 
+type LoginOptions = {
+  error?: {
+    description?: string;
+    title: string;
+  };
+};
+
 type AuthContextData = {
-  login: (credentials: Credentials) => void;
+  login: (credentials: Credentials, options?: LoginOptions) => Promise<void>;
   sessionLoading: boolean;
   logout: () => void;
   loggedIn: boolean;
@@ -39,28 +47,40 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const handleSession = useCallback(async () => {
     setSessionLoading(true);
 
-    const session = await securityUtils.getUserSession();
+    const session = await sessionUtils.getSession();
 
     setSessionLoading(false);
     setLoggedIn(!!session);
   }, []);
 
   const login = useCallback(
-    async (credentials: Credentials) => {
-      setLoading(true);
-      const session = await api.createSession(credentials);
+    async (credentials: Credentials, options?: LoginOptions) => {
+      const { error } = options || {};
 
-      await securityUtils.saveUserAuth({ session, credentials });
-
-      await handleSession();
-
-      setLoading(false);
+      try {
+        setLoading(true);
+        const session = await api.createSession(credentials);
+        await sessionUtils.saveUserAuth({ session, credentials });
+        await handleSession();
+      } catch {
+        if (error) {
+          toast({
+            title: error.title,
+            description: error.description,
+            variant: 'destructive',
+            type: 'foreground',
+            duration: 5000,
+          });
+        }
+      } finally {
+        setLoading(false);
+      }
     },
     [handleSession],
   );
 
   const logout = useCallback(async () => {
-    await securityUtils.deleteUserAuth();
+    await sessionUtils.deleteSession();
     setLoggedIn(false);
   }, []);
 

@@ -1,21 +1,23 @@
-import axios, { InternalAxiosRequestConfig } from 'axios';
+import axios, { AxiosError } from 'axios';
 
-import { securityUtils } from './utils';
+import { interceptors } from './interceptors';
+import { securityUtils, sessionUtils } from './utils';
+
+console.log(securityUtils, sessionUtils);
 
 export const apiConfig = axios.create({
   baseURL: process.env.API_URL,
 });
 
 apiConfig.interceptors.request.use(async (config) => {
-  const session = await securityUtils.getUserSession();
-  const token = session?.accessToken;
-
-  return {
-    ...config,
-    headers: {
-      ...config.headers,
-      'x-api-key': securityUtils.generateApiKey(),
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-  } as unknown as InternalAxiosRequestConfig;
+  return interceptors.request.setUserAccessTokenInterceptor(
+    await interceptors.request.setApiKeyInterceptor(config),
+  );
 });
+
+apiConfig.interceptors.response.use(
+  (response) => response,
+  async function (error: AxiosError) {
+    return interceptors.response.refreshTokenInterceptor(apiConfig, error);
+  },
+);
