@@ -83,7 +83,7 @@ export class AutoUpdaterConfig implements AutoUpdaterConfigInterface {
   }
 
   private waitCheckForUpdates() {
-    setTimeout(() => {
+    setInterval(() => {
       this.autoUpdater.checkForUpdates();
     }, this.autoUpdateInterval);
   }
