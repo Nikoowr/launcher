@@ -15,7 +15,9 @@
     "start:main": "cross-env NODE_ENV=development electronmon -r ts-node/register/transpile-only .",
     "start:preload": "cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.preload.dev.ts",
     "start:renderer": "cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack serve --config ./.erb/configs/webpack.config.renderer.dev.ts",
-    "dev": "ts-node ./.erb/scripts/check-port-in-use.js && npm run start:renderer"
+    "start:renderer:uat": "cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true STAGE=uat webpack serve --config ./.erb/configs/webpack.config.renderer.dev.ts",
+    "dev": "ts-node ./.erb/scripts/check-port-in-use.js && npm run start:renderer",
+    "dev:uat": "ts-node ./.erb/scripts/check-port-in-use.js && npm run start:renderer:uat"
   },
   "keywords": [],
   "author": "",
