@@ -14,8 +14,8 @@ import {
 
 type FileChange = {
   action: GameUpdaterActionsEnum;
-  version: string;
   filepath: string;
+  version: string;
 };
 
 type FileChanges = {

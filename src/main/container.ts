@@ -45,6 +45,7 @@ export const container = ({ app }: ContainerDto) => {
   const createGameLoginService = new CreateGameLoginService(
     fileConfig,
     apiConfig,
+    envConfig,
   );
   const downloadGameService = new DownloadGameService(fileConfig, envConfig);
   const updateGameService = new UpdateGameService(

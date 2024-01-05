@@ -20,6 +20,7 @@ const { get } = from(
     GAME_UPDATER_URL: process.env.GAME_UPDATER_URL,
     AUTO_UPDATER_CHANNEL: process.env.AUTO_UPDATER_CHANNEL,
     AUTO_UPDATER_INTERVAL_HOURS: process.env.AUTO_UPDATER_INTERVAL_HOURS,
+    GAME_SERVER_IP: process.env.GAME_SERVER_IP,
     API_URL: process.env.API_URL,
     API_KEY_TEXT: process.env.API_KEY_TEXT,
     API_KEY_TEXT_SALT: process.env.API_KEY_TEXT_SALT,
@@ -56,6 +57,7 @@ export const envConfig: EnvConfig = {
   AUTO_UPDATER_INTERVAL_HOURS: get('AUTO_UPDATER_INTERVAL_HOURS')
     .default(3)
     .asInt(),
+  GAME_SERVER_IP: get('GAME_SERVER_IP').required().asString(),
 
   // API
   API_URL: get('API_URL').required().asString(),

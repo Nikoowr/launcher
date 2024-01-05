@@ -15,6 +15,8 @@ export enum GameUpdateStatusEnum {
 export enum GameFilesEnum {
   ZipToDownload = 'gfchaos-client.zip',
   GameInfo = 'game.json',
+  Connects = 'connects.ini',
+  Connect = 'connect.ini',
 }
 
 export enum GameUpdaterActionsEnum {
