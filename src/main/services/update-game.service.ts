@@ -23,6 +23,11 @@ type FileChanges = {
 };
 
 export class UpdateGameService implements UpdateGameServiceInterface {
+  private readonly excludeFilePaths = [
+    'Data/client/connects.ini',
+    'Data/client/connect.ini',
+  ];
+
   constructor(
     private readonly gameUpdaterConfig: GameUpdaterConfig,
     private readonly fileConfig: FileConfig,
@@ -69,6 +74,10 @@ export class UpdateGameService implements UpdateGameServiceInterface {
 
     // Progress 51 - 99
     for (const [index, fileChange] of fileChangesValues.entries()) {
+      if (this.excludeFilePaths.includes(fileChange.filepath)) {
+        continue;
+      }
+
       await this.handleFileChange(fileChange);
 
       const splitFilepath = fileChange.filepath.split('/');
