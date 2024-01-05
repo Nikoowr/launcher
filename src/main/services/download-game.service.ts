@@ -76,7 +76,7 @@ export class DownloadGameService implements DownloadGameServiceInterface {
   }
 
   private async downloadZip({ ipcEvent }: DownloadGameServiceDto) {
-    const zipFilename = GameFilesEnum.ZipToDownload;
+    const zipFilename = this.envConfig.DOWNLOAD_GAME_ZIP_FILENAME;
     const fileUrl = `${this.envConfig.CLIENT_BUCKET_URL}${zipFilename}`;
 
     ipcEvent.reply(IpcEventsEnum.DownloadGame, {
