@@ -25,6 +25,7 @@ const { get } = from(
     API_KEY_TEXT: process.env.API_KEY_TEXT,
     API_KEY_TEXT_SALT: process.env.API_KEY_TEXT_SALT,
     API_KEY_DATE_SALT: process.env.API_KEY_DATE_SALT,
+    DOWNLOAD_GAME_ZIP_FILENAME: process.env.DOWNLOAD_GAME_ZIP_FILENAME,
   },
   {},
 );
@@ -57,6 +58,9 @@ export const envConfig: EnvConfig = {
   AUTO_UPDATER_INTERVAL_HOURS: get('AUTO_UPDATER_INTERVAL_HOURS')
     .default(3)
     .asInt(),
+  DOWNLOAD_GAME_ZIP_FILENAME: get('DOWNLOAD_GAME_ZIP_FILENAME')
+    .required()
+    .asString(),
   GAME_SERVER_IP: get('GAME_SERVER_IP').required().asString(),
 
   // API
