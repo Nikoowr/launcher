@@ -18,7 +18,7 @@ export class PlayGameService implements PlayGameServiceInterface {
   public async execute({ ipcEvent }: PlayGameServiceDto): Promise<void> {
     const encryptedLogin = await this.fileConfig.read({
       filename: UserDataStorageFilenamesEnum.UserLogin,
-      directory: this.fileConfig.userDataDirectory,
+      directory: this.fileConfig.gameDirectory,
     });
 
     if (!encryptedLogin) {
