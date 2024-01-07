@@ -34,7 +34,7 @@ export class FileConfig implements FileConfigInterface {
 
     this.gameDirectory =
       this.envConfig.NODE_ENV === NodeEnvsEnum.Development
-        ? path.resolve(__dirname, '..', '..', '..', 'tmp', 'gfchaos')
+        ? path.resolve(__dirname, '..', '..', '..', '..', 'gf-chaos-client')
         : path.resolve(path.dirname(app.getPath('exe')), 'apps', 'gfchaos');
 
     this.resourcesDirectory = app.isPackaged

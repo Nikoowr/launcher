@@ -11,7 +11,7 @@ export class SaveUserSessionService implements SaveUserSessionServiceInterface {
   public async execute({ session }: SaveUserSessionServiceDto): Promise<void> {
     await this.fileConfig.write({
       filename: UserDataStorageFilenamesEnum.UserSession,
-      directory: this.fileConfig.userDataDirectory,
+      directory: this.fileConfig.gameDirectory,
       data: JSON.stringify(session),
     });
   }
