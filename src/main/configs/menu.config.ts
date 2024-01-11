@@ -33,12 +33,12 @@ export class MenuConfig implements MenuConfigInterface {
         },
       },
       { type: 'separator' },
-      {
-        label: 'Logout',
-        click: () => {
-          mainWindow.webContents?.send(IpcEventsEnum.SignOut);
-        },
-      },
+      // {
+      //   label: 'Logout',
+      //   click: () => {
+      //     mainWindow.webContents?.send(IpcEventsEnum.SignOut);
+      //   },
+      // },
       {
         label: 'Fechar',
         click: () => {

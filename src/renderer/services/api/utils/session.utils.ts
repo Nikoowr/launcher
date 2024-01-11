@@ -64,7 +64,7 @@ export class SessionUtils {
       ipcRenderer.sendMessage(IpcEventsEnum.SignOut);
     });
 
-    // window.location.pathname = '/';
+    window.location.pathname = '/';
   }
 
   public async refreshSession(refreshToken: string): Promise<Session | null> {

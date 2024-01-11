@@ -22,21 +22,7 @@ export class PlayGameService implements PlayGameServiceInterface {
     try {
       const applicationStatus = await this.apiConfig.getStatus();
 
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-
-      console.log('applicationStatus', applicationStatus);
-
-      return ipcEvent.reply(IpcEventsEnum.Play, applicationStatus.game);
-
-      if (applicationStatus.game.status === GameStatusEnum.Maintenance) {
-        return ipcEvent.reply(IpcEventsEnum.Play, applicationStatus.game);
-      }
-
-      if (applicationStatus.game.status === GameStatusEnum.Offline) {
-        return ipcEvent.reply(IpcEventsEnum.Play, applicationStatus.game);
-      }
-
-      if (applicationStatus.game.status === GameStatusEnum.NotYetReleased) {
+      if (applicationStatus.game.status !== GameStatusEnum.Online) {
         return ipcEvent.reply(IpcEventsEnum.Play, applicationStatus.game);
       }
 
