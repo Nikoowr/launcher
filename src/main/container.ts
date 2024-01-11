@@ -41,6 +41,7 @@ export const container = ({ app }: ContainerDto) => {
     cryptographyConfig,
     fileConfig,
     envConfig,
+    apiConfig,
   );
   const createGameLoginService = new CreateGameLoginService(
     fileConfig,

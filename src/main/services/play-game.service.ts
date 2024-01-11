@@ -1,6 +1,8 @@
+import { GameStatusEnum } from '../constants/api.constants';
 import { IpcEventsEnum } from '../constants/ipc-events.constants';
 import { UserDataStorageFilenamesEnum } from '../constants/store.constants';
 import {
+  ApiConfig,
   CryptographyConfig,
   EnvConfig,
   FileConfig,
@@ -13,9 +15,42 @@ export class PlayGameService implements PlayGameServiceInterface {
     private readonly cryptographyConfig: CryptographyConfig,
     private readonly fileConfig: FileConfig,
     private readonly envConfig: EnvConfig,
+    private readonly apiConfig: ApiConfig,
   ) {}
 
   public async execute({ ipcEvent }: PlayGameServiceDto): Promise<void> {
+    try {
+      const applicationStatus = await this.apiConfig.getStatus();
+
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+
+      console.log('applicationStatus', applicationStatus);
+
+      return ipcEvent.reply(IpcEventsEnum.Play, applicationStatus.game);
+
+      if (applicationStatus.game.status === GameStatusEnum.Maintenance) {
+        return ipcEvent.reply(IpcEventsEnum.Play, applicationStatus.game);
+      }
+
+      if (applicationStatus.game.status === GameStatusEnum.Offline) {
+        return ipcEvent.reply(IpcEventsEnum.Play, applicationStatus.game);
+      }
+
+      if (applicationStatus.game.status === GameStatusEnum.NotYetReleased) {
+        return ipcEvent.reply(IpcEventsEnum.Play, applicationStatus.game);
+      }
+
+      await this.executeGame();
+
+      return ipcEvent.reply(IpcEventsEnum.Play, applicationStatus.game);
+    } catch (error) {
+      console.error(error);
+
+      return ipcEvent.reply(IpcEventsEnum.Play);
+    }
+  }
+
+  private async executeGame() {
     const encryptedLogin = await this.fileConfig.read({
       filename: UserDataStorageFilenamesEnum.UserLogin,
       directory: this.fileConfig.userDataDirectory,
@@ -37,7 +72,5 @@ export class PlayGameService implements PlayGameServiceInterface {
       directory: this.fileConfig.gameDirectory,
       executable: 'GrandFantasia.exe',
     });
-
-    ipcEvent.reply(IpcEventsEnum.Play);
   }
 }
