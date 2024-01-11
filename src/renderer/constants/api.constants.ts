@@ -7,3 +7,10 @@ export enum ApiRoutesEnum {
   GetUserMeRoute = '/v1/user/me',
   UpdateUserRoute = '/v1/user',
 }
+
+export enum GameStatusEnum {
+  NotYetReleased = 'not-yet-released',
+  Maintenance = 'maintenance',
+  Offline = 'offline',
+  Online = 'online',
+}

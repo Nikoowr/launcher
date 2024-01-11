@@ -1,15 +1,15 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { format } from 'date-fns';
-import { CalendarIcon } from 'lucide-react';
+// import { format } from 'date-fns';
+// import { CalendarIcon } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 
 import { useLang } from '../../hooks/lang';
 import { useUser } from '../../hooks/user';
-import { cn } from '../../lib/utils';
+// import { cn } from '../../lib/utils';
 import { Button } from '../ui/button';
-import { Calendar } from '../ui/calendar';
+// import { Calendar } from '../ui/calendar';
 import {
   Form,
   FormControl,
@@ -20,7 +20,7 @@ import {
   FormMessage,
 } from '../ui/form';
 import { Input } from '../ui/input';
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+// import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { toast } from '../ui/use-toast';
 import { Icons } from './icons';
 
@@ -113,7 +113,7 @@ export const AccountForm = () => {
             </FormItem>
           )}
         />
-        <FormField
+        {/* <FormField
           control={form.control}
           name="dob"
           render={({ field }) => (
@@ -164,7 +164,7 @@ export const AccountForm = () => {
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
         <Button type="submit" disabled={loading}>
           {loading && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />}
           {dictionary.components.custom['account-form'].UPDATE_ACCOUNT}

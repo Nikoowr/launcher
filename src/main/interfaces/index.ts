@@ -12,6 +12,7 @@ export * from './controllers/ipc-events.controller';
 
 // Models
 export * from './models/session.model';
+export * from './models/status.model';
 
 // Services
 export * from './services/save-user-session.service';

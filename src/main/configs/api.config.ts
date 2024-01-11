@@ -7,6 +7,7 @@ import {
   ApiConfigGameLoginResponse,
   ApiConfig as ApiConfigInterface,
   EnvConfig,
+  Status,
 } from '../interfaces';
 
 export class ApiConfig implements ApiConfigInterface {
@@ -54,6 +55,14 @@ export class ApiConfig implements ApiConfigInterface {
           Authorization: `Bearer ${accessToken}`,
         },
       },
+    );
+
+    return data;
+  }
+
+  public async getStatus(): Promise<Status> {
+    const { data } = await this.api.get<Status>(
+      ApiRoutesEnum.GetAppStatusRoute,
     );
 
     return data;
