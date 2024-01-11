@@ -13,7 +13,7 @@ export class GetUserSessionService implements GetUserSessionServiceInterface {
   public async execute({ ipcEvent }: GetUserSessionServiceDto): Promise<void> {
     const sessionJson = await this.fileConfig.read({
       filename: UserDataStorageFilenamesEnum.UserSession,
-      directory: this.fileConfig.userDataDirectory,
+      directory: this.fileConfig.gameDirectory,
     });
 
     if (!sessionJson) {

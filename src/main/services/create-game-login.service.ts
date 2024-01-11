@@ -33,7 +33,7 @@ export class CreateGameLoginService implements CreateGameLoginServiceInterface {
   private async createLoginFile({ login }: { login: string }) {
     await this.fileConfig.write({
       filename: UserDataStorageFilenamesEnum.UserLogin,
-      directory: this.fileConfig.userDataDirectory,
+      directory: this.fileConfig.gameDirectory,
       data: login,
     });
   }

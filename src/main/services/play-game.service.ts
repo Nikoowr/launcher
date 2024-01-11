@@ -39,7 +39,7 @@ export class PlayGameService implements PlayGameServiceInterface {
   private async executeGame() {
     const encryptedLogin = await this.fileConfig.read({
       filename: UserDataStorageFilenamesEnum.UserLogin,
-      directory: this.fileConfig.userDataDirectory,
+      directory: this.fileConfig.gameDirectory,
     });
 
     if (!encryptedLogin) {
@@ -52,9 +52,10 @@ export class PlayGameService implements PlayGameServiceInterface {
     });
 
     const [user, password] = login.split(':');
+    const hashedPassword = await this.cryptographyConfig.md5(password);
 
     await this.fileConfig.openExecutable({
-      props: ['EasyFun', `-a ${user}`, `-p ${password}`],
+      props: ['EasyFun', `-a ${user}`, `-p ${hashedPassword}`],
       directory: this.fileConfig.gameDirectory,
       executable: 'GrandFantasia.exe',
     });

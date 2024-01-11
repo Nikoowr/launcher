@@ -36,4 +36,8 @@ export class CryptographyConfig implements CryptographyConfigInterface {
 
     return decrypted;
   }
+
+  public async md5(text: string): Promise<string> {
+    return crypto.createHash('md5').update(text).digest('hex');
+  }
 }
