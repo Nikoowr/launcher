@@ -1,6 +1,6 @@
 import { ApiRoutesEnum } from '../../../constants/api.constants';
 import { Session } from '../../../interfaces';
-import { apiConfig } from '../config';
+import { apiConfigWithoutInterceptors } from '../config';
 
 type CreateSessionDto = {
   password: string;
@@ -8,7 +8,7 @@ type CreateSessionDto = {
 };
 
 export const createSession = async ({ password, email }: CreateSessionDto) => {
-  const { data } = await apiConfig.post<Session>(
+  const { data } = await apiConfigWithoutInterceptors.post<Session>(
     ApiRoutesEnum.CreateSessionRoute,
     {
       password,

@@ -32,8 +32,18 @@ export class DownloadGameService implements DownloadGameServiceInterface {
 
     await this.extractZip({ ipcEvent, zipFilename, downloadedFilePath });
 
+    const gameInfoJson = await this.fileConfig.read({
+      directory: this.fileConfig.gameDirectory,
+      filename: GameFilesEnum.GameInfo,
+    });
+
+    const gameInfo = JSON.parse(gameInfoJson || '{}');
+
     await this.fileConfig.write({
-      data: JSON.stringify({ downloadedAt: new Date().toISOString() }),
+      data: JSON.stringify({
+        ...gameInfo,
+        downloadedAt: new Date().toISOString(),
+      }),
       directory: this.fileConfig.gameDirectory,
       filename: GameFilesEnum.GameInfo,
     });

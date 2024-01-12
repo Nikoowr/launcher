@@ -40,7 +40,7 @@ export const SignIn = () => {
         <div className="flex flex-col items-center text-center text-zinc-500">
           <span> {dictionary.pages['sign-in'].DO_NOT_HAVE_AN_ACCOUNT}</span>
           <ExternalLink
-            href="https://gfchaos.com/beta"
+            href="https://gfchaos.com/register"
             className="cursor-pointer text-pink-500 hover:text-pink-600"
           >
             {dictionary.pages['sign-in'].CREATE_AN_ACCOUNT}
