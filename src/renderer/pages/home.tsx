@@ -27,7 +27,7 @@ export const Home = () => {
       </div>
 
       <div className="flex w-full items-center gap-4 rounded-md bg-[#0008] p-6 shadow-sm">
-        <RadialProgressBar className="h-20 w-20" value={progress}>
+        <RadialProgressBar className="size-20" value={progress}>
           {statusIcon}
         </RadialProgressBar>
 

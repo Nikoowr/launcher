@@ -19,6 +19,7 @@ import {
 } from '../interfaces';
 
 export class FileConfig implements FileConfigInterface {
+  public readonly adminConfigDirectory: string;
   public readonly resourcesDirectory: string;
   public readonly userDataDirectory: string;
   public readonly gameDirectory: string;
@@ -27,6 +28,11 @@ export class FileConfig implements FileConfigInterface {
   private unzipTotalRead = 0;
 
   constructor(private readonly envConfig: EnvConfig) {
+    this.adminConfigDirectory =
+      this.envConfig.NODE_ENV === NodeEnvsEnum.Development
+        ? path.resolve(__dirname, '..', '..', '..', 'tmp')
+        : path.resolve(path.dirname(app.getPath('exe')));
+
     this.userDataDirectory =
       this.envConfig.NODE_ENV === NodeEnvsEnum.Development
         ? path.resolve(__dirname, '..', '..', '..', 'tmp', 'userData')

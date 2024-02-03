@@ -32,6 +32,7 @@ export type FileConfigOpenExecutableDto = {
 };
 
 export interface FileConfig {
+  adminConfigDirectory: string;
   resourcesDirectory: string;
   userDataDirectory: string;
   gameDirectory: string;

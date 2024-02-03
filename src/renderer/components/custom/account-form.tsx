@@ -166,7 +166,7 @@ export const AccountForm = () => {
           )}
         /> */}
         <Button type="submit" disabled={loading}>
-          {loading && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />}
+          {loading && <Icons.spinner className="mr-2 size-4 animate-spin" />}
           {dictionary.components.custom['account-form'].UPDATE_ACCOUNT}
         </Button>
       </form>

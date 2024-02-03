@@ -12,14 +12,14 @@ type ProvidersProps = {
 
 export const Providers = ({ children }: ProvidersProps) => {
   return (
-    <LangProvider>
-      <AppProvider>
-        <AuthProvider>
-          <UserProvider>
+    <AuthProvider>
+      <UserProvider>
+        <LangProvider>
+          <AppProvider>
             <GameProvider>{children}</GameProvider>
-          </UserProvider>
-        </AuthProvider>
-      </AppProvider>
-    </LangProvider>
+          </AppProvider>
+        </LangProvider>
+      </UserProvider>
+    </AuthProvider>
   );
 };
