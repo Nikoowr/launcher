@@ -13,8 +13,6 @@ const getDotenvFile = () => {
   switch (process.env.STAGE) {
     case 'prod':
       return '.env';
-    case 'uat':
-      return '.env.uat';
     case 'dev':
       return '.env.dev';
     default:

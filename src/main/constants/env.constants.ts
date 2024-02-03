@@ -5,7 +5,6 @@ export enum NodeEnvsEnum {
 
 export enum StagesEnum {
   Prod = 'prod',
-  Uat = 'uat',
   Dev = 'dev',
 }
 
