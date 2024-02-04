@@ -8,7 +8,7 @@ export class GetStageService implements GetStageServiceInterface {
   constructor(private readonly stageConfig: StageConfig) {}
 
   public async execute(): Promise<StagesEnum> {
-    const stage = await this.stageConfig.get();
+    const stage = this.stageConfig.get();
 
     return stage;
   }

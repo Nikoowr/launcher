@@ -1,7 +1,7 @@
 import { StagesEnum } from '../../../constants/stage.constants';
 
 export interface StageConfig {
-  get(): Promise<StagesEnum>;
+  get(): StagesEnum;
 
   save(stage: StagesEnum): Promise<void>;
 }

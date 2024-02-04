@@ -4,6 +4,7 @@ import { AppProvider } from './app';
 import { AuthProvider } from './auth';
 import { GameProvider } from './game';
 import { LangProvider } from './lang';
+import { StageProvider } from './stage';
 import { UserProvider } from './user';
 
 type ProvidersProps = {
@@ -14,11 +15,13 @@ export const Providers = ({ children }: ProvidersProps) => {
   return (
     <AuthProvider>
       <UserProvider>
-        <LangProvider>
-          <AppProvider>
-            <GameProvider>{children}</GameProvider>
-          </AppProvider>
-        </LangProvider>
+        <StageProvider>
+          <LangProvider>
+            <AppProvider>
+              <GameProvider>{children}</GameProvider>
+            </AppProvider>
+          </LangProvider>
+        </StageProvider>
       </UserProvider>
     </AuthProvider>
   );

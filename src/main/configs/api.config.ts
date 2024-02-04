@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 import { AES } from 'crypto-js';
 
-import { API_URL } from '../../constants/stage.constants';
+import { API_URL, SERVER_IP } from '../../constants/stage.constants';
 import { ApiRoutesEnum } from '../constants/api.constants';
 import {
   ApiConfigGameLoginDto,
@@ -22,7 +22,7 @@ export class ApiConfig implements ApiConfigInterface {
     this.api = axios.create();
 
     this.api.interceptors.request.use(async (config) => {
-      const baseURL = await this.getBaseUrl();
+      const baseURL = this.getBaseUrl();
 
       return {
         ...config,
@@ -62,7 +62,9 @@ export class ApiConfig implements ApiConfigInterface {
       },
     );
 
-    return data;
+    const serverIp = SERVER_IP[this.stageConfig.get()];
+
+    return { ...data, serverIp };
   }
 
   public async getStatus(): Promise<Status> {
@@ -73,8 +75,8 @@ export class ApiConfig implements ApiConfigInterface {
     return data;
   }
 
-  private async getBaseUrl() {
-    const stage = await this.stageConfig.get();
+  private getBaseUrl() {
+    const stage = this.stageConfig.get();
 
     return API_URL[stage];
   }

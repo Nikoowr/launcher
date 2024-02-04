@@ -22,8 +22,6 @@ export const refreshTokenInterceptor: ResponseInterceptor = async (
         session.refreshToken,
       );
 
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-
       if (!refreshedSession) {
         throw new Error('Session cannot be refreshed');
       }

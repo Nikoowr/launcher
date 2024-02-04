@@ -22,4 +22,11 @@ export class StageUtils {
       ipcRenderer.sendMessage(IpcEventsEnum.GetStage);
     });
   }
+
+  public async saveStage(stage: StagesEnum): Promise<StagesEnum> {
+    return new Promise((resolve) => {
+      ipcRenderer.once(IpcEventsEnum.SaveStage, resolve);
+      ipcRenderer.sendMessage(IpcEventsEnum.SaveStage, stage);
+    });
+  }
 }

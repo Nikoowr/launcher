@@ -5,8 +5,8 @@ import { FileConfig, StageConfig as StageConfigInterface } from '../interfaces';
 export class StageConfig implements StageConfigInterface {
   constructor(private readonly fileConfig: FileConfig) {}
 
-  public async get(): Promise<StagesEnum> {
-    const jsonData = await this.fileConfig.read({
+  public get(): StagesEnum {
+    const jsonData = this.fileConfig.read({
       filename: UserDataStorageFilenamesEnum.AdminConfig,
       directory: this.fileConfig.adminConfigDirectory,
     });

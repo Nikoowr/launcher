@@ -7,7 +7,12 @@ import axios from 'axios';
 import { app } from 'electron';
 import * as yauzl from 'yauzl';
 
+import {
+  GAME_CLIENT_FOLDER,
+  StagesEnum,
+} from '../../constants/stage.constants';
 import { NodeEnvsEnum } from '../constants/env.constants';
+import { UserDataStorageFilenamesEnum } from '../constants/store.constants';
 import {
   EnvConfig,
   FileConfigDto,
@@ -22,7 +27,6 @@ export class FileConfig implements FileConfigInterface {
   public readonly adminConfigDirectory: string;
   public readonly resourcesDirectory: string;
   public readonly userDataDirectory: string;
-  public readonly gameDirectory: string;
   private readonly exec = promisify(exec);
   private activeDownloads: Set<string> = new Set();
   private unzipTotalRead = 0;
@@ -38,14 +42,35 @@ export class FileConfig implements FileConfigInterface {
         ? path.resolve(__dirname, '..', '..', '..', 'tmp', 'userData')
         : path.resolve(path.dirname(app.getPath('userData')));
 
-    this.gameDirectory =
-      this.envConfig.NODE_ENV === NodeEnvsEnum.Development
-        ? path.resolve(__dirname, '..', '..', '..', '..', 'gf-chaos-client')
-        : path.resolve(path.dirname(app.getPath('exe')), 'apps', 'gfchaos');
-
     this.resourcesDirectory = app.isPackaged
       ? path.join(process.resourcesPath, 'assets')
       : path.join(__dirname, '..', '..', '..', 'assets');
+  }
+
+  public get gameDirectory() {
+    const jsonData = this.read({
+      filename: UserDataStorageFilenamesEnum.AdminConfig,
+      directory: this.adminConfigDirectory,
+    });
+
+    const { stage = null } = JSON.parse(jsonData || '{}') || {};
+
+    const validStage = Object.values(StagesEnum).find(
+      (stageEnum) => stageEnum === stage,
+    );
+
+    const clientFolderName = GAME_CLIENT_FOLDER[validStage || StagesEnum.Prod];
+
+    const gameDirectoryPath =
+      this.envConfig.NODE_ENV === NodeEnvsEnum.Development
+        ? path.resolve(__dirname, '..', '..', '..', 'tmp', clientFolderName)
+        : path.resolve(
+            path.dirname(app.getPath('exe')),
+            'apps',
+            clientFolderName,
+          );
+
+    return gameDirectoryPath;
   }
 
   public async download({
@@ -101,13 +126,13 @@ export class FileConfig implements FileConfigInterface {
     });
   }
 
-  public async read({
+  public read({
     directory,
     filename,
   }: {
     directory: string;
     filename: string;
-  }): Promise<string | null> {
+  }): string | null {
     try {
       const filepath = path.join(directory, filename);
       const file = fs.readFileSync(filepath, 'utf-8');

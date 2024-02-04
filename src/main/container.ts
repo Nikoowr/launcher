@@ -37,8 +37,8 @@ export const container = ({ app }: ContainerDto) => {
     menuConfig,
     envConfig,
   );
-  const gameUpdaterConfig = new GameUpdaterConfig(envConfig);
   const stageConfig = new StageConfig(fileConfig);
+  const gameUpdaterConfig = new GameUpdaterConfig(envConfig, stageConfig);
   const apiConfig = new ApiConfig(envConfig, stageConfig);
 
   const playGameService = new PlayGameService(
@@ -50,7 +50,6 @@ export const container = ({ app }: ContainerDto) => {
   const createGameLoginService = new CreateGameLoginService(
     fileConfig,
     apiConfig,
-    envConfig,
   );
   const downloadGameService = new DownloadGameService(fileConfig, envConfig);
   const updateGameService = new UpdateGameService(

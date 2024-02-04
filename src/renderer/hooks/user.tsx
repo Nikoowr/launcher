@@ -49,9 +49,15 @@ export const UserProvider = ({ children }: UserProviderProps) => {
 
   useEffect(() => {
     if (!user && loggedIn) {
-      logout();
+      logout().then(() => {
+        setUser({} as User);
+      });
     }
-  });
+
+    if (!loggedIn) {
+      setUser({} as User);
+    }
+  }, [user, loggedIn, logout]);
 
   return (
     <UserContext.Provider value={{ user, updateUser }}>
