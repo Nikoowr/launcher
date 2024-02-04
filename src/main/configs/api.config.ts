@@ -1,33 +1,38 @@
 import axios, { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 import { AES } from 'crypto-js';
 
+import { API_URL } from '../../constants/stage.constants';
 import { ApiRoutesEnum } from '../constants/api.constants';
 import {
   ApiConfigGameLoginDto,
   ApiConfigGameLoginResponse,
   ApiConfig as ApiConfigInterface,
   EnvConfig,
+  StageConfig,
   Status,
 } from '../interfaces';
 
 export class ApiConfig implements ApiConfigInterface {
   private readonly api: AxiosInstance;
 
-  constructor(private readonly envConfig: EnvConfig) {
-    this.api = axios.create({
-      baseURL: this.envConfig.API_URL,
-    });
+  constructor(
+    private readonly envConfig: EnvConfig,
+    private readonly stageConfig: StageConfig,
+  ) {
+    this.api = axios.create();
 
-    this.api.interceptors.request.use(
-      (config) =>
-        ({
-          ...config,
-          headers: {
-            ...config.headers,
-            ['x-api-key']: this.apiKey,
-          },
-        } as unknown as InternalAxiosRequestConfig),
-    );
+    this.api.interceptors.request.use(async (config) => {
+      const baseURL = await this.getBaseUrl();
+
+      return {
+        ...config,
+        baseURL,
+        headers: {
+          ...config.headers,
+          ['x-api-key']: this.apiKey,
+        },
+      } as unknown as InternalAxiosRequestConfig;
+    });
   }
 
   private get apiKey() {
@@ -66,5 +71,11 @@ export class ApiConfig implements ApiConfigInterface {
     );
 
     return data;
+  }
+
+  private async getBaseUrl() {
+    const stage = await this.stageConfig.get();
+
+    return API_URL[stage];
   }
 }
