@@ -8,6 +8,9 @@ export const API_URL = {
     'https://5ulbxbz18d.execute-api.us-east-1.amazonaws.com/prod',
   [StagesEnum.Dev]:
     'https://ch4ehnu7xc.execute-api.us-east-1.amazonaws.com/dev',
+
+  // Local
+  // [StagesEnum.Dev]: 'http://localhost:8080',
 };
 
 export const CLIENT_BUCKET_URL = 'https://d23rkkda8ml1ab.cloudfront.net';

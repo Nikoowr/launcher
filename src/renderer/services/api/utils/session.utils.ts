@@ -4,20 +4,24 @@ import { IpcEventsEnum } from '../../../../main/constants/ipc-events.constants';
 import { ApiRoutesEnum } from '../../../constants/api.constants';
 import { Session } from '../../../interfaces';
 import { interceptors } from '../interceptors';
+import { StageUtils } from './stage.utils';
 
 const { ipcRenderer } = window.electron;
 
 export class SessionUtils {
   private readonly api: AxiosInstance;
+  private stageUtils = new StageUtils();
 
   constructor() {
-    this.api = axios.create({
-      baseURL: process.env.API_URL,
-    });
+    this.api = axios.create();
 
-    this.api.interceptors.request.use(async (config) =>
-      interceptors.request.setApiKeyInterceptor(config),
-    );
+    this.api.interceptors.request.use(async (config) => {
+      Object.assign(config, {
+        baseURL: await this.stageUtils.getApiBaseUrl(),
+      });
+
+      return interceptors.request.setApiKeyInterceptor(config);
+    });
   }
 
   public async getSession(): Promise<Session | null> {
@@ -63,8 +67,6 @@ export class SessionUtils {
       ipcRenderer.once(IpcEventsEnum.SignOut, resolve);
       ipcRenderer.sendMessage(IpcEventsEnum.SignOut);
     });
-
-    // window.location.pathname = '/';
   }
 
   public async refreshSession(refreshToken: string): Promise<Session | null> {

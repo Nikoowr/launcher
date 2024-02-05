@@ -20,7 +20,7 @@ export const SelectStage = () => {
       defaultValue={stage || ''}
       disabled={loading || !stage || !readToPlay}
     >
-      <SelectTrigger className="border-none bg-transparent p-2 text-muted">
+      <SelectTrigger className="cursor-pointer border-none bg-transparent p-2 text-muted">
         <div className="flex items-center gap-2 pr-1">
           <span className="size-2 rounded-full bg-emerald-400" />
           <SelectValue placeholder="Selecione o ambiente" />

@@ -54,7 +54,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
       });
     }
 
-    if (!loggedIn) {
+    if (!loggedIn && user?.id) {
       setUser({} as User);
     }
   }, [user, loggedIn, logout]);

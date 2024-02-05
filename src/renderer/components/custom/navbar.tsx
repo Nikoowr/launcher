@@ -25,7 +25,11 @@ export const Navbar = ({
   return (
     <div className="titlebar absolute z-10 flex w-full justify-end p-2">
       <div className="flex gap-1">
-        {user.role === UserRolesEnum.Admin && <SelectStage />}
+        {user.role === UserRolesEnum.Admin && (
+          <Button className={cn(buttonsClassName, 'p-0')}>
+            <SelectStage />
+          </Button>
+        )}
 
         {updateFound && (
           <Button

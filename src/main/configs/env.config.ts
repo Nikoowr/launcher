@@ -20,12 +20,9 @@ const { get } = from(
     GAME_UPDATER_URL: process.env.GAME_UPDATER_URL,
     AUTO_UPDATER_CHANNEL: process.env.AUTO_UPDATER_CHANNEL,
     AUTO_UPDATER_INTERVAL_HOURS: process.env.AUTO_UPDATER_INTERVAL_HOURS,
-    GAME_SERVER_IP: process.env.GAME_SERVER_IP,
-    API_URL: process.env.API_URL,
     API_KEY_TEXT: process.env.API_KEY_TEXT,
     API_KEY_TEXT_SALT: process.env.API_KEY_TEXT_SALT,
     API_KEY_DATE_SALT: process.env.API_KEY_DATE_SALT,
-    DOWNLOAD_GAME_ZIP_FILENAME: process.env.DOWNLOAD_GAME_ZIP_FILENAME,
   },
   {},
 );
@@ -58,13 +55,8 @@ export const envConfig: EnvConfig = {
   AUTO_UPDATER_INTERVAL_HOURS: get('AUTO_UPDATER_INTERVAL_HOURS')
     .default(3)
     .asInt(),
-  DOWNLOAD_GAME_ZIP_FILENAME: get('DOWNLOAD_GAME_ZIP_FILENAME')
-    .required()
-    .asString(),
-  GAME_SERVER_IP: get('GAME_SERVER_IP').required().asString(),
 
   // API
-  API_URL: get('API_URL').required().asString(),
   API_KEY_TEXT: get('API_KEY_TEXT').required().asString(),
   API_KEY_TEXT_SALT: get('API_KEY_TEXT_SALT').required().asString(),
   API_KEY_DATE_SALT: get('API_KEY_DATE_SALT').required().asString(),

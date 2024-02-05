@@ -1,3 +1,4 @@
+import { DOWNLOAD_GAME_ZIP_FILENAME } from '../../constants/stage.constants';
 import {
   GameDownloadStatusEnum,
   GameFilesEnum,
@@ -8,12 +9,14 @@ import {
   DownloadGameService as DownloadGameServiceInterface,
   EnvConfig,
   FileConfig,
+  StageConfig,
 } from '../interfaces';
 
 export class DownloadGameService implements DownloadGameServiceInterface {
   constructor(
     private readonly fileConfig: FileConfig,
     private readonly envConfig: EnvConfig,
+    private readonly stageConfig: StageConfig,
   ) {}
 
   public async execute({ ipcEvent }: DownloadGameServiceDto): Promise<void> {
@@ -86,7 +89,8 @@ export class DownloadGameService implements DownloadGameServiceInterface {
   }
 
   private async downloadZip({ ipcEvent }: DownloadGameServiceDto) {
-    const zipFilename = this.envConfig.DOWNLOAD_GAME_ZIP_FILENAME;
+    const stage = this.stageConfig.get();
+    const zipFilename = DOWNLOAD_GAME_ZIP_FILENAME[stage];
     const fileUrl = `${this.envConfig.CLIENT_BUCKET_URL}${zipFilename}`;
 
     ipcEvent.reply(IpcEventsEnum.DownloadGame, {
