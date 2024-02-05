@@ -5,14 +5,26 @@ import {
   GameUpdaterConfigCheckForUpdatesResponse,
   GameUpdaterConfigGetGameDataFileListResponse,
   GameUpdaterConfig as GameUpdaterConfigInterface,
+  StageConfig,
 } from '../interfaces';
 
 export class GameUpdaterConfig implements GameUpdaterConfigInterface {
   private readonly api: AxiosInstance;
 
-  constructor(private readonly envConfig: EnvConfig) {
+  constructor(
+    private readonly envConfig: EnvConfig,
+    private readonly stageConfig: StageConfig,
+  ) {
     this.api = axios.create({
       baseURL: `${this.envConfig.GAME_UPDATER_URL}${this.envConfig.STAGE}`,
+    });
+
+    this.api.interceptors.request.use(async (config) => {
+      Object.assign(config, {
+        baseURL: await this.getBaseUrl(),
+      });
+
+      return config;
     });
   }
 
@@ -51,5 +63,11 @@ export class GameUpdaterConfig implements GameUpdaterConfigInterface {
     } catch {
       return null;
     }
+  }
+
+  private async getBaseUrl() {
+    const stage = await this.stageConfig.get();
+
+    return `${this.envConfig.GAME_UPDATER_URL}${stage}`;
   }
 }

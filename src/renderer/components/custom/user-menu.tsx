@@ -24,37 +24,35 @@ export const UserMenu = () => {
   const { readToPlay } = useGame();
 
   return (
-    <>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            className="titlebar-button bg-[#fff2] p-4 hover:bg-[#fff4]"
-            disabled={!readToPlay}
-          >
-            <User />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="mr-4 w-40">
-          <DropdownMenuLabel>{user?.name || user?.email}</DropdownMenuLabel>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          className="titlebar-button bg-[#fff2] p-4 hover:bg-[#fff4]"
+          disabled={!readToPlay}
+        >
+          <User />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="mr-4 w-40">
+        <DropdownMenuLabel>{user?.name || user?.email}</DropdownMenuLabel>
 
-          <DropdownMenuSeparator />
+        <DropdownMenuSeparator />
 
-          <DropdownMenuItem
-            onClick={() => navigate(RoutesEnum.Settings)}
-            className="cursor-pointer"
-          >
-            <Settings className="mr-2 h-4 w-4" />
-            <span>{dictionary.components.custom['user-menu'].SETTINGS}</span>
-          </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => navigate(RoutesEnum.Settings)}
+          className="cursor-pointer"
+        >
+          <Settings className="mr-2 size-4" />
+          <span>{dictionary.components.custom['user-menu'].SETTINGS}</span>
+        </DropdownMenuItem>
 
-          <DropdownMenuSeparator />
+        <DropdownMenuSeparator />
 
-          <DropdownMenuItem className="cursor-pointer" onClick={logout}>
-            <LogOut className="mr-2 h-4 w-4" />
-            <span>{dictionary.components.custom['user-menu'].LOGOUT}</span>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </>
+        <DropdownMenuItem className="cursor-pointer" onClick={logout}>
+          <LogOut className="mr-2 size-4" />
+          <span>{dictionary.components.custom['user-menu'].LOGOUT}</span>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };

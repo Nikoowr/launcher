@@ -32,13 +32,14 @@ export type FileConfigOpenExecutableDto = {
 };
 
 export interface FileConfig {
+  adminConfigDirectory: string;
   resourcesDirectory: string;
   userDataDirectory: string;
   gameDirectory: string;
 
   download(dto: FileConfigDto): Promise<string>;
 
-  read(dto: { directory: string; filename: string }): Promise<string | null>;
+  read(dto: { directory: string; filename: string }): string | null;
 
   write(dto: FileConfigWriteDto): Promise<string>;
 

@@ -116,6 +116,14 @@ ipcMain.on(IpcEventsEnum.CreateGameLogin, async (event, dto) =>
   ipcEventsController?.[IpcEventsEnum.CreateGameLogin](event, dto),
 );
 
+ipcMain.on(IpcEventsEnum.GetStage, async (event) =>
+  ipcEventsController?.[IpcEventsEnum.GetStage](event),
+);
+
+ipcMain.on(IpcEventsEnum.SaveStage, async (event, dto) =>
+  ipcEventsController?.[IpcEventsEnum.SaveStage](event, dto),
+);
+
 ipcMain.on(IpcEventsEnum.SignOut, async (event) =>
   ipcEventsController?.[IpcEventsEnum.SignOut](event),
 );

@@ -4,7 +4,6 @@ import {
   ApiConfig,
   CreateGameLoginServiceDto,
   CreateGameLoginService as CreateGameLoginServiceInterface,
-  EnvConfig,
   FileConfig,
 } from '../interfaces';
 
@@ -12,21 +11,20 @@ export class CreateGameLoginService implements CreateGameLoginServiceInterface {
   constructor(
     private readonly fileConfig: FileConfig,
     private readonly apiConfig: ApiConfig,
-    private readonly envConfig: EnvConfig,
   ) {}
 
   public async execute({
     credentials,
     session,
   }: CreateGameLoginServiceDto): Promise<void> {
-    const { login } = await this.apiConfig.gameLogin({
+    const { login, serverIp } = await this.apiConfig.gameLogin({
       accessToken: session.accessToken,
       password: credentials.password,
     });
 
     await Promise.all([
       this.createLoginFile({ login }),
-      this.createConnectionFiles(),
+      this.createConnectionFiles({ serverIp }),
     ]);
   }
 
@@ -38,25 +36,25 @@ export class CreateGameLoginService implements CreateGameLoginServiceInterface {
     });
   }
 
-  private async createConnectionFiles() {
+  private async createConnectionFiles({ serverIp }: { serverIp: string }) {
     const connects = [
-      `Stream01=${this.envConfig.GAME_SERVER_IP},6543`,
-      `Stream02=${this.envConfig.GAME_SERVER_IP},6544`,
-      `Stream03=${this.envConfig.GAME_SERVER_IP},6545`,
-      `Stream04=${this.envConfig.GAME_SERVER_IP},6546`,
+      `Stream01=${serverIp},6543`,
+      `Stream02=${serverIp},6544`,
+      `Stream03=${serverIp},6545`,
+      `Stream04=${serverIp},6546`,
     ].join('\n');
 
-    const connect = `Server=${this.envConfig.GAME_SERVER_IP},6543`;
+    const connect = `Server=${serverIp},6543`;
 
     await Promise.all([
       this.fileConfig.write({
-        filename: GameFilesEnum.Connects,
         directory: this.fileConfig.gameDirectory,
+        filename: GameFilesEnum.Connects,
         data: connects,
       }),
       this.fileConfig.write({
-        filename: GameFilesEnum.Connect,
         directory: this.fileConfig.gameDirectory,
+        filename: GameFilesEnum.Connect,
         data: connect,
       }),
     ]);

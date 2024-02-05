@@ -6,6 +6,7 @@ export type ApiConfigGameLoginDto = {
 };
 
 export type ApiConfigGameLoginResponse = {
+  serverIp: string;
   login: string;
 };
 

@@ -1,16 +1,15 @@
 import axios, { AxiosError } from 'axios';
 
 import { interceptors } from './interceptors';
+import { stageUtils } from './utils';
 
-export const apiConfig = axios.create({
-  baseURL: process.env.API_URL,
-});
-
-export const apiConfigWithoutInterceptors = axios.create({
-  baseURL: process.env.API_URL,
-});
+export const apiConfig = axios.create();
 
 apiConfig.interceptors.request.use(async (config) => {
+  Object.assign(config, {
+    baseURL: await stageUtils.getApiBaseUrl(),
+  });
+
   return interceptors.request.setUserAccessTokenInterceptor(
     await interceptors.request.setApiKeyInterceptor(config),
   );
@@ -22,3 +21,13 @@ apiConfig.interceptors.response.use(
     return interceptors.response.refreshTokenInterceptor(apiConfig, error);
   },
 );
+
+export const apiConfigWithoutRefreshToken = axios.create();
+
+apiConfigWithoutRefreshToken.interceptors.request.use(async (config) => {
+  Object.assign(config, {
+    baseURL: await stageUtils.getApiBaseUrl(),
+  });
+
+  return config;
+});

@@ -1,6 +1,6 @@
 {
   "name": "gfchaos-launcher",
-  "version": "0.2.2",
+  "version": "1.0.0",
   "description": "",
   "main": "./src/main/main.ts",
   "scripts": {
@@ -8,8 +8,7 @@
     "build:dll": "cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.renderer.dev.dll.ts",
     "build:main": "cross-env NODE_ENV=production TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.main.prod.ts",
     "build:renderer": "cross-env NODE_ENV=production TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.renderer.prod.ts",
-    "package:dev": "ts-node ./.erb/scripts/clean.js dist && cross-env STAGE=dev npm run build && cross-env STAGE=dev electron-builder build --win --publish never && cross-env STAGE=dev npm run build:dll",
-    "package:prod": "ts-node ./.erb/scripts/clean.js dist && cross-env STAGE=prod npm run build && cross-env STAGE=prod electron-builder build --win --publish never && cross-env STAGE=prod npm run build:dll",
+    "package": "ts-node ./.erb/scripts/clean.js dist && cross-env STAGE=prod npm run build && cross-env STAGE=prod electron-builder build --win --publish never && cross-env STAGE=prod npm run build:dll",
     "postinstall": "ts-node .erb/scripts/check-native-dep.js && electron-builder install-app-deps && npm run build:dll",
     "start:main": "cross-env NODE_ENV=development electronmon -r ts-node/register/transpile-only .",
     "start:preload": "cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.preload.dev.ts",

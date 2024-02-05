@@ -17,11 +17,9 @@ export type EnvConfig = {
   GAME_UPDATER_URL: string;
   AUTO_UPDATER_CHANNEL: string;
   AUTO_UPDATER_INTERVAL_HOURS: number;
-  DOWNLOAD_GAME_ZIP_FILENAME: string;
-  GAME_SERVER_IP: string;
 
   // API
-  API_URL: string;
+
   API_KEY_TEXT: string;
   API_KEY_TEXT_SALT: string;
   API_KEY_DATE_SALT: string;

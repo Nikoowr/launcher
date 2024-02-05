@@ -23,7 +23,8 @@
         "@ribeirogab/eslint-config/node"
       ],
       "files": [
-        "src/main/**/*"
+        "src/main/**/*",
+        "src/constants/**/*"
       ]
     },
     {

@@ -30,8 +30,8 @@ type LoginOptions = {
 
 type AuthContextData = {
   login: (credentials: Credentials, options?: LoginOptions) => Promise<void>;
+  logout: () => Promise<void>;
   sessionLoading: boolean;
-  logout: () => void;
   loggedIn: boolean;
   loading: boolean;
 };

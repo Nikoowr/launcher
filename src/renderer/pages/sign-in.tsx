@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { Environment } from '../components/custom/environment';
 import { ExternalLink } from '../components/custom/external-link';
 import { LangSwitcher } from '../components/custom/lang-switcher';
 import { Logo } from '../components/custom/logo';
@@ -48,10 +49,11 @@ export const SignIn = () => {
         </div>
       </div>
 
-      <div className="relative flex-1">
+      <div className="relative flex-1 ">
         <SignInSideBackground />
 
-        <div className="absolute bottom-0 right-0 mb-4 mr-4">
+        <div className="absolute bottom-0 right-0 flex w-full items-center justify-between gap-4 p-4">
+          <Environment />
           <LangSwitcher />
         </div>
       </div>
