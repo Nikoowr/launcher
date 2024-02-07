@@ -15,13 +15,11 @@ export class GameUpdaterConfig implements GameUpdaterConfigInterface {
     private readonly envConfig: EnvConfig,
     private readonly stageConfig: StageConfig,
   ) {
-    this.api = axios.create({
-      baseURL: `${this.envConfig.GAME_UPDATER_URL}${this.envConfig.STAGE}`,
-    });
+    this.api = axios.create();
 
     this.api.interceptors.request.use(async (config) => {
       Object.assign(config, {
-        baseURL: await this.getBaseUrl(),
+        baseURL: this.getBaseUrl(),
       });
 
       return config;
@@ -65,8 +63,8 @@ export class GameUpdaterConfig implements GameUpdaterConfigInterface {
     }
   }
 
-  private async getBaseUrl() {
-    const stage = await this.stageConfig.get();
+  private getBaseUrl() {
+    const stage = this.stageConfig.get();
 
     return `${this.envConfig.GAME_UPDATER_URL}${stage}`;
   }

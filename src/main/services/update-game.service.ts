@@ -8,6 +8,7 @@ import { IpcEventsEnum } from '../constants/ipc-events.constants';
 import {
   EnvConfig,
   GameUpdaterConfig,
+  StageConfig,
   UpdateGameServiceDto,
   UpdateGameService as UpdateGameServiceInterface,
 } from '../interfaces';
@@ -32,6 +33,7 @@ export class UpdateGameService implements UpdateGameServiceInterface {
     private readonly gameUpdaterConfig: GameUpdaterConfig,
     private readonly fileConfig: FileConfig,
     private readonly envConfig: EnvConfig,
+    private readonly stageConfig: StageConfig,
   ) {}
 
   public async execute({ ipcEvent }: UpdateGameServiceDto): Promise<void> {
@@ -199,7 +201,9 @@ export class UpdateGameService implements UpdateGameServiceInterface {
       return;
     }
 
-    const url = `${this.envConfig.GAME_UPDATER_URL}${this.envConfig.STAGE}/${fileChange.version}/${fileChange.filepath}`;
+    const url = `${this.envConfig.GAME_UPDATER_URL}${this.stageConfig.get()}/${
+      fileChange.version
+    }/${fileChange.filepath}`;
 
     await this.fileConfig.download({
       directory: this.fileConfig.gameDirectory,
