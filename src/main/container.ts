@@ -60,6 +60,7 @@ export const container = ({ app }: ContainerDto) => {
     gameUpdaterConfig,
     fileConfig,
     envConfig,
+    stageConfig,
   );
   const signOutService = new SignOutService(fileConfig);
   const getUserSessionService = new GetUserSessionService(fileConfig);
