@@ -1,4 +1,5 @@
 import { HomeBackground } from '../components/custom/home-background';
+import { LangSwitcher } from '../components/custom/lang-switcher';
 import { Logo } from '../components/custom/logo';
 import { PlayButton } from '../components/custom/play-button';
 import { RadialProgressBar } from '../components/custom/radial-progress-bar';
@@ -14,7 +15,11 @@ export const Home = () => {
     <main className="flex h-[100vh] flex-col justify-between p-10">
       <HomeBackground />
 
-      <div className="absolute right-4 mt-4">
+      <div className="absolute right-4 mt-4 flex gap-4">
+        <LangSwitcher
+          className="titlebar-button bg-[#fff2] p-4 hover:bg-[#fff4]"
+          variant="default"
+        />
         <UserMenu />
       </div>
 

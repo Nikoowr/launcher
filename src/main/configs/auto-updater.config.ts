@@ -90,7 +90,7 @@ export class AutoUpdaterConfig implements AutoUpdaterConfigInterface {
 
   private notification({ mainWindow }: { mainWindow: BrowserWindow }) {
     return new Notification({
-      title: 'Nova versão do Launcher disponível!',
+      title: 'New version of Launcher available!',
       icon: this.fileConfig.getAssetPath('icon.png'),
     }).on('click', () => {
       mainWindow?.show();

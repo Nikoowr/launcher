@@ -1,9 +1,9 @@
-import type { IpcMainEvent } from 'electron';
+import { ApplicationStatus } from '../models/status.model';
 
 export type PlayGameServiceDto = {
-  ipcEvent: IpcMainEvent;
+  currentGameVersion: string;
 };
 
 export interface PlayGameService {
-  execute(dto: PlayGameServiceDto): Promise<void>;
+  execute(dto: PlayGameServiceDto): Promise<ApplicationStatus>;
 }

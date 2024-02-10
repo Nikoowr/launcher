@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 // import { format } from 'date-fns';
 // import { CalendarIcon } from 'lucide-react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 
@@ -45,16 +45,25 @@ type AccountFormValues = z.infer<typeof accountFormSchema>;
 export const AccountForm = () => {
   const [loading, setLoading] = useState(false);
   const { user, updateUser } = useUser();
-
-  const defaultValues: Partial<AccountFormValues> = {
+  const [defaultValues, setDefaultValues] = useState<
+    Partial<AccountFormValues>
+  >({
     dob: user.dof ? new Date(user.dof) : undefined,
     name: user.name,
-  };
+  });
 
-  const form = useForm<AccountFormValues>({
+  const { formState, getValues, ...form } = useForm<AccountFormValues>({
     resolver: zodResolver(accountFormSchema),
     defaultValues,
   });
+
+  const isTouched = useMemo(() => {
+    return (
+      (defaultValues?.name || formState.defaultValues?.name) !==
+        getValues('name') ||
+      (defaultValues?.dob || formState.defaultValues?.dob) !== getValues('dob')
+    );
+  }, [formState, defaultValues, getValues]);
 
   const { dictionary } = useLang();
 
@@ -74,6 +83,8 @@ export const AccountForm = () => {
         type: 'foreground',
         duration: 2000,
       });
+
+      setDefaultValues(data);
     } catch (error) {
       toast({
         title: 'Error',
@@ -87,7 +98,7 @@ export const AccountForm = () => {
   };
 
   return (
-    <Form {...form}>
+    <Form {...{ ...form, getValues, formState }}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           control={form.control}
@@ -165,9 +176,11 @@ export const AccountForm = () => {
             </FormItem>
           )}
         /> */}
-        <Button type="submit" disabled={loading}>
-          {loading && <Icons.spinner className="mr-2 size-4 animate-spin" />}
-          {dictionary.components.custom['account-form'].UPDATE_ACCOUNT}
+        <Button type="submit" disabled={loading || !isTouched}>
+          <>
+            {loading && <Icons.spinner className="mr-2 size-4 animate-spin" />}
+            {dictionary.components.custom['account-form'].UPDATE_ACCOUNT}
+          </>
         </Button>
       </form>
     </Form>

@@ -136,8 +136,8 @@ ipcMain.on(IpcEventsEnum.UpdateGame, async (event) =>
   ipcEventsController?.[IpcEventsEnum.UpdateGame](event),
 );
 
-ipcMain.on(IpcEventsEnum.Play, async (event) =>
-  ipcEventsController?.[IpcEventsEnum.Play](event),
+ipcMain.on(IpcEventsEnum.Play, async (event, dto) =>
+  ipcEventsController?.[IpcEventsEnum.Play](event, dto),
 );
 
 ipcMain.on(IpcEventsEnum.GetUserSession, async (event) =>
@@ -150,4 +150,12 @@ ipcMain.on(IpcEventsEnum.GetAppInfo, async (event) =>
 
 ipcMain.on(IpcEventsEnum.GetGameInfo, async (event) =>
   ipcEventsController?.[IpcEventsEnum.GetGameInfo](event),
+);
+
+ipcMain.on(IpcEventsEnum.ChangeGameLang, async (event, dto) =>
+  ipcEventsController?.[IpcEventsEnum.ChangeGameLang](event, dto),
+);
+
+ipcMain.on(IpcEventsEnum.GetGameLang, async (event) =>
+  ipcEventsController?.[IpcEventsEnum.GetGameLang](event),
 );

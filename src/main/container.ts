@@ -12,9 +12,11 @@ import {
 } from './configs';
 import { IpcEventsController } from './controllers';
 import {
+  ChangeGameLangService,
   CreateGameLoginService,
   DownloadGameService,
   GetGameInfoService,
+  GetGameLangService,
   GetStageService,
   GetUserSessionService,
   PlayGameService,
@@ -62,19 +64,22 @@ export const container = ({ app }: ContainerDto) => {
     envConfig,
     stageConfig,
   );
-  const signOutService = new SignOutService(fileConfig);
-  const getUserSessionService = new GetUserSessionService(fileConfig);
-  const getGameInfoService = new GetGameInfoService(fileConfig);
   const saveUserSessionService = new SaveUserSessionService(fileConfig);
-
+  const getUserSessionService = new GetUserSessionService(fileConfig);
+  const changeGameLangService = new ChangeGameLangService(fileConfig);
+  const getGameLangService = new GetGameLangService(fileConfig);
+  const getGameInfoService = new GetGameInfoService(fileConfig);
   const saveStageService = new SaveStageService(stageConfig);
   const getStageService = new GetStageService(stageConfig);
+  const signOutService = new SignOutService(fileConfig);
 
   const ipcEventsController = new IpcEventsController(app, {
     saveUserSessionService,
     createGameLoginService,
+    changeGameLangService,
     getUserSessionService,
     downloadGameService,
+    getGameLangService,
     getGameInfoService,
     updateGameService,
     saveStageService,

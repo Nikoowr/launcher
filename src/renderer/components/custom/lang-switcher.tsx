@@ -1,6 +1,7 @@
 import { useLang } from '../../hooks/lang';
 import { LangsEnum, i18n } from '../../i18n';
-import { Button } from '../ui/button';
+import { cn } from '../../lib/utils';
+import { Button, ButtonProps } from '../ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,18 +9,30 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
+import { Spinner } from './spinner';
 
-export const LangSwitcher = () => {
-  const { lang, changeLang } = useLang();
+export interface LangSwitcherProps extends ButtonProps {}
 
-  const onLangChange = (language: string) => {
-    changeLang(language as LangsEnum);
+export const LangSwitcher = ({ className, ...props }: LangSwitcherProps) => {
+  const { lang, changeLang, loading } = useLang();
+
+  const onLangChange = async (language: string) => {
+    await changeLang(language as LangsEnum);
   };
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline">{lang}</Button>
+        <Button
+          variant="outline"
+          className={cn(
+            'flex h-[40px] w-[46px] items-center justify-center p-0',
+            className,
+          )}
+          {...props}
+        >
+          {loading ? <Spinner className="size-4" /> : lang}
+        </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuRadioGroup value={lang} onValueChange={onLangChange}>

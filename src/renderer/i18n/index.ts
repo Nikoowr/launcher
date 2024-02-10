@@ -1,9 +1,6 @@
-export enum LangsEnum {
-  ES = 'es',
-  EN = 'en',
-  FR = 'fr',
-  PT = 'pt',
-}
+import { LangsEnum } from '../../constants/locale.constants';
+
+export { LangsEnum };
 
 export const i18n = {
   defaultLocale: LangsEnum.PT,
