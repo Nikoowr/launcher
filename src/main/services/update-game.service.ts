@@ -232,35 +232,28 @@ export class UpdateGameService implements UpdateGameServiceInterface {
     return filepath;
   }
 
-  private versionIsGreater(versionOne: string, versionTwo: string) {
-    const components1 = versionOne.split('.');
-    const components2 = versionTwo.split('.');
+  private versionIsGreater(versionOne: string, versionTwo: string): boolean {
+    const components1 = versionOne.replace('v', '').split('.').map(Number);
+    const components2 = versionTwo.replace('v', '').split('.').map(Number);
 
-    for (let i = 0; i < Math.max(components1.length, components2.length); i++) {
-      const part1 = components1[i] || '0';
-      const part2 = components2[i] || '0';
+    // Determine the greater number of components between the two versions
+    const maxLength = Math.max(components1.length, components2.length);
 
-      if (/^\d+$/.test(part1) && /^\d+$/.test(part2)) {
-        // Compare numeric components as integers
-        const num1 = parseInt(part1, 10);
-        const num2 = parseInt(part2, 10);
+    for (let i = 0; i < maxLength; i++) {
+      // Use 0 as the default value for missing components
+      const num1 = components1[i] ?? 0;
+      const num2 = components2[i] ?? 0;
 
-        if (num1 > num2) {
-          return true;
-        } else if (num1 < num2) {
-          return false;
-        }
-      } else {
-        // Compare non-numeric components lexicographically
-        if (part1 > part2) {
-          return true;
-        } else if (part1 < part2) {
-          return false;
-        }
+      // Compare numeric components
+      if (num1 > num2) {
+        return true;
+      } else if (num1 < num2) {
+        return false;
       }
+      // If components are equal, continue to the next component
     }
 
-    // If all components are equal, consider the versions equal
+    // All comparable parts are equal, so the versions are considered equal
     return false;
   }
 }
