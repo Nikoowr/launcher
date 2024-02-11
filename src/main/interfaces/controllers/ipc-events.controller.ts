@@ -1,7 +1,9 @@
 import type { BrowserWindow, IpcMainEvent } from 'electron';
 
+import { LangsEnum } from '../../../constants/locale.constants';
 import { IpcEventsEnum } from '../../constants/ipc-events.constants';
 import { CreateGameLoginServiceDto } from '../services/create-game-login.service';
+import { PlayGameServiceDto } from '../services/play-game.service';
 import { SaveUserSessionServiceDto } from '../services/save-user-session.service';
 
 export interface IpcEventsController {
@@ -33,9 +35,13 @@ export interface IpcEventsController {
     mainWindow: BrowserWindow | null,
   ) => void;
 
-  [IpcEventsEnum.Play]: (event: IpcMainEvent) => void;
+  [IpcEventsEnum.Play]: (event: IpcMainEvent, dto: PlayGameServiceDto) => void;
 
   [IpcEventsEnum.GetUserSession]: (event: IpcMainEvent) => void;
 
   [IpcEventsEnum.GetAppInfo]: (event: IpcMainEvent) => void;
+
+  [IpcEventsEnum.ChangeGameLang]: (event: IpcMainEvent, dto: LangsEnum) => void;
+
+  [IpcEventsEnum.GetGameLang]: (event: IpcMainEvent) => void;
 }

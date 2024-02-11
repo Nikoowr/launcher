@@ -73,6 +73,14 @@ export class FileConfig implements FileConfigInterface {
     return gameDirectoryPath;
   }
 
+  public get i18nDirectory() {
+    return path.join(this.gameDirectory, 'data', 'i18n');
+  }
+
+  public get gameTranslateDirectory() {
+    return path.join(this.gameDirectory, 'data', 'translate');
+  }
+
   public async download({
     onProgress,
     directory,
@@ -223,6 +231,25 @@ export class FileConfig implements FileConfigInterface {
 
   public getAssetPath(asset: string) {
     return path.join(this.resourcesDirectory, asset);
+  }
+
+  public async copyFolderWithOverwrite({
+    dest,
+    src,
+  }: {
+    dest: string;
+    src: string;
+  }): Promise<void> {
+    if (fs.existsSync(dest)) {
+      await fs.promises.rm(dest, { recursive: true, force: true });
+    }
+
+    await fs.promises.mkdir(dest, { recursive: true });
+    await fs.promises.cp(src, dest, { recursive: true });
+  }
+
+  public joinPaths(paths: string[]): string {
+    return path.join(...paths);
   }
 
   private async getZipTotalSize(source: string): Promise<number> {

@@ -1,7 +1,25 @@
-import { GameStatusEnum } from '../../constants/api.constants';
+export enum ApplicationStatusType {
+  Error = 'error',
+  Info = 'info',
+}
 
-export type Status = {
-  game: {
-    status: GameStatusEnum;
+type MessageData = {
+  title?: {
+    pt?: string;
+    en?: string;
+    es?: string;
+    fr?: string;
   };
+  description?: {
+    pt?: string;
+    en?: string;
+    es?: string;
+    fr?: string;
+  };
+};
+
+export type ApplicationStatus = {
+  type: ApplicationStatusType;
+  available: boolean;
+  data?: MessageData;
 };

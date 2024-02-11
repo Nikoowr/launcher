@@ -10,7 +10,7 @@ export class GetGameInfoService implements GetGameInfoServiceInterface {
   constructor(private readonly fileConfig: FileConfig) {}
 
   public async execute({ ipcEvent }: GetGameInfoServiceDto): Promise<void> {
-    const gameInfoJson = await this.fileConfig.read({
+    const gameInfoJson = this.fileConfig.read({
       directory: this.fileConfig.gameDirectory,
       filename: GameFilesEnum.GameInfo,
     });

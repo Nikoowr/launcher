@@ -12,6 +12,7 @@ export * from './configs/api.config';
 export * from './controllers/ipc-events.controller';
 
 // Models
+export * from './models/game-info.model';
 export * from './models/session.model';
 export * from './models/status.model';
 
@@ -19,6 +20,8 @@ export * from './models/status.model';
 export * from './services/save-user-session.service';
 export * from './services/create-game-login.service';
 export * from './services/get-user-session.service';
+export * from './services/change-game-lang.service';
+export * from './services/get-game-lang.service';
 export * from './services/get-game-info.service';
 export * from './services/download-game.service';
 export * from './services/update-game.service';

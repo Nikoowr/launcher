@@ -2,6 +2,7 @@ import { MinusIcon, RefreshCcw, X } from 'lucide-react';
 
 import { IpcEventsEnum } from '../../../main/constants/ipc-events.constants';
 import { useApp } from '../../hooks/app';
+import { useStage } from '../../hooks/stage';
 import { useUser } from '../../hooks/user';
 import { UserRolesEnum } from '../../interfaces';
 import { cn } from '../../lib/utils';
@@ -17,6 +18,7 @@ type NavbarProps = {
 export const Navbar = ({
   btnClassName = 'bg-transparent hover:bg-[#fff1]',
 }: NavbarProps) => {
+  const { gameIsRunning } = useStage();
   const { updateFound } = useApp();
   const { user } = useUser();
 
@@ -26,7 +28,10 @@ export const Navbar = ({
     <div className="titlebar absolute z-10 flex w-full justify-end p-2">
       <div className="flex gap-1">
         {user.role === UserRolesEnum.Admin && (
-          <Button className={cn(buttonsClassName, 'p-0')}>
+          <Button
+            className={cn(buttonsClassName, 'p-0')}
+            disabled={gameIsRunning}
+          >
             <SelectStage />
           </Button>
         )}

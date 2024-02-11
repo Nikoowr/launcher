@@ -96,8 +96,12 @@ export const SignInForm = () => {
           </div>
 
           <Button disabled={loading} className="mt-2" type="submit">
-            {loading && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />}
-            {dictionary.LOGIN}
+            <>
+              {loading && (
+                <Icons.spinner className="mr-2 size-4 animate-spin" />
+              )}
+              {dictionary.LOGIN}
+            </>
           </Button>
         </div>
       </form>

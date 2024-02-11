@@ -4,17 +4,21 @@ import {
   app as electronApp,
 } from 'electron';
 
+import { LangsEnum } from '../../constants/locale.constants';
 import { StagesEnum } from '../../constants/stage.constants';
 import { IpcEventsEnum } from '../constants/ipc-events.constants';
 import {
+  ChangeGameLangService,
   CreateGameLoginService,
   CreateGameLoginServiceDto,
   DownloadGameService,
   GetGameInfoService,
+  GetGameLangService,
   GetStageService,
   GetUserSessionService,
   IpcEventsController as IpcEventsControllerInterface,
   PlayGameService,
+  PlayGameServiceDto,
   SaveStageService,
   SaveUserSessionService,
   SaveUserSessionServiceDto,
@@ -26,7 +30,9 @@ type ConstructorServices = {
   createGameLoginService: CreateGameLoginService;
   saveUserSessionService: SaveUserSessionService;
   getUserSessionService: GetUserSessionService;
+  changeGameLangService: ChangeGameLangService;
   downloadGameService: DownloadGameService;
+  getGameLangService: GetGameLangService;
   getGameInfoService: GetGameInfoService;
   updateGameService: UpdateGameService;
   saveStageService: SaveStageService;
@@ -70,6 +76,27 @@ export class IpcEventsController implements IpcEventsControllerInterface {
     event.reply(IpcEventsEnum.GetStage, stage);
   }
 
+  public async [IpcEventsEnum.Play](
+    event: Electron.IpcMainEvent,
+    dto: PlayGameServiceDto,
+  ) {
+    const response = await this.services.playGameService.execute(dto);
+    event.reply(IpcEventsEnum.Play, response);
+  }
+
+  public async [IpcEventsEnum.ChangeGameLang](
+    event: Electron.IpcMainEvent,
+    dto: LangsEnum,
+  ) {
+    await this.services.changeGameLangService.execute(dto);
+    event.reply(IpcEventsEnum.ChangeGameLang);
+  }
+
+  public async [IpcEventsEnum.GetGameLang](event: Electron.IpcMainEvent) {
+    const lang = await this.services.getGameLangService.execute();
+    event.reply(IpcEventsEnum.GetGameLang, lang);
+  }
+
   [IpcEventsEnum.WindowEvent] = (
     event: IpcMainEvent,
     action: 'minimize-tray' | 'close',
@@ -101,10 +128,6 @@ export class IpcEventsController implements IpcEventsControllerInterface {
     await this.services.updateGameService.execute({
       ipcEvent: event,
     });
-  };
-
-  [IpcEventsEnum.Play] = async (event: Electron.IpcMainEvent) => {
-    await this.services.playGameService.execute({ ipcEvent: event });
   };
 
   [IpcEventsEnum.GetUserSession] = async (event: Electron.IpcMainEvent) => {

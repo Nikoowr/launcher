@@ -32,10 +32,12 @@ export type FileConfigOpenExecutableDto = {
 };
 
 export interface FileConfig {
+  gameTranslateDirectory: string;
   adminConfigDirectory: string;
   resourcesDirectory: string;
   userDataDirectory: string;
   gameDirectory: string;
+  i18nDirectory: string;
 
   download(dto: FileConfigDto): Promise<string>;
 
@@ -50,4 +52,8 @@ export interface FileConfig {
   openExecutable(dto: FileConfigOpenExecutableDto): Promise<void>;
 
   getAssetPath(asset: string): string;
+
+  copyFolderWithOverwrite(dto: { src: string; dest: string }): Promise<void>;
+
+  joinPaths(paths: string[]): string;
 }

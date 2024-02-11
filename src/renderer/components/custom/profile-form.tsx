@@ -2,8 +2,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 
-import { useAuth } from '../../hooks/auth';
 import { useLang } from '../../hooks/lang';
+import { useUser } from '../../hooks/user';
 import { Button } from '../ui/button';
 import {
   Form,
@@ -34,11 +34,11 @@ const profileFormSchema = z.object({
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
 export const ProfileForm = () => {
-  const { session } = useAuth();
+  const { user } = useUser();
   const { dictionary } = useLang();
 
   const defaultValues: Partial<ProfileFormValues> = {
-    username: session.user,
+    username: user.name,
   };
 
   const form = useForm<ProfileFormValues>({

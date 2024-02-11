@@ -1,4 +1,4 @@
-import { Status } from '../models/status.model';
+import { ApplicationStatus } from '../models/status.model';
 
 export type ApiConfigGameLoginDto = {
   accessToken: string;
@@ -13,5 +13,5 @@ export type ApiConfigGameLoginResponse = {
 export interface ApiConfig {
   gameLogin(dto: ApiConfigGameLoginDto): Promise<ApiConfigGameLoginResponse>;
 
-  getStatus(): Promise<Status>;
+  getStatus(dto: { currentGameVersion: string }): Promise<ApplicationStatus>;
 }

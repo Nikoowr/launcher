@@ -15,15 +15,13 @@ import {
   GameUpdateStatusEnum,
 } from '../../main/constants/game.constants';
 import { IpcEventsEnum } from '../../main/constants/ipc-events.constants';
+import * as gameUtils from '../utils/game.utils';
 import { useAuth } from './auth';
 import { useLang } from './lang';
+import { useStage } from './stage';
 
 type GameProviderProps = {
   children: ReactNode;
-};
-
-type GameInfo = {
-  version?: string;
 };
 
 type GameContextData = {
@@ -31,7 +29,6 @@ type GameContextData = {
   fileUpdating: string;
   readToPlay: boolean;
   statusText: string;
-  gameInfo: GameInfo;
   progress: number;
 };
 
@@ -49,13 +46,13 @@ export function GameProvider({ children }: GameProviderProps) {
   const [status, setStatus] = useState<
     GameDownloadStatusEnum | GameUpdateStatusEnum
   >(GameDownloadStatusEnum.Checking);
-  const [gameInfo, setGameInfo] = useState<GameInfo>({});
   const [fileUpdating, setFileUpdating] = useState('');
   const [readToPlay, setReadToPlay] = useState(false);
   const [progress, setProgress] = useState(0);
 
   const { dictionary } = useLang();
   const { loggedIn } = useAuth();
+  const { setGameVersion } = useStage();
 
   const statusText = useMemo(() => {
     // Download
@@ -142,17 +139,18 @@ export function GameProvider({ children }: GameProviderProps) {
     }
   }, []);
 
-  const handleUpdate = useCallback(async (props: OnGameFilesChangeProps) => {
-    onGameFilesChange(props);
+  const handleUpdate = useCallback(
+    async (props: OnGameFilesChangeProps) => {
+      onGameFilesChange(props);
 
-    if (props.status === GameUpdateStatusEnum.Done) {
-      setReadToPlay(true);
-    }
-  }, []);
-
-  const handleGameInfo = useCallback(async (props: { version?: string }) => {
-    setGameInfo(props);
-  }, []);
+      if (props.status === GameUpdateStatusEnum.Done) {
+        const gameVersion = await gameUtils.getVersion();
+        setReadToPlay(true);
+        setGameVersion(gameVersion);
+      }
+    },
+    [setGameVersion],
+  );
 
   useEffect(() => {
     ipcRenderer.on(IpcEventsEnum.DownloadGame, handleDownload);
@@ -161,10 +159,6 @@ export function GameProvider({ children }: GameProviderProps) {
   useEffect(() => {
     ipcRenderer.on(IpcEventsEnum.UpdateGame, handleUpdate);
   }, [handleUpdate]);
-
-  useEffect(() => {
-    ipcRenderer.on(IpcEventsEnum.GetGameInfo, handleGameInfo);
-  }, [handleGameInfo]);
 
   // Get Game Info useEffects
   useEffect(() => {
@@ -192,9 +186,8 @@ export function GameProvider({ children }: GameProviderProps) {
       readToPlay,
       statusText,
       progress,
-      gameInfo,
     }),
-    [fileUpdating, statusIcon, readToPlay, statusText, progress, gameInfo],
+    [fileUpdating, statusIcon, readToPlay, statusText, progress],
   );
 
   return (

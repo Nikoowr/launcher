@@ -7,9 +7,9 @@ import {
   ApiConfigGameLoginDto,
   ApiConfigGameLoginResponse,
   ApiConfig as ApiConfigInterface,
+  ApplicationStatus,
   EnvConfig,
   StageConfig,
-  Status,
 } from '../interfaces';
 
 export class ApiConfig implements ApiConfigInterface {
@@ -67,9 +67,18 @@ export class ApiConfig implements ApiConfigInterface {
     return { ...data, serverIp };
   }
 
-  public async getStatus(): Promise<Status> {
-    const { data } = await this.api.get<Status>(
+  public async getStatus({
+    currentGameVersion,
+  }: {
+    currentGameVersion: string;
+  }): Promise<ApplicationStatus> {
+    const { data } = await this.api.get<ApplicationStatus>(
       ApiRoutesEnum.GetAppStatusRoute,
+      {
+        params: {
+          version: currentGameVersion,
+        },
+      },
     );
 
     return data;

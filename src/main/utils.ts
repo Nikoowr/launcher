@@ -2,6 +2,8 @@
 import path from 'path';
 import { URL } from 'url';
 
+import { app } from 'electron';
+
 import { envConfig } from './configs/env.config';
 import { NodeEnvsEnum } from './constants/env.constants';
 
@@ -40,6 +42,10 @@ export const installExtensions = async () => {
 
 export const envSetup = () => {
   const isProduction = envConfig.NODE_ENV === NodeEnvsEnum.Production;
+
+  if (process.platform === 'win32') {
+    app.setAppUserModelId(app.name);
+  }
 
   if (isProduction) {
     const sourceMapSupport = require('source-map-support');

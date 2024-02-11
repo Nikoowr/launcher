@@ -1,8 +1,8 @@
-import { GameStatusEnum } from '../constants/api.constants';
-import { IpcEventsEnum } from '../constants/ipc-events.constants';
 import { UserDataStorageFilenamesEnum } from '../constants/store.constants';
 import {
   ApiConfig,
+  ApplicationStatus,
+  ApplicationStatusType,
   CryptographyConfig,
   EnvConfig,
   FileConfig,
@@ -18,26 +18,47 @@ export class PlayGameService implements PlayGameServiceInterface {
     private readonly apiConfig: ApiConfig,
   ) {}
 
-  public async execute({ ipcEvent }: PlayGameServiceDto): Promise<void> {
+  public async execute({
+    currentGameVersion,
+  }: PlayGameServiceDto): Promise<ApplicationStatus> {
     try {
-      const applicationStatus = await this.apiConfig.getStatus();
+      const applicationStatus = await this.apiConfig.getStatus({
+        currentGameVersion,
+      });
 
-      if (applicationStatus.game.status !== GameStatusEnum.Online) {
-        return ipcEvent.reply(IpcEventsEnum.Play, applicationStatus.game);
+      if (!applicationStatus.available) {
+        return applicationStatus;
       }
 
       await this.executeGame();
 
-      return ipcEvent.reply(IpcEventsEnum.Play, applicationStatus.game);
+      return applicationStatus;
     } catch (error) {
       console.error(error);
 
-      return ipcEvent.reply(IpcEventsEnum.Play);
+      return {
+        type: ApplicationStatusType.Error,
+        available: false,
+        data: {
+          title: {
+            pt: 'Erro interno do servidor',
+            en: 'Internal server error',
+            es: 'Error interno del servidor',
+            fr: 'Erreur interne du serveur',
+          },
+          description: {
+            pt: 'Lamentamos o inconveniente, nossa equipe está trabalhando para resolver o problema o mais rápido possível. Por favor, verifique nosso Discord para atualizações ou entre em contato diretamente com um administrador através de um ticket no Discord.',
+            en: 'We apologize for the inconvenience, our team is working to resolve the issue as quickly as possible. Please check our Discord for updates or reach out directly to an administrator via a ticket on Discord.',
+            es: 'Lamentamos las molestias, nuestro equipo está trabajando para resolver el problema lo más rápido posible. Por favor, verifica nuestro Discord para actualizaciones o contacta directamente con un administrador a través de un ticket en Discord.',
+            fr: 'Nous nous excusons pour le désagrément, notre équipe travaille à résoudre le problème le plus rapidement possible. Veuillez vérifier notre Discord pour des mises à jour ou contacter directement un administrateur via un ticket sur Discord.',
+          },
+        },
+      };
     }
   }
 
   private async executeGame() {
-    const encryptedLogin = await this.fileConfig.read({
+    const encryptedLogin = this.fileConfig.read({
       filename: UserDataStorageFilenamesEnum.UserLogin,
       directory: this.fileConfig.gameDirectory,
     });

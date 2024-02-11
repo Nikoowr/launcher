@@ -11,14 +11,14 @@ import {
 } from '../ui/select';
 
 export const SelectStage = () => {
-  const { loading, changeStage, stage } = useStage();
+  const { loading, changeStage, stage, gameIsRunning } = useStage();
   const { readToPlay } = useGame();
 
   return (
     <Select
+      disabled={loading || !stage || !readToPlay || gameIsRunning}
       onValueChange={changeStage}
       defaultValue={stage || ''}
-      disabled={loading || !stage || !readToPlay}
     >
       <SelectTrigger className="cursor-pointer border-none bg-transparent p-2 text-muted">
         <div className="flex items-center gap-2 pr-1">
