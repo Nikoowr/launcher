@@ -18,7 +18,6 @@ export type EnvConfig = {
   AUTO_UPDATER_INTERVAL_HOURS: number;
 
   // API
-
   API_KEY_TEXT: string;
   API_KEY_TEXT_SALT: string;
   API_KEY_DATE_SALT: string;

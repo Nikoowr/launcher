@@ -4,10 +4,12 @@ import {
   ApiConfig,
   AutoUpdaterConfig,
   CryptographyConfig,
+  ExecutableGameConfig,
   FileConfig,
   GameUpdaterConfig,
   MenuConfig,
   StageConfig,
+  StorageConfig,
   envConfig,
 } from './configs';
 import { IpcEventsController } from './controllers';
@@ -31,8 +33,13 @@ type ContainerDto = {
 };
 
 export const container = ({ app }: ContainerDto) => {
+  const storageConfig = new StorageConfig();
   const cryptographyConfig = new CryptographyConfig();
   const fileConfig = new FileConfig(envConfig);
+  const executableGameConfig = new ExecutableGameConfig(
+    fileConfig,
+    storageConfig,
+  );
   const menuConfig = new MenuConfig(fileConfig);
   const autoUpdaterConfig = new AutoUpdaterConfig(
     fileConfig,
@@ -44,6 +51,7 @@ export const container = ({ app }: ContainerDto) => {
   const apiConfig = new ApiConfig(envConfig, stageConfig);
 
   const playGameService = new PlayGameService(
+    executableGameConfig,
     cryptographyConfig,
     fileConfig,
     envConfig,
