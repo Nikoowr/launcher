@@ -14,7 +14,6 @@ const { get } = from(
     UPGRADE_EXTENSIONS: process.env.UPGRADE_EXTENSIONS,
     ELECTRON_PORT: process.env.ELECTRON_PORT,
     DEBUG_PROD: process.env.DEBUG_PROD,
-    CLIENT_BUCKET_URL: process.env.CLIENT_BUCKET_URL,
     USER_DATA_ENCRYPTION_KEY: process.env.USER_DATA_ENCRYPTION_KEY,
     AUTO_UPDATER_URL: process.env.AUTO_UPDATER_URL,
     GAME_UPDATER_URL: process.env.GAME_UPDATER_URL,
@@ -43,7 +42,6 @@ export const envConfig: EnvConfig = {
   DEBUG_PROD: get('DEBUG_PROD').asString(),
 
   // Application
-  CLIENT_BUCKET_URL: get('CLIENT_BUCKET_URL').required().asUrlString(),
   USER_DATA_ENCRYPTION_KEY: get('USER_DATA_ENCRYPTION_KEY')
     .required()
     .asString(),
