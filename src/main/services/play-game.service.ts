@@ -30,7 +30,7 @@ export class PlayGameService implements PlayGameServiceInterface {
         return applicationStatus;
       }
 
-      // await this.executeGame();
+      await this.executeGame();
 
       return applicationStatus;
     } catch (error) {
