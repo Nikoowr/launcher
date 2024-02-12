@@ -76,7 +76,10 @@ export const container = ({ app }: ContainerDto) => {
   const getUserSessionService = new GetUserSessionService(fileConfig);
   const changeGameLangService = new ChangeGameLangService(fileConfig);
   const getGameLangService = new GetGameLangService(fileConfig);
-  const getGameInfoService = new GetGameInfoService(fileConfig);
+  const getGameInfoService = new GetGameInfoService(
+    executableGameConfig,
+    fileConfig,
+  );
   const saveStageService = new SaveStageService(stageConfig);
   const getStageService = new GetStageService(stageConfig);
   const signOutService = new SignOutService(fileConfig);

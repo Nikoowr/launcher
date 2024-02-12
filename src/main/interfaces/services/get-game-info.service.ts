@@ -1,9 +1,5 @@
-import type { IpcMainEvent } from 'electron';
-
-export type GetGameInfoServiceDto = {
-  ipcEvent: IpcMainEvent;
-};
+import { GameInfo } from '../models/game-info.model';
 
 export interface GetGameInfoService {
-  execute(dto: GetGameInfoServiceDto): Promise<void>;
+  execute(): Promise<GameInfo>;
 }

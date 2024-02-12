@@ -22,7 +22,7 @@ export class ExecutableGameConfig implements ExecutableGameConfigInterface {
     password: string;
     user: string;
   }): Promise<void> {
-    const isAlreadyRunning = await this.isProcessRunning();
+    const isAlreadyRunning = await this.isRunning();
 
     if (isAlreadyRunning) {
       return;
@@ -35,10 +35,10 @@ export class ExecutableGameConfig implements ExecutableGameConfigInterface {
 
     const args = ['EasyFun', '-a', user, '-p', password];
 
-    console.log('executablePath', executablePath);
-    console.log('args', args);
-
-    const child = spawn(executablePath, args, { detached: true });
+    const child = spawn(executablePath, args, {
+      cwd: this.fileConfig.gameDirectory,
+      detached: true,
+    });
 
     if (child.pid) {
       this.storageConfig.set(StorageKeys.GameExecutablePid, String(child.pid));
@@ -47,10 +47,8 @@ export class ExecutableGameConfig implements ExecutableGameConfigInterface {
     child.unref();
   }
 
-  private async isProcessRunning() {
+  public async isRunning() {
     const pid = this.storageConfig.get<string>(StorageKeys.GameExecutablePid);
-
-    console.log('pid', pid);
 
     if (!pid) {
       return false;

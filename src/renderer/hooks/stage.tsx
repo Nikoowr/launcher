@@ -48,7 +48,10 @@ export function StageProvider({ children }: StageProviderProps) {
     return stageUtils
       .getStage()
       .then(async (data) => {
+        const isRunning = await gameUtils.isRunning();
         const version = await gameUtils.getVersion();
+
+        setGameIsRunning(isRunning);
         setGameVersion(version);
         setStage(data);
       })
