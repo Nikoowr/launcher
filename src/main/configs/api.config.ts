@@ -84,6 +84,20 @@ export class ApiConfig implements ApiConfigInterface {
     return data;
   }
 
+  public async getDownloadUrl(): Promise<string | null> {
+    try {
+      const { data } = await this.api.get<{ url?: string }>(
+        '/v1/status/game-download-url',
+      );
+
+      return data?.url || null;
+    } catch (error) {
+      console.error(error);
+
+      return null;
+    }
+  }
+
   private getBaseUrl() {
     const stage = this.stageConfig.get();
 

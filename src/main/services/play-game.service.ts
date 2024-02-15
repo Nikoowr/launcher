@@ -5,6 +5,7 @@ import {
   ApplicationStatusType,
   CryptographyConfig,
   EnvConfig,
+  ExecutableGameConfig,
   FileConfig,
   PlayGameServiceDto,
   PlayGameService as PlayGameServiceInterface,
@@ -12,6 +13,7 @@ import {
 
 export class PlayGameService implements PlayGameServiceInterface {
   constructor(
+    private readonly executableGameConfig: ExecutableGameConfig,
     private readonly cryptographyConfig: CryptographyConfig,
     private readonly fileConfig: FileConfig,
     private readonly envConfig: EnvConfig,
@@ -75,10 +77,9 @@ export class PlayGameService implements PlayGameServiceInterface {
     const [user, password] = login.split(':');
     const hashedPassword = await this.cryptographyConfig.md5(password);
 
-    await this.fileConfig.openExecutable({
-      props: ['EasyFun', `-a ${user}`, `-p ${hashedPassword}`],
-      directory: this.fileConfig.gameDirectory,
-      executable: 'GrandFantasia.exe',
+    await this.executableGameConfig.execute({
+      password: hashedPassword,
+      user,
     });
   }
 }

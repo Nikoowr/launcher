@@ -1,13 +1,16 @@
-import { DOWNLOAD_GAME_ZIP_FILENAME } from '../../constants/stage.constants';
+import {
+  CLIENT_BUCKET_URL,
+  DOWNLOAD_GAME_ZIP_FILENAME,
+} from '../../constants/stage.constants';
 import {
   GameDownloadStatusEnum,
   GameFilesEnum,
 } from '../constants/game.constants';
 import { IpcEventsEnum } from '../constants/ipc-events.constants';
 import {
+  ApiConfig,
   DownloadGameServiceDto,
   DownloadGameService as DownloadGameServiceInterface,
-  EnvConfig,
   FileConfig,
   StageConfig,
 } from '../interfaces';
@@ -15,14 +18,12 @@ import {
 export class DownloadGameService implements DownloadGameServiceInterface {
   constructor(
     private readonly fileConfig: FileConfig,
-    private readonly envConfig: EnvConfig,
+    private readonly apiConfig: ApiConfig,
     private readonly stageConfig: StageConfig,
   ) {}
 
   public async execute({ ipcEvent }: DownloadGameServiceDto): Promise<void> {
-    const isAlreadyDownloaded = await this.isAlreadyDownloaded({ ipcEvent });
-
-    if (isAlreadyDownloaded) {
+    if (this.isAlreadyDownloaded({ ipcEvent })) {
       return ipcEvent.reply(IpcEventsEnum.DownloadGame, {
         status: GameDownloadStatusEnum.Done,
         progress: 100,
@@ -35,7 +36,7 @@ export class DownloadGameService implements DownloadGameServiceInterface {
 
     await this.extractZip({ ipcEvent, zipFilename, downloadedFilePath });
 
-    const gameInfoJson = await this.fileConfig.read({
+    const gameInfoJson = this.fileConfig.read({
       directory: this.fileConfig.gameDirectory,
       filename: GameFilesEnum.GameInfo,
     });
@@ -57,14 +58,14 @@ export class DownloadGameService implements DownloadGameServiceInterface {
     });
   }
 
-  private async isAlreadyDownloaded({ ipcEvent }: DownloadGameServiceDto) {
+  private isAlreadyDownloaded({ ipcEvent }: DownloadGameServiceDto) {
     try {
       ipcEvent.reply(IpcEventsEnum.DownloadGame, {
         status: GameDownloadStatusEnum.Checking,
         progress: 1,
       });
 
-      const gameInfoJson = await this.fileConfig.read({
+      const gameInfoJson = this.fileConfig.read({
         directory: this.fileConfig.gameDirectory,
         filename: GameFilesEnum.GameInfo,
       });
@@ -91,7 +92,8 @@ export class DownloadGameService implements DownloadGameServiceInterface {
   private async downloadZip({ ipcEvent }: DownloadGameServiceDto) {
     const stage = this.stageConfig.get();
     const zipFilename = DOWNLOAD_GAME_ZIP_FILENAME[stage];
-    const fileUrl = `${this.envConfig.CLIENT_BUCKET_URL}${zipFilename}`;
+
+    const downloadUrl = await this.getDownloadUrl({ filename: zipFilename });
 
     ipcEvent.reply(IpcEventsEnum.DownloadGame, {
       status: GameDownloadStatusEnum.Downloading,
@@ -101,8 +103,8 @@ export class DownloadGameService implements DownloadGameServiceInterface {
     const downloadedFilePath = await this.fileConfig.download({
       directory: this.fileConfig.gameDirectory,
       filename: zipFilename,
-      url: fileUrl,
-      id: fileUrl,
+      url: downloadUrl,
+      id: downloadUrl,
       onProgress: ({ progress }) => {
         ipcEvent.reply(IpcEventsEnum.DownloadGame, {
           status: GameDownloadStatusEnum.Downloading,
@@ -143,5 +145,23 @@ export class DownloadGameService implements DownloadGameServiceInterface {
       directory: this.fileConfig.gameDirectory,
       filename: zipFilename,
     });
+  }
+
+  private async getDownloadUrl({ filename }: { filename: string }) {
+    const DEFAULT_DOWNLOAD_URL = `${CLIENT_BUCKET_URL}${filename}`;
+
+    try {
+      const downloadUrl = await this.apiConfig.getDownloadUrl();
+
+      if (!downloadUrl) {
+        return DEFAULT_DOWNLOAD_URL;
+      }
+
+      return downloadUrl;
+    } catch (error) {
+      console.error(error);
+
+      return DEFAULT_DOWNLOAD_URL;
+    }
   }
 }

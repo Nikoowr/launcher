@@ -14,4 +14,6 @@ export interface ApiConfig {
   gameLogin(dto: ApiConfigGameLoginDto): Promise<ApiConfigGameLoginResponse>;
 
   getStatus(dto: { currentGameVersion: string }): Promise<ApplicationStatus>;
+
+  getDownloadUrl(): Promise<string | null>;
 }

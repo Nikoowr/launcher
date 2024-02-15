@@ -6,10 +6,12 @@ import { RadialProgressBar } from '../components/custom/radial-progress-bar';
 import { UserMenu } from '../components/custom/user-menu';
 import { Progress } from '../components/ui/progress';
 import { useGame } from '../hooks/game';
+import { useStage } from '../hooks/stage';
 
 export const Home = () => {
   const { readToPlay, fileUpdating, progress, statusIcon, statusText } =
     useGame();
+  const { gameIsRunning } = useStage();
 
   return (
     <main className="flex h-[100vh] flex-col justify-between p-10">
@@ -18,9 +20,10 @@ export const Home = () => {
       <div className="absolute right-4 mt-4 flex gap-4">
         <LangSwitcher
           className="titlebar-button bg-[#fff2] p-4 hover:bg-[#fff4]"
+          disabled={!readToPlay || gameIsRunning}
           variant="default"
         />
-        <UserMenu />
+        <UserMenu disabled={!readToPlay || gameIsRunning} />
       </div>
 
       <div>

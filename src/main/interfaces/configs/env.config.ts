@@ -11,7 +11,6 @@ export type EnvConfig = {
   DEBUG_PROD?: string;
 
   // Application
-  CLIENT_BUCKET_URL: string;
   USER_DATA_ENCRYPTION_KEY: string;
   AUTO_UPDATER_URL: string;
   GAME_UPDATER_URL: string;
@@ -19,7 +18,6 @@ export type EnvConfig = {
   AUTO_UPDATER_INTERVAL_HOURS: number;
 
   // API
-
   API_KEY_TEXT: string;
   API_KEY_TEXT_SALT: string;
   API_KEY_DATE_SALT: string;
