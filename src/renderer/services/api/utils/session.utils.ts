@@ -3,6 +3,7 @@ import axios, { AxiosInstance } from 'axios';
 import { IpcEventsEnum } from '../../../../main/constants/ipc-events.constants';
 import { ApiRoutesEnum } from '../../../constants/api.constants';
 import { Session } from '../../../interfaces';
+import * as appUtils from '../../../utils/app.utils';
 import { interceptors } from '../interceptors';
 import { StageUtils } from './stage.utils';
 
@@ -67,6 +68,8 @@ export class SessionUtils {
       ipcRenderer.once(IpcEventsEnum.SignOut, resolve);
       ipcRenderer.sendMessage(IpcEventsEnum.SignOut);
     });
+
+    await appUtils.reload();
   }
 
   public async refreshSession(refreshToken: string): Promise<Session | null> {

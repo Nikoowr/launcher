@@ -18,6 +18,7 @@ export enum IpcEventsEnum {
   GetAppInfo = 'get-app-info',
   UpdateGame = 'update-game',
   SaveStage = 'save-stage',
+  ReloadApp = 'reload-app',
   GetStage = 'get-stage',
   SignOut = 'sign-out',
   Play = 'play',
