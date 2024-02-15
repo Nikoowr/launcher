@@ -27,5 +27,5 @@ export const GAME_CLIENT_FOLDER = {
 
 export const SERVER_IP = {
   [StagesEnum.Dev]: '194.147.58.35',
-  [StagesEnum.Prod]: '194.147.58.35',
+  [StagesEnum.Prod]: '51.79.86.95',
 };
