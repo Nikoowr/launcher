@@ -100,6 +100,12 @@ ipcMain.on(IpcEventsEnum.AutoUpdateQuitAndInstall, async () => {
   autoUpdaterConfig.quitAndInstall();
 });
 
+ipcMain.on(IpcEventsEnum.ReloadApp, (event) => {
+  console.log('Reloading app...');
+  mainWindow?.webContents.reloadIgnoringCache();
+  event.reply(IpcEventsEnum.ReloadApp);
+});
+
 ipcMain.on(IpcEventsEnum.OpenExternalLink, async (_event, link) => {
   shell.openExternal(link);
 });
