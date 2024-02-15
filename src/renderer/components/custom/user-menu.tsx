@@ -3,11 +3,10 @@ import { useNavigate } from 'react-router-dom';
 
 import { RoutesEnum } from '../../constants/routes.constants';
 import { useAuth } from '../../hooks/auth';
-import { useGame } from '../../hooks/game';
 import { useLang } from '../../hooks/lang';
-import { useStage } from '../../hooks/stage';
 import { useUser } from '../../hooks/user';
-import { Button } from '../ui/button';
+import { cn } from '../../lib/utils';
+import { Button, ButtonProps } from '../ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,20 +16,23 @@ import {
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
 
-export const UserMenu = () => {
+export interface UserMenuProps extends ButtonProps {}
+
+export const UserMenu = ({ className, ...props }: UserMenuProps) => {
   const navigate = useNavigate();
   const { dictionary } = useLang();
   const { logout } = useAuth();
   const { user } = useUser();
-  const { readToPlay } = useGame();
-  const { gameIsRunning } = useStage();
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
-          className="titlebar-button bg-[#fff2] p-4 hover:bg-[#fff4]"
-          disabled={!readToPlay || gameIsRunning}
+          className={cn(
+            'titlebar-button bg-[#fff2] p-4 hover:bg-[#fff4]',
+            className,
+          )}
+          {...props}
         >
           <User />
         </Button>

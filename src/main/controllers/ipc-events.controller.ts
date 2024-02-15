@@ -97,6 +97,11 @@ export class IpcEventsController implements IpcEventsControllerInterface {
     event.reply(IpcEventsEnum.GetGameLang, lang);
   }
 
+  public async [IpcEventsEnum.GetGameInfo](event: Electron.IpcMainEvent) {
+    const gameInfo = await this.services.getGameInfoService.execute();
+    event.reply(IpcEventsEnum.GetGameInfo, gameInfo);
+  }
+
   [IpcEventsEnum.WindowEvent] = (
     event: IpcMainEvent,
     action: 'minimize-tray' | 'close',
@@ -138,9 +143,5 @@ export class IpcEventsController implements IpcEventsControllerInterface {
     event.reply(IpcEventsEnum.GetAppInfo, {
       version: this.app.getVersion(),
     });
-  };
-
-  [IpcEventsEnum.GetGameInfo] = async (event: Electron.IpcMainEvent) => {
-    await this.services.getGameInfoService.execute({ ipcEvent: event });
   };
 }

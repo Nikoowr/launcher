@@ -4,10 +4,12 @@ import {
   ApiConfig,
   AutoUpdaterConfig,
   CryptographyConfig,
+  ExecutableGameConfig,
   FileConfig,
   GameUpdaterConfig,
   MenuConfig,
   StageConfig,
+  StorageConfig,
   envConfig,
 } from './configs';
 import { IpcEventsController } from './controllers';
@@ -31,8 +33,13 @@ type ContainerDto = {
 };
 
 export const container = ({ app }: ContainerDto) => {
+  const storageConfig = new StorageConfig();
   const cryptographyConfig = new CryptographyConfig();
   const fileConfig = new FileConfig(envConfig);
+  const executableGameConfig = new ExecutableGameConfig(
+    fileConfig,
+    storageConfig,
+  );
   const menuConfig = new MenuConfig(fileConfig);
   const autoUpdaterConfig = new AutoUpdaterConfig(
     fileConfig,
@@ -44,6 +51,7 @@ export const container = ({ app }: ContainerDto) => {
   const apiConfig = new ApiConfig(envConfig, stageConfig);
 
   const playGameService = new PlayGameService(
+    executableGameConfig,
     cryptographyConfig,
     fileConfig,
     envConfig,
@@ -55,7 +63,7 @@ export const container = ({ app }: ContainerDto) => {
   );
   const downloadGameService = new DownloadGameService(
     fileConfig,
-    envConfig,
+    apiConfig,
     stageConfig,
   );
   const updateGameService = new UpdateGameService(
@@ -68,7 +76,10 @@ export const container = ({ app }: ContainerDto) => {
   const getUserSessionService = new GetUserSessionService(fileConfig);
   const changeGameLangService = new ChangeGameLangService(fileConfig);
   const getGameLangService = new GetGameLangService(fileConfig);
-  const getGameInfoService = new GetGameInfoService(fileConfig);
+  const getGameInfoService = new GetGameInfoService(
+    executableGameConfig,
+    fileConfig,
+  );
   const saveStageService = new SaveStageService(stageConfig);
   const getStageService = new GetStageService(stageConfig);
   const signOutService = new SignOutService(fileConfig);

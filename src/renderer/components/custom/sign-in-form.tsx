@@ -14,6 +14,7 @@ import {
   FormMessage,
 } from '../ui/form';
 import { Input } from '../ui/input';
+import { ExternalLink } from './external-link';
 import { Icons } from './icons';
 
 export const SignInForm = () => {
@@ -93,6 +94,13 @@ export const SignInForm = () => {
                 </FormItem>
               )}
             />
+
+            <ExternalLink
+              className="cursor-pointer text-right text-xs text-muted-foreground hover:text-pink-500"
+              href="https://gfchaos.com/recovery-password"
+            >
+              Esqueceu a senha?
+            </ExternalLink>
           </div>
 
           <Button disabled={loading} className="mt-2" type="submit">

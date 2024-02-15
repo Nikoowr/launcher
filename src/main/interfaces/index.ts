@@ -1,7 +1,9 @@
 // Configs
+export * from './configs/executable-game.config';
 export * from './configs/cryptography.config';
 export * from './configs/auto-updater.config';
 export * from './configs/game-updater.config';
+export * from './configs/storage.config';
 export * from './configs/stage.config';
 export * from './configs/file.config';
 export * from './configs/menu.config';
