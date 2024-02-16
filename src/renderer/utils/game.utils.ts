@@ -32,17 +32,6 @@ export const getVersion = (): Promise<string> => {
   });
 };
 
-export const play = ({
-  currentGameVersion,
-}: {
-  currentGameVersion: string;
-}): Promise<ApplicationStatus> => {
-  return new Promise((resolve) => {
-    ipcRenderer.once(IpcEventsEnum.Play, resolve);
-    ipcRenderer.sendMessage(IpcEventsEnum.Play, { currentGameVersion });
-  });
-};
-
 export const changeLang = ({
   lang,
 }: {
@@ -51,6 +40,21 @@ export const changeLang = ({
   return new Promise((resolve) => {
     ipcRenderer.once(IpcEventsEnum.ChangeGameLang, resolve);
     ipcRenderer.sendMessage(IpcEventsEnum.ChangeGameLang, lang);
+  });
+};
+
+export const play = async ({
+  currentGameVersion,
+  lang,
+}: {
+  currentGameVersion: string;
+  lang: LangsEnum;
+}): Promise<ApplicationStatus> => {
+  await changeLang({ lang });
+
+  return new Promise((resolve) => {
+    ipcRenderer.once(IpcEventsEnum.Play, resolve);
+    ipcRenderer.sendMessage(IpcEventsEnum.Play, { currentGameVersion });
   });
 };
 
