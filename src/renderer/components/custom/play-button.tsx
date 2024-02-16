@@ -29,6 +29,7 @@ export const PlayButton = ({
 
     const response = await gameUtils.play({
       currentGameVersion: gameVersion || 'v0.0.0',
+      lang,
     });
 
     setGameIsRunning(false);
