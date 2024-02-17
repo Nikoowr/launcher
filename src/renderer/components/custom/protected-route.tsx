@@ -14,8 +14,9 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
 
   if (sessionLoading) {
     return (
-      <div className="flex h-[100vh] w-full items-center justify-center">
+      <div className="flex h-[100vh] w-full items-center justify-center gap-4">
         <Spinner />
+        <p>Loading data...</p>
       </div>
     );
   }

@@ -47,10 +47,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const handleSession = useCallback(async () => {
     setSessionLoading(true);
 
-    const session = await sessionUtils.getSession();
+    try {
+      const session = await sessionUtils.getSession();
 
-    setSessionLoading(false);
-    setLoggedIn(!!session);
+      setLoggedIn(!!session);
+    } catch (error) {
+      setLoggedIn(false);
+    } finally {
+      setSessionLoading(false);
+    }
   }, []);
 
   const login = useCallback(

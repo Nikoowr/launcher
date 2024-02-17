@@ -1,6 +1,6 @@
 import { StagesEnum } from '../../constants/stage.constants';
 import { IpcEventsEnum } from '../../main/constants/ipc-events.constants';
-import { ApplicationStatus, GameInfo } from '../../main/interfaces';
+import { ApplicationStatus } from '../../main/interfaces';
 import { LangsEnum } from '../i18n';
 
 const { ipcRenderer } = window.electron;
@@ -65,12 +65,12 @@ export const getLang = (): Promise<LangsEnum> => {
   });
 };
 
-export const isRunning = (): Promise<boolean> => {
-  return new Promise((resolve) => {
-    ipcRenderer.once(IpcEventsEnum.GetGameInfo, (gameInfo: GameInfo) =>
-      resolve(!!gameInfo?.isRunning),
-    );
+// export const isRunning = (): Promise<boolean> => {
+//   return new Promise((resolve) => {
+//     ipcRenderer.once(IpcEventsEnum.GetGameInfo, (gameInfo: GameInfo) =>
+//       resolve(!!gameInfo?.isRunning),
+//     );
 
-    ipcRenderer.sendMessage(IpcEventsEnum.GetGameInfo);
-  });
-};
+//     ipcRenderer.sendMessage(IpcEventsEnum.GetGameInfo);
+//   });
+// };

@@ -112,6 +112,8 @@ export class UpdateGameService implements UpdateGameServiceInterface {
   }
 
   private async checkForUpdates({ ipcEvent }: UpdateGameServiceDto) {
+    console.log('[UpdateGameService] - Checking for updates...');
+
     ipcEvent.reply(IpcEventsEnum.UpdateGame, {
       status: GameUpdateStatusEnum.Checking,
       progress: 0,
@@ -124,7 +126,7 @@ export class UpdateGameService implements UpdateGameServiceInterface {
       progress: 10,
     });
 
-    const gameInfoJson = await this.fileConfig.read({
+    const gameInfoJson = this.fileConfig.read({
       directory: this.fileConfig.gameDirectory,
       filename: GameFilesEnum.GameInfo,
     });

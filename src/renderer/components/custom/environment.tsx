@@ -15,7 +15,7 @@ const dictionary = {
 export const Environment = () => {
   const { stage } = useStage();
 
-  if (!stage || stage === StagesEnum.Prod) {
+  if (!stage) {
     return <div></div>;
   }
 

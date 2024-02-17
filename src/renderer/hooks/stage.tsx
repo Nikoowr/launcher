@@ -37,7 +37,7 @@ export function StageProvider({ children }: StageProviderProps) {
   const [gameIsRunning, setGameIsRunning] = useState<boolean>(false);
   const [gameVersion, setGameVersion] = useState<null | string>(null);
   const [stage, setStage] = useState<StagesEnum | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const { loggedIn, logout } = useAuth();
   const { user } = useUser();
@@ -45,18 +45,17 @@ export function StageProvider({ children }: StageProviderProps) {
   const loadStage = async () => {
     setLoading(true);
 
-    return stageUtils
-      .getStage()
-      .then(async (data) => {
-        const isRunning = await gameUtils.isRunning();
-        const version = await gameUtils.getVersion();
+    try {
+      const data = await stageUtils.getStage();
+      const version = await gameUtils.getVersion();
 
-        setGameIsRunning(isRunning);
-        setGameVersion(version);
-        setStage(data);
-      })
-      .catch(() => setStage(StagesEnum.Prod))
-      .finally(() => setLoading(false));
+      setGameVersion(version);
+      setStage(data);
+    } catch (error) {
+      setStage(StagesEnum.Prod);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const changeStage = useCallback(
@@ -81,7 +80,7 @@ export function StageProvider({ children }: StageProviderProps) {
 
   useEffect(() => {
     loadStage();
-  }, [loggedIn]);
+  }, []);
 
   const contextValue = useMemo(
     () => ({

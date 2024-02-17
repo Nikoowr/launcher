@@ -21,7 +21,7 @@ export const PlayButton = ({
 }: PlayButtonProps) => {
   const { readToPlay } = useGame();
   const { gameVersion, gameIsRunning, setGameIsRunning } = useStage();
-  const { dictionary: langDictionary, lang, loading: langLoading } = useLang();
+  const { dictionary: langDictionary, lang } = useLang();
   const dictionary = langDictionary.components.custom['play-button'];
 
   const play = async () => {
@@ -60,7 +60,7 @@ export const PlayButton = ({
       <div className="flex h-[64px]">
         <Button
           className="flex h-full w-[100%] justify-start rounded-s-full rounded-ee-full bg-pink-500 py-8 shadow-md hover:bg-pink-600"
-          disabled={disabled || gameIsRunning || langLoading}
+          disabled={disabled || gameIsRunning}
           onClick={play}
         >
           <div className="right-0 flex rounded-full bg-black p-2">

@@ -11,12 +11,23 @@ import { Settings } from './pages/settings';
 import { SignIn } from './pages/sign-in';
 
 export const App = () => {
-  const { loading } = useStage();
+  const { loading, gameVersion, stage } = useStage();
 
   if (loading) {
     return (
-      <div className="flex h-[100vh] w-full items-center justify-center">
-        <Spinner />
+      <div className="flex h-[100vh] w-full flex-col items-center justify-center  gap-2">
+        <div className="flex gap-4">
+          <Spinner />
+          <p>Loading environment...</p>
+        </div>
+        <div className="flex flex-col">
+          <span>
+            Game version: <strong>{gameVersion}</strong>
+          </span>
+          <span>
+            Environment: <strong>{stage}</strong>
+          </span>
+        </div>
       </div>
     );
   }

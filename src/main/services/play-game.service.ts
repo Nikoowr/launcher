@@ -24,9 +24,19 @@ export class PlayGameService implements PlayGameServiceInterface {
     currentGameVersion,
   }: PlayGameServiceDto): Promise<ApplicationStatus> {
     try {
+      console.log('[PlayGameService] - Getting application status...');
+
       const applicationStatus = await this.apiConfig.getStatus({
         currentGameVersion,
       });
+
+      console.log(
+        `[PlayGameService] - Application status: ${JSON.stringify(
+          applicationStatus,
+          null,
+          2,
+        )}`,
+      );
 
       if (!applicationStatus.available) {
         return applicationStatus;
@@ -60,14 +70,26 @@ export class PlayGameService implements PlayGameServiceInterface {
   }
 
   private async executeGame() {
+    console.log(
+      `[PlayGameService] - Game directory: ${this.fileConfig.gameDirectory}`,
+    );
+
+    console.log('[PlayGameService] - Reading login...');
+
     const encryptedLogin = this.fileConfig.read({
       filename: UserDataStorageFilenamesEnum.UserLogin,
       directory: this.fileConfig.gameDirectory,
     });
 
+    console.log('[PlayGameService] - Reading login complete!');
+
     if (!encryptedLogin) {
+      console.error('[PlayGameService] - Login not found!');
+
       throw new Error('Login not found');
     }
+
+    console.log('[PlayGameService] - Authenticating...');
 
     const login = await this.cryptographyConfig.decrypt({
       key: this.envConfig.USER_DATA_ENCRYPTION_KEY,
@@ -75,11 +97,18 @@ export class PlayGameService implements PlayGameServiceInterface {
     });
 
     const [user, password] = login.split(':');
+
+    console.log('[PlayGameService] - Authenticating...');
+
     const hashedPassword = await this.cryptographyConfig.md5(password);
+
+    console.log('[PlayGameService] - Authenticated!');
 
     await this.executableGameConfig.execute({
       password: hashedPassword,
       user,
     });
+
+    console.log('[PlayGameService] - Game executed!');
   }
 }

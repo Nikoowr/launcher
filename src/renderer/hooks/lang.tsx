@@ -37,10 +37,15 @@ export const LangProvider = ({ children }: LangProviderProps) => {
   const changeLang = useCallback(async (language: LangsEnum) => {
     setLoading(true);
 
-    await gameUtils.changeLang({ lang: language });
-
-    setLang(language);
-    setLoading(false);
+    try {
+      await gameUtils.changeLang({ lang: language });
+      setLang(language);
+      setLoading(false);
+    } catch (error) {
+      setLang(LangsEnum.PT);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => {

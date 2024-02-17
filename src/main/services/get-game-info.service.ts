@@ -19,7 +19,8 @@ export class GetGameInfoService implements GetGameInfoServiceInterface {
     });
 
     const gameInfo = gameInfoJson ? JSON.parse(gameInfoJson) : {};
-    const isRunning = await this.executableGameConfig.isRunning();
+    // const isRunning = await this.executableGameConfig.isRunning();
+    const isRunning = false;
 
     return {
       downloadedAt: gameInfo?.downloadedAt,
