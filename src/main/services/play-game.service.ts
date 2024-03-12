@@ -1,3 +1,4 @@
+import { UserRolesEnum } from '../../constants/user.constants';
 import { UserDataStorageFilenamesEnum } from '../constants/store.constants';
 import {
   ApiConfig,
@@ -22,6 +23,7 @@ export class PlayGameService implements PlayGameServiceInterface {
 
   public async execute({
     currentGameVersion,
+    userRole,
   }: PlayGameServiceDto): Promise<ApplicationStatus> {
     try {
       console.log('[PlayGameService] - Getting application status...');
@@ -38,7 +40,12 @@ export class PlayGameService implements PlayGameServiceInterface {
         )}`,
       );
 
-      if (!applicationStatus.available) {
+      const userIsAdmin = userRole === UserRolesEnum.Admin;
+
+      // Always available for admins
+      const applicationAvailable = applicationStatus.available || userIsAdmin;
+
+      if (!applicationAvailable) {
         return applicationStatus;
       }
 

@@ -11,7 +11,7 @@ import {
 } from 'react';
 
 import { StagesEnum } from '../../constants/stage.constants';
-import { UserRolesEnum } from '../interfaces';
+import { UserRolesEnum } from '../../constants/user.constants';
 import { stageUtils } from '../services/api/utils';
 import * as gameUtils from '../utils/game.utils';
 import { useAuth } from './auth';

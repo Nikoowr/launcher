@@ -4,6 +4,7 @@ import { ApplicationStatusType } from '../../../main/interfaces';
 import { useGame } from '../../hooks/game';
 import { useLang } from '../../hooks/lang';
 import { useStage } from '../../hooks/stage';
+import { useUser } from '../../hooks/user';
 import { cn } from '../../lib/utils';
 import * as gameUtils from '../../utils/game.utils';
 import { Button } from '../ui/button';
@@ -20,6 +21,7 @@ export const PlayButton = ({
   className = '',
 }: PlayButtonProps) => {
   const { readToPlay } = useGame();
+  const { user } = useUser();
   const { gameVersion, gameIsRunning, setGameIsRunning } = useStage();
   const { dictionary: langDictionary, lang } = useLang();
   const dictionary = langDictionary.components.custom['play-button'];
@@ -29,6 +31,7 @@ export const PlayButton = ({
 
     const response = await gameUtils.play({
       currentGameVersion: gameVersion || 'v0.0.0',
+      userRole: user.role,
       lang,
     });
 

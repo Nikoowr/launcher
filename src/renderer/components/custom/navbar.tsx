@@ -1,10 +1,10 @@
 import { MinusIcon, RefreshCcw, X } from 'lucide-react';
 
+import { UserRolesEnum } from '../../../constants/user.constants';
 import { IpcEventsEnum } from '../../../main/constants/ipc-events.constants';
 import { useApp } from '../../hooks/app';
 import { useStage } from '../../hooks/stage';
 import { useUser } from '../../hooks/user';
-import { UserRolesEnum } from '../../interfaces';
 import { cn } from '../../lib/utils';
 import { Button } from '../ui/button';
 import { SelectStage } from './select-stage';
