@@ -1,6 +1,6 @@
 {
   "name": "gfchaos-launcher",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "",
   "main": "./src/main/main.ts",
   "scripts": {
@@ -154,6 +154,7 @@
       ]
     },
     "win": {
+      "requestedExecutionLevel": "requireAdministrator",
       "icon": "build/icon.ico",
       "target": [
         "nsis"

@@ -1,7 +1,9 @@
+import { UserRolesEnum } from '../../../constants/user.constants';
 import { ApplicationStatus } from '../models/status.model';
 
 export type PlayGameServiceDto = {
   currentGameVersion: string;
+  userRole: UserRolesEnum;
 };
 
 export interface PlayGameService {

@@ -1,4 +1,5 @@
 import { StagesEnum } from '../../constants/stage.constants';
+import { UserRolesEnum } from '../../constants/user.constants';
 import { IpcEventsEnum } from '../../main/constants/ipc-events.constants';
 import { ApplicationStatus } from '../../main/interfaces';
 import { LangsEnum } from '../i18n';
@@ -45,16 +46,22 @@ export const changeLang = ({
 
 export const play = async ({
   currentGameVersion,
+  userRole,
   lang,
 }: {
   currentGameVersion: string;
+  userRole?: UserRolesEnum;
   lang: LangsEnum;
 }): Promise<ApplicationStatus> => {
   await changeLang({ lang });
 
   return new Promise((resolve) => {
     ipcRenderer.once(IpcEventsEnum.Play, resolve);
-    ipcRenderer.sendMessage(IpcEventsEnum.Play, { currentGameVersion });
+
+    ipcRenderer.sendMessage(IpcEventsEnum.Play, {
+      currentGameVersion,
+      userRole,
+    });
   });
 };
 
