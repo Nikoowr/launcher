@@ -48,7 +48,7 @@ export const container = ({ app }: ContainerDto) => {
   );
   const stageConfig = new StageConfig(fileConfig);
   const gameUpdaterConfig = new GameUpdaterConfig(envConfig, stageConfig);
-  const apiConfig = new ApiConfig(envConfig, stageConfig);
+  const apiConfig = new ApiConfig(envConfig, stageConfig, fileConfig);
 
   const playGameService = new PlayGameService(
     executableGameConfig,

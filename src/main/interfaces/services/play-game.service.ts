@@ -3,6 +3,7 @@ import { ApplicationStatus } from '../models/status.model';
 
 export type PlayGameServiceDto = {
   currentGameVersion: string;
+  accessToken: string;
   userRole: UserRolesEnum;
 };
 

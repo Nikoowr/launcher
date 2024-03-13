@@ -38,6 +38,7 @@ export interface FileConfig {
   userDataDirectory: string;
   gameDirectory: string;
   i18nDirectory: string;
+  MAC: string;
 
   download(dto: FileConfigDto): Promise<string>;
 

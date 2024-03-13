@@ -1,6 +1,6 @@
 {
   "name": "gfchaos-launcher",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "",
   "main": "./src/main/main.ts",
   "scripts": {
@@ -43,6 +43,7 @@
     "electron-updater": "^6.1.4",
     "env-var": "^7.4.1",
     "find-process": "^1.4.7",
+    "getmac": "^6.6.0",
     "http-status-codes": "^2.3.0",
     "lucide-react": "^0.292.0",
     "react": "^18.2.0",

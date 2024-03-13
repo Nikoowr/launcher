@@ -1,6 +1,7 @@
 import { PlayCircle } from 'lucide-react';
 
 import { ApplicationStatusType } from '../../../main/interfaces';
+import { useAuth } from '../../hooks/auth';
 import { useGame } from '../../hooks/game';
 import { useLang } from '../../hooks/lang';
 import { useStage } from '../../hooks/stage';
@@ -20,6 +21,7 @@ export const PlayButton = ({
   disabled = false,
   className = '',
 }: PlayButtonProps) => {
+  const { accessToken } = useAuth();
   const { readToPlay } = useGame();
   const { user } = useUser();
   const { gameVersion, gameIsRunning, setGameIsRunning } = useStage();
@@ -32,6 +34,7 @@ export const PlayButton = ({
     const response = await gameUtils.play({
       currentGameVersion: gameVersion || 'v0.0.0',
       userRole: user.role,
+      accessToken,
       lang,
     });
 
