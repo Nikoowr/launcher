@@ -105,10 +105,8 @@ export class PlayGameService implements PlayGameServiceInterface {
 
     const [user, password] = login.split(':');
 
-    const hashedPassword = await this.cryptographyConfig.md5(password);
-
     await this.executableGameConfig.execute({
-      password: hashedPassword,
+      password,
       user,
     });
 
