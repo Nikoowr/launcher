@@ -12,6 +12,7 @@ import {
   CreateGameLoginService,
   CreateGameLoginServiceDto,
   DownloadGameService,
+  FileConfig,
   GetGameInfoService,
   GetGameLangService,
   GetStageService,
@@ -41,10 +42,15 @@ type ConstructorServices = {
   signOutService: SignOutService;
 };
 
+type ConstructorConfigs = {
+  fileConfig: FileConfig;
+};
+
 export class IpcEventsController implements IpcEventsControllerInterface {
   constructor(
     private readonly app: typeof electronApp,
     private readonly services: ConstructorServices,
+    private readonly configs: ConstructorConfigs,
   ) {}
 
   public async [IpcEventsEnum.SaveUserSession](
@@ -100,6 +106,10 @@ export class IpcEventsController implements IpcEventsControllerInterface {
   public async [IpcEventsEnum.GetGameInfo](event: Electron.IpcMainEvent) {
     const gameInfo = await this.services.getGameInfoService.execute();
     event.reply(IpcEventsEnum.GetGameInfo, gameInfo);
+  }
+
+  public async [IpcEventsEnum.GetMAC](event: Electron.IpcMainEvent) {
+    event.reply(IpcEventsEnum.GetMAC, this.configs.fileConfig.MAC);
   }
 
   [IpcEventsEnum.WindowEvent] = (

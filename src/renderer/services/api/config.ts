@@ -11,7 +11,7 @@ apiConfig.interceptors.request.use(async (config) => {
   });
 
   return interceptors.request.setUserAccessTokenInterceptor(
-    await interceptors.request.setApiKeyInterceptor(config),
+    await interceptors.request.setDefaultHeadersInterceptor(config),
   );
 });
 

@@ -84,20 +84,24 @@ export const container = ({ app }: ContainerDto) => {
   const getStageService = new GetStageService(stageConfig);
   const signOutService = new SignOutService(fileConfig);
 
-  const ipcEventsController = new IpcEventsController(app, {
-    saveUserSessionService,
-    createGameLoginService,
-    changeGameLangService,
-    getUserSessionService,
-    downloadGameService,
-    getGameLangService,
-    getGameInfoService,
-    updateGameService,
-    saveStageService,
-    playGameService,
-    getStageService,
-    signOutService,
-  });
+  const ipcEventsController = new IpcEventsController(
+    app,
+    {
+      saveUserSessionService,
+      createGameLoginService,
+      changeGameLangService,
+      getUserSessionService,
+      downloadGameService,
+      getGameLangService,
+      getGameInfoService,
+      updateGameService,
+      saveStageService,
+      playGameService,
+      getStageService,
+      signOutService,
+    },
+    { fileConfig },
+  );
 
   return { ipcEventsController, autoUpdaterConfig, menuConfig };
 };

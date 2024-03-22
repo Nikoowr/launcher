@@ -21,5 +21,6 @@ export enum IpcEventsEnum {
   ReloadApp = 'reload-app',
   GetStage = 'get-stage',
   SignOut = 'sign-out',
+  GetMAC = 'get-mac',
   Play = 'play',
 }

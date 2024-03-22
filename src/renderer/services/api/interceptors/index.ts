@@ -1,10 +1,13 @@
-import { setApiKeyInterceptor, setUserAccessTokenInterceptor } from './request';
+import {
+  setDefaultHeadersInterceptor,
+  setUserAccessTokenInterceptor,
+} from './request';
 import { refreshTokenInterceptor } from './response';
 
 export const interceptors = {
   request: {
-    setApiKeyInterceptor,
     setUserAccessTokenInterceptor,
+    setDefaultHeadersInterceptor,
   },
   response: {
     refreshTokenInterceptor,
