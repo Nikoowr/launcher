@@ -32,6 +32,7 @@ type AuthContextData = {
   login: (credentials: Credentials, options?: LoginOptions) => Promise<void>;
   logout: () => Promise<void>;
   sessionLoading: boolean;
+  accessToken?: string;
   loggedIn: boolean;
   loading: boolean;
 };
@@ -39,10 +40,16 @@ type AuthContextData = {
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
 export function AuthProvider({ children }: AuthProviderProps) {
+  const [accessToken, setAccessToken] = useState<undefined | string>(undefined);
   const [loggedIn, setLoggedIn] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const [sessionLoading, setSessionLoading] = useState(true);
+
+  const logout = useCallback(async () => {
+    await sessionUtils.deleteSession();
+    setLoggedIn(false);
+  }, []);
 
   const handleSession = useCallback(async () => {
     setSessionLoading(true);
@@ -50,13 +57,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       const session = await sessionUtils.getSession();
 
+      setAccessToken(session?.accessToken);
       setLoggedIn(!!session);
     } catch (error) {
-      setLoggedIn(false);
+      await logout();
     } finally {
       setSessionLoading(false);
     }
-  }, []);
+  }, [logout]);
 
   const login = useCallback(
     async (credentials: Credentials, options?: LoginOptions) => {
@@ -66,7 +74,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setLoading(true);
         const session = await api.createSession(credentials);
         await sessionUtils.saveSession({ session });
-        await sessionUtils.createGameLogin({ session, credentials });
         await handleSession();
       } catch {
         if (error) {
@@ -85,11 +92,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
     [handleSession],
   );
 
-  const logout = useCallback(async () => {
-    await sessionUtils.deleteSession();
-    setLoggedIn(false);
-  }, []);
-
   useEffect(() => {
     handleSession();
   }, [handleSession]);
@@ -97,12 +99,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const contextValue = useMemo(
     () => ({
       sessionLoading,
+      accessToken,
       loggedIn,
       loading,
       logout,
       login,
     }),
-    [sessionLoading, loggedIn, loading, logout, login],
+    [sessionLoading, accessToken, loggedIn, loading, logout, login],
   );
 
   return (

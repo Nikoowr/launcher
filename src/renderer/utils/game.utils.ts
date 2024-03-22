@@ -46,11 +46,13 @@ export const changeLang = ({
 
 export const play = async ({
   currentGameVersion,
+  gameLogin,
   userRole,
   lang,
 }: {
   currentGameVersion: string;
   userRole?: UserRolesEnum;
+  gameLogin?: string;
   lang: LangsEnum;
 }): Promise<ApplicationStatus> => {
   await changeLang({ lang });
@@ -60,6 +62,7 @@ export const play = async ({
 
     ipcRenderer.sendMessage(IpcEventsEnum.Play, {
       currentGameVersion,
+      gameLogin,
       userRole,
     });
   });

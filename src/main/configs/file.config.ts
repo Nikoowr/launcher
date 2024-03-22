@@ -5,6 +5,7 @@ import { promisify } from 'node:util';
 
 import axios from 'axios';
 import { app } from 'electron';
+import getMAC from 'getmac';
 import * as yauzl from 'yauzl';
 
 import {
@@ -79,6 +80,18 @@ export class FileConfig implements FileConfigInterface {
 
   public get gameTranslateDirectory() {
     return path.join(this.gameDirectory, 'data', 'translate');
+  }
+
+  public get MAC() {
+    let mac = '';
+
+    try {
+      mac = getMAC();
+    } catch (error) {
+      console.error(error);
+    }
+
+    return mac;
   }
 
   public async download({

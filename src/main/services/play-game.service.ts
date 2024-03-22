@@ -1,5 +1,4 @@
 import { UserRolesEnum } from '../../constants/user.constants';
-import { UserDataStorageFilenamesEnum } from '../constants/store.constants';
 import {
   ApiConfig,
   ApplicationStatus,
@@ -23,6 +22,7 @@ export class PlayGameService implements PlayGameServiceInterface {
 
   public async execute({
     currentGameVersion,
+    gameLogin,
     userRole,
   }: PlayGameServiceDto): Promise<ApplicationStatus> {
     try {
@@ -49,7 +49,7 @@ export class PlayGameService implements PlayGameServiceInterface {
         return applicationStatus;
       }
 
-      await this.executeGame();
+      await this.executeGame({ login: gameLogin });
 
       return applicationStatus;
     } catch (error) {
@@ -76,43 +76,20 @@ export class PlayGameService implements PlayGameServiceInterface {
     }
   }
 
-  private async executeGame() {
+  private async executeGame({ login }: { login: string }) {
     console.log(
       `[PlayGameService] - Game directory: ${this.fileConfig.gameDirectory}`,
     );
 
-    console.log('[PlayGameService] - Reading login...');
-
-    const encryptedLogin = this.fileConfig.read({
-      filename: UserDataStorageFilenamesEnum.UserLogin,
-      directory: this.fileConfig.gameDirectory,
-    });
-
-    console.log('[PlayGameService] - Reading login complete!');
-
-    if (!encryptedLogin) {
-      console.error('[PlayGameService] - Login not found!');
-
-      throw new Error('Login not found');
-    }
-
-    console.log('[PlayGameService] - Authenticating...');
-
-    const login = await this.cryptographyConfig.decrypt({
+    const decryptedLogin = await this.cryptographyConfig.decrypt({
       key: this.envConfig.USER_DATA_ENCRYPTION_KEY,
-      data: encryptedLogin,
+      data: login,
     });
 
-    const [user, password] = login.split(':');
-
-    console.log('[PlayGameService] - Authenticating...');
-
-    const hashedPassword = await this.cryptographyConfig.md5(password);
-
-    console.log('[PlayGameService] - Authenticated!');
+    const [user, password] = decryptedLogin.split(':');
 
     await this.executableGameConfig.execute({
-      password: hashedPassword,
+      password,
       user,
     });
 

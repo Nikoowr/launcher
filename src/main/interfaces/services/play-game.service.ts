@@ -4,6 +4,7 @@ import { ApplicationStatus } from '../models/status.model';
 export type PlayGameServiceDto = {
   currentGameVersion: string;
   userRole: UserRolesEnum;
+  gameLogin: string;
 };
 
 export interface PlayGameService {

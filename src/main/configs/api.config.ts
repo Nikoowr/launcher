@@ -9,6 +9,7 @@ import {
   ApiConfig as ApiConfigInterface,
   ApplicationStatus,
   EnvConfig,
+  FileConfig,
   StageConfig,
 } from '../interfaces';
 
@@ -18,6 +19,7 @@ export class ApiConfig implements ApiConfigInterface {
   constructor(
     private readonly envConfig: EnvConfig,
     private readonly stageConfig: StageConfig,
+    private readonly fileConfig: FileConfig,
   ) {
     this.api = axios.create();
 
@@ -30,6 +32,7 @@ export class ApiConfig implements ApiConfigInterface {
         headers: {
           ...config.headers,
           ['x-api-key']: this.apiKey,
+          ['x-mac']: this.fileConfig.MAC,
         },
       } as unknown as InternalAxiosRequestConfig;
     });

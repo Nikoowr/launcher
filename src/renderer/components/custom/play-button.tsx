@@ -1,11 +1,13 @@
 import { PlayCircle } from 'lucide-react';
 
 import { ApplicationStatusType } from '../../../main/interfaces';
+import { useAuth } from '../../hooks/auth';
 import { useGame } from '../../hooks/game';
 import { useLang } from '../../hooks/lang';
 import { useStage } from '../../hooks/stage';
 import { useUser } from '../../hooks/user';
 import { cn } from '../../lib/utils';
+import { api } from '../../services/api/functions';
 import * as gameUtils from '../../utils/game.utils';
 import { Button } from '../ui/button';
 import { toast } from '../ui/use-toast';
@@ -20,6 +22,7 @@ export const PlayButton = ({
   disabled = false,
   className = '',
 }: PlayButtonProps) => {
+  const { logout } = useAuth();
   const { readToPlay } = useGame();
   const { user } = useUser();
   const { gameVersion, gameIsRunning, setGameIsRunning } = useStage();
@@ -29,15 +32,24 @@ export const PlayButton = ({
   const play = async () => {
     setGameIsRunning(true);
 
-    const response = await gameUtils.play({
-      currentGameVersion: gameVersion || 'v0.0.0',
-      userRole: user.role,
-      lang,
-    });
+    try {
+      const gameLogin = await api.getGameLogin();
 
-    setGameIsRunning(false);
+      if (!gameLogin) {
+        return logout();
+      }
 
-    if (!response.available) {
+      const response = await gameUtils.play({
+        currentGameVersion: gameVersion || 'v0.0.0',
+        userRole: user.role,
+        gameLogin,
+        lang,
+      });
+
+      if (response.available) {
+        return;
+      }
+
       const title = response.data?.title
         ? response.data?.title[lang] || 'Error'
         : 'Unknown Error';
@@ -46,15 +58,19 @@ export const PlayButton = ({
         ? response.data?.description[lang]
         : undefined;
 
-      return toast({
-        title,
-        description,
+      toast({
         duration: 5000,
+        description,
+        title,
         variant:
           response.type === ApplicationStatusType.Error
             ? 'destructive'
             : 'default',
       });
+    } catch (error) {
+      await logout();
+    } finally {
+      setGameIsRunning(false);
     }
   };
 
