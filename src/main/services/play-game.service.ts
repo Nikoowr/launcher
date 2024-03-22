@@ -1,4 +1,6 @@
+import { SERVER_IP } from '../../constants/stage.constants';
 import { UserRolesEnum } from '../../constants/user.constants';
+import { GameFilesEnum } from '../constants/game.constants';
 import {
   ApiConfig,
   ApplicationStatus,
@@ -9,6 +11,7 @@ import {
   FileConfig,
   PlayGameServiceDto,
   PlayGameService as PlayGameServiceInterface,
+  StageConfig,
 } from '../interfaces';
 
 export class PlayGameService implements PlayGameServiceInterface {
@@ -18,6 +21,7 @@ export class PlayGameService implements PlayGameServiceInterface {
     private readonly fileConfig: FileConfig,
     private readonly envConfig: EnvConfig,
     private readonly apiConfig: ApiConfig,
+    private readonly stageConfig: StageConfig,
   ) {}
 
   public async execute({
@@ -49,6 +53,7 @@ export class PlayGameService implements PlayGameServiceInterface {
         return applicationStatus;
       }
 
+      await this.createConnectionFiles();
       await this.executeGame({ login: gameLogin });
 
       return applicationStatus;
@@ -74,6 +79,32 @@ export class PlayGameService implements PlayGameServiceInterface {
         },
       };
     }
+  }
+
+  private async createConnectionFiles() {
+    const serverIp = SERVER_IP[this.stageConfig.get()];
+
+    const connects = [
+      `Stream01=${serverIp},6543`,
+      `Stream02=${serverIp},6544`,
+      `Stream03=${serverIp},6545`,
+      `Stream04=${serverIp},6546`,
+    ].join('\n');
+
+    const connect = `Server=${serverIp},6543`;
+
+    await Promise.all([
+      this.fileConfig.write({
+        directory: this.fileConfig.gameDirectory,
+        filename: GameFilesEnum.Connects,
+        data: connects,
+      }),
+      this.fileConfig.write({
+        directory: this.fileConfig.gameDirectory,
+        filename: GameFilesEnum.Connect,
+        data: connect,
+      }),
+    ]);
   }
 
   private async executeGame({ login }: { login: string }) {
