@@ -165,3 +165,7 @@ ipcMain.on(IpcEventsEnum.ChangeGameLang, async (event, dto) =>
 ipcMain.on(IpcEventsEnum.GetGameLang, async (event) =>
   ipcEventsController?.[IpcEventsEnum.GetGameLang](event),
 );
+
+ipcMain.on(IpcEventsEnum.GetMAC, async (event) =>
+  ipcEventsController?.[IpcEventsEnum.GetMAC](event),
+);
