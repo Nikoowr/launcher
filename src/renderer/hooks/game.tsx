@@ -153,12 +153,16 @@ export function GameProvider({ children }: GameProviderProps) {
   );
 
   useEffect(() => {
-    ipcRenderer.on(IpcEventsEnum.DownloadGame, handleDownload);
-  }, [handleDownload]);
+    if (loggedIn) {
+      ipcRenderer.on(IpcEventsEnum.DownloadGame, handleDownload);
+    }
+  }, [loggedIn, handleDownload]);
 
   useEffect(() => {
-    ipcRenderer.on(IpcEventsEnum.UpdateGame, handleUpdate);
-  }, [handleUpdate]);
+    if (loggedIn) {
+      ipcRenderer.on(IpcEventsEnum.UpdateGame, handleUpdate);
+    }
+  }, [loggedIn, handleUpdate]);
 
   // Get Game Info useEffects
   useEffect(() => {

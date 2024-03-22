@@ -46,6 +46,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const [sessionLoading, setSessionLoading] = useState(true);
 
+  const logout = useCallback(async () => {
+    await sessionUtils.deleteSession();
+    setLoggedIn(false);
+  }, []);
+
   const handleSession = useCallback(async () => {
     setSessionLoading(true);
 
@@ -55,11 +60,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setAccessToken(session?.accessToken);
       setLoggedIn(!!session);
     } catch (error) {
-      setLoggedIn(false);
+      await logout();
     } finally {
       setSessionLoading(false);
     }
-  }, []);
+  }, [logout]);
 
   const login = useCallback(
     async (credentials: Credentials, options?: LoginOptions) => {
@@ -86,11 +91,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
     },
     [handleSession],
   );
-
-  const logout = useCallback(async () => {
-    await sessionUtils.deleteSession();
-    setLoggedIn(false);
-  }, []);
 
   useEffect(() => {
     handleSession();

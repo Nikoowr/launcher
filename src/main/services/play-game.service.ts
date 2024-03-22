@@ -22,7 +22,7 @@ export class PlayGameService implements PlayGameServiceInterface {
 
   public async execute({
     currentGameVersion,
-    accessToken,
+    gameLogin,
     userRole,
   }: PlayGameServiceDto): Promise<ApplicationStatus> {
     try {
@@ -49,9 +49,7 @@ export class PlayGameService implements PlayGameServiceInterface {
         return applicationStatus;
       }
 
-      const login = await this.getGameLogin({ accessToken });
-
-      await this.executeGame({ login });
+      await this.executeGame({ login: gameLogin });
 
       return applicationStatus;
     } catch (error) {
@@ -78,32 +76,17 @@ export class PlayGameService implements PlayGameServiceInterface {
     }
   }
 
-  private async getGameLogin({ accessToken }: { accessToken: string }) {
-    console.log('[PlayGameService] - Authenticating...');
-
-    const { login: encryptedLogin } = await this.apiConfig.gameLogin({
-      password: '',
-      accessToken,
-    });
-
-    console.log('[PlayGameService] - Authenticating...');
-
-    const login = await this.cryptographyConfig.decrypt({
-      key: this.envConfig.USER_DATA_ENCRYPTION_KEY,
-      data: encryptedLogin,
-    });
-
-    console.log('[PlayGameService] - Authenticated!');
-
-    return login;
-  }
-
   private async executeGame({ login }: { login: string }) {
     console.log(
       `[PlayGameService] - Game directory: ${this.fileConfig.gameDirectory}`,
     );
 
-    const [user, password] = login.split(':');
+    const decryptedLogin = await this.cryptographyConfig.decrypt({
+      key: this.envConfig.USER_DATA_ENCRYPTION_KEY,
+      data: login,
+    });
+
+    const [user, password] = decryptedLogin.split(':');
 
     await this.executableGameConfig.execute({
       password,
