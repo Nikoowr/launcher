@@ -1,11 +1,11 @@
-import SideImageBackground from '../../../../assets/sign-in-side.gif';
+import SideImageBackground from '../../../../assets/sign-in-side.jpg';
 
 export const SignInSideBackground = () => {
   return (
-    <div className="absolute inset-0 -z-10 bg-zinc-900">
+    <div className="absolute inset-0 -z-10 bg-zinc-900 brightness-75">
       <img
         src={SideImageBackground}
-        className="h-full w-full object-cover "
+        className="size-full object-cover blur-sm"
         alt="Side Image GF Chaos"
       />
     </div>
