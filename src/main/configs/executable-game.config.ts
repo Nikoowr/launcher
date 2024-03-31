@@ -1,7 +1,5 @@
 import { spawn } from 'node:child_process';
 
-// import find from 'find-process';
-
 import {
   ExecutableGameConfig as ExecutableGameConfigInterface,
   FileConfig,
@@ -51,16 +49,4 @@ export class ExecutableGameConfig implements ExecutableGameConfigInterface {
     child.unref();
     console.log('[ExecutableGameConfig] Child complete!');
   }
-
-  // public async isRunning() {
-  //   const pid = this.storageConfig.get<string>(StorageKeys.GameExecutablePid);
-
-  //   if (!pid) {
-  //     return false;
-  //   }
-
-  //   const list = await find('pid', pid);
-
-  //   return list.length > 0;
-  // }
 }

@@ -44,4 +44,6 @@ export interface IpcEventsController {
   [IpcEventsEnum.ChangeGameLang]: (event: IpcMainEvent, dto: LangsEnum) => void;
 
   [IpcEventsEnum.GetGameLang]: (event: IpcMainEvent) => void;
+
+  [IpcEventsEnum.DownloadEssentialFiles]: (event: IpcMainEvent) => void;
 }

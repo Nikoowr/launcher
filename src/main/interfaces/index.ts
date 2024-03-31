@@ -19,6 +19,7 @@ export * from './models/session.model';
 export * from './models/status.model';
 
 // Services
+export * from './services/download-essential-files.service';
 export * from './services/save-user-session.service';
 export * from './services/create-game-login.service';
 export * from './services/get-user-session.service';

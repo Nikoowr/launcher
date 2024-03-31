@@ -164,6 +164,12 @@ export class FileConfig implements FileConfigInterface {
     }
   }
 
+  public exists(dto: { directory: string; filename: string }): boolean {
+    const filepath = path.join(dto.directory, dto.filename);
+
+    return fs.existsSync(filepath);
+  }
+
   public async write({
     directory,
     filename,

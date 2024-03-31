@@ -44,6 +44,8 @@ export interface FileConfig {
 
   read(dto: { directory: string; filename: string }): string | null;
 
+  exists(dto: { directory: string; filename: string }): boolean;
+
   write(dto: FileConfigWriteDto): Promise<string>;
 
   delete(dto: { directory: string; filename: string }): Promise<void>;

@@ -44,6 +44,13 @@ export const changeLang = ({
   });
 };
 
+export const downloadEssentialFiles = (): Promise<void> => {
+  return new Promise((resolve) => {
+    ipcRenderer.once(IpcEventsEnum.DownloadEssentialFiles, resolve);
+    ipcRenderer.sendMessage(IpcEventsEnum.DownloadEssentialFiles);
+  });
+};
+
 export const play = async ({
   currentGameVersion,
   gameLogin,
@@ -56,6 +63,7 @@ export const play = async ({
   lang: LangsEnum;
 }): Promise<ApplicationStatus> => {
   await changeLang({ lang });
+  await downloadEssentialFiles();
 
   return new Promise((resolve) => {
     ipcRenderer.once(IpcEventsEnum.Play, resolve);
@@ -74,13 +82,3 @@ export const getLang = (): Promise<LangsEnum> => {
     ipcRenderer.sendMessage(IpcEventsEnum.GetGameLang);
   });
 };
-
-// export const isRunning = (): Promise<boolean> => {
-//   return new Promise((resolve) => {
-//     ipcRenderer.once(IpcEventsEnum.GetGameInfo, (gameInfo: GameInfo) =>
-//       resolve(!!gameInfo?.isRunning),
-//     );
-
-//     ipcRenderer.sendMessage(IpcEventsEnum.GetGameInfo);
-//   });
-// };
