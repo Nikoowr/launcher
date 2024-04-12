@@ -5,6 +5,7 @@ export type IpcEventSignInDto = {
 
 export enum IpcEventsEnum {
   AutoUpdateQuitAndInstall = 'auto-update-quit-and-install',
+  DownloadEssentialFiles = 'download-essential-files',
   AutoUpdaterFoundUpdate = 'auto-updater-found-update',
   OpenExternalLink = 'open-external-link',
   SaveUserSession = 'save-user-session',

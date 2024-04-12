@@ -16,6 +16,7 @@ import { IpcEventsController } from './controllers';
 import {
   ChangeGameLangService,
   CreateGameLoginService,
+  DownloadEssentialFilesService,
   DownloadGameService,
   GetGameInfoService,
   GetGameLangService,
@@ -73,6 +74,9 @@ export const container = ({ app }: ContainerDto) => {
     envConfig,
     stageConfig,
   );
+  const downloadEssentialFilesService = new DownloadEssentialFilesService(
+    fileConfig,
+  );
   const saveUserSessionService = new SaveUserSessionService(fileConfig);
   const getUserSessionService = new GetUserSessionService(fileConfig);
   const changeGameLangService = new ChangeGameLangService(fileConfig);
@@ -88,6 +92,7 @@ export const container = ({ app }: ContainerDto) => {
   const ipcEventsController = new IpcEventsController(
     app,
     {
+      downloadEssentialFilesService,
       saveUserSessionService,
       createGameLoginService,
       changeGameLangService,

@@ -11,6 +11,7 @@ import {
   ChangeGameLangService,
   CreateGameLoginService,
   CreateGameLoginServiceDto,
+  DownloadEssentialFilesService,
   DownloadGameService,
   FileConfig,
   GetGameInfoService,
@@ -28,6 +29,7 @@ import {
 } from '../interfaces';
 
 type ConstructorServices = {
+  downloadEssentialFilesService: DownloadEssentialFilesService;
   createGameLoginService: CreateGameLoginService;
   saveUserSessionService: SaveUserSessionService;
   getUserSessionService: GetUserSessionService;
@@ -110,6 +112,13 @@ export class IpcEventsController implements IpcEventsControllerInterface {
 
   public async [IpcEventsEnum.GetMAC](event: Electron.IpcMainEvent) {
     event.reply(IpcEventsEnum.GetMAC, this.configs.fileConfig.MAC);
+  }
+
+  public async [IpcEventsEnum.DownloadEssentialFiles](
+    event: Electron.IpcMainEvent,
+  ) {
+    await this.services.downloadEssentialFilesService.execute();
+    event.reply(IpcEventsEnum.DownloadEssentialFiles);
   }
 
   [IpcEventsEnum.WindowEvent] = (

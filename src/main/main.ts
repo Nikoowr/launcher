@@ -169,3 +169,7 @@ ipcMain.on(IpcEventsEnum.GetGameLang, async (event) =>
 ipcMain.on(IpcEventsEnum.GetMAC, async (event) =>
   ipcEventsController?.[IpcEventsEnum.GetMAC](event),
 );
+
+ipcMain.on(IpcEventsEnum.DownloadEssentialFiles, async (event) =>
+  ipcEventsController?.[IpcEventsEnum.DownloadEssentialFiles](event),
+);

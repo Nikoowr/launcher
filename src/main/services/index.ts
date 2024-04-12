@@ -1,3 +1,4 @@
+export * from './download-essential-files.service';
 export * from './create-game-login.service';
 export * from './save-user-session.service';
 export * from './change-game-lang.service';
