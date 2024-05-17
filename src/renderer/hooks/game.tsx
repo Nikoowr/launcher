@@ -160,7 +160,7 @@ export function GameProvider({ children }: GameProviderProps) {
 
   useEffect(() => {
     if (loggedIn) {
-      ipcRenderer.on(IpcEventsEnum.UpdateGame, handleUpdate);
+      // ipcRenderer.on(IpcEventsEnum.UpdateGame, handleUpdate);
     }
   }, [loggedIn, handleUpdate]);
 
@@ -179,7 +179,7 @@ export function GameProvider({ children }: GameProviderProps) {
   // Update useEffect
   useEffect(() => {
     if (loggedIn && isDownloaded) {
-      ipcRenderer.sendMessage(IpcEventsEnum.UpdateGame);
+      // ipcRenderer.sendMessage(IpcEventsEnum.UpdateGame);
     }
   }, [loggedIn, isDownloaded]);
 

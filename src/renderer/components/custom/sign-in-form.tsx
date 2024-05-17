@@ -37,7 +37,10 @@ export const SignInForm = () => {
 
   const form = useForm<SignInFormValues>({
     resolver: zodResolver(signInSchema),
-    defaultValues: {},
+    defaultValues: {
+      email: 'gblosr@gmail.com',
+      password: 'Uno@123mnb',
+    },
     mode: 'onSubmit',
   });
 

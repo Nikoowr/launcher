@@ -46,4 +46,8 @@ export interface IpcEventsController {
   [IpcEventsEnum.GetGameLang]: (event: IpcMainEvent) => void;
 
   [IpcEventsEnum.DownloadEssentialFiles]: (event: IpcMainEvent) => void;
+
+  [IpcEventsEnum.CheckForUpdates]: (event: IpcMainEvent) => void;
+
+  [IpcEventsEnum.DownloadLatestUpdates]: (event: IpcMainEvent) => void;
 }

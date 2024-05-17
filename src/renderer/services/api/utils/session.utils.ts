@@ -21,7 +21,7 @@ export class SessionUtils {
         baseURL: await this.stageUtils.getApiBaseUrl(),
       });
 
-      return interceptors.request.setApiKeyInterceptor(config);
+      return interceptors.request.setDefaultHeadersInterceptor(config);
     });
   }
 

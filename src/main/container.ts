@@ -11,13 +11,18 @@ import {
   StageConfig,
   StorageConfig,
   envConfig,
+  request,
+  unzip,
+  versionConfig,
 } from './configs';
 import { IpcEventsController } from './controllers';
 import {
   ChangeGameLangService,
+  CheckForUpdatesService,
   CreateGameLoginService,
   DownloadEssentialFilesService,
   DownloadGameService,
+  DownloadLatestUpdatesService,
   GetGameInfoService,
   GetGameLangService,
   GetStageService,
@@ -89,10 +94,25 @@ export const container = ({ app }: ContainerDto) => {
   const getStageService = new GetStageService(stageConfig);
   const signOutService = new SignOutService(fileConfig);
 
+  const checkForUpdatesService = new CheckForUpdatesService(
+    stageConfig,
+    request,
+    fileConfig,
+    versionConfig,
+  );
+
+  const downloadLatestUpdatesService = new DownloadLatestUpdatesService(
+    stageConfig,
+    fileConfig,
+    unzip,
+  );
+
   const ipcEventsController = new IpcEventsController(
     app,
     {
       downloadEssentialFilesService,
+      downloadLatestUpdatesService,
+      checkForUpdatesService,
       saveUserSessionService,
       createGameLoginService,
       changeGameLangService,
