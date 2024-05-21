@@ -5,5 +5,5 @@ export type CheckForUpdatesServiceDto = {
 };
 
 export interface CheckForUpdatesService {
-  execute(dto: CheckForUpdatesServiceDto): Promise<{ client: boolean }>;
+  execute(dto: CheckForUpdatesServiceDto): Promise<void>;
 }

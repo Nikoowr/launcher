@@ -4,6 +4,7 @@ import {
   StagesEnum,
 } from '../constants/env.constants';
 import { GameFilesEnum } from '../constants/game.constants';
+import { IpcEventsEnum } from '../constants/ipc-events.constants';
 import {
   CheckForUpdatesServiceDto,
   CheckForUpdatesService as CheckForUpdatesServiceInterface,
@@ -22,9 +23,7 @@ export class CheckForUpdatesService implements CheckForUpdatesServiceInterface {
     private readonly versionConfig: VersionConfig,
   ) {}
 
-  public async execute({
-    ipcEvent,
-  }: CheckForUpdatesServiceDto): Promise<{ client: boolean }> {
+  public async execute({ ipcEvent }: CheckForUpdatesServiceDto): Promise<void> {
     console.log('[CheckForUpdatesService] - Checking for updates...');
 
     const stage = this.stageConfig.get();
@@ -55,14 +54,14 @@ export class CheckForUpdatesService implements CheckForUpdatesServiceInterface {
     };
 
     console.log(
-      `[CheckForUpdatesService] - Done, updates:${JSON.stringify(
+      `[CheckForUpdatesService] - Done, updates: ${JSON.stringify(
         updates,
         null,
         2,
       )}`,
     );
 
-    return updates;
+    ipcEvent.reply(IpcEventsEnum.CheckForUpdates, updates);
   }
 
   private getBucketUrl({

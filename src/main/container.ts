@@ -72,6 +72,7 @@ export const container = ({ app }: ContainerDto) => {
     fileConfig,
     apiConfig,
     stageConfig,
+    unzip,
   );
   const updateGameService = new UpdateGameService(
     gameUpdaterConfig,

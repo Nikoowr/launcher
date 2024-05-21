@@ -1,5 +1,5 @@
-import { IconNode, X } from 'lucide-react';
 import {
+  JSX,
   ReactNode,
   createContext,
   useCallback,
@@ -12,8 +12,9 @@ import {
 import { GameUpdateStatusEnum } from '../../main/constants/game.constants';
 import { IpcEventsEnum } from '../../main/constants/ipc-events.constants';
 import { checkForUpdates, getGameInfo } from '../services/ipc';
-import { statusIcons, statusMessages } from '../utils/update.utils';
+import { getStatusIcons, getStatusMessages } from '../utils/update.utils';
 import { useAuth } from './auth';
+import { useDownload } from './download';
 import { useLang } from './lang';
 
 type GameProviderProps = {
@@ -21,9 +22,10 @@ type GameProviderProps = {
 };
 
 type UpdateInfo = {
-  status: GameUpdateStatusEnum;
-  fileUpdating: string;
+  statusIcon: JSX.Element;
+  statusMessage: string;
   progress: number;
+  file: string;
 };
 
 type UpdateContextData = {
@@ -34,10 +36,10 @@ type UpdateContextData = {
 };
 
 type OnFileChanges = {
-  status: GameUpdateStatusEnum;
-  icon?: IconNode;
   currentFilename: string;
+  icon?: JSX.Element;
   progress: number;
+  status: string;
 };
 
 const UpdateContext = createContext<UpdateContextData>({} as UpdateContextData);
@@ -48,19 +50,52 @@ export function UpdateProvider({ children }: GameProviderProps) {
   const [clientVersion, setClientVersion] = useState('v0.0.0');
   const [isUpdating, setIsUpdating] = useState(false);
   const [isUpToDate, setIsUpToDate] = useState(false);
-  const [updateInfo, setUpdateInfo] = useState({} as UpdateInfo);
   const [touched, setTouched] = useState(false);
 
+  const { isDownloaded } = useDownload();
   const { dictionary } = useLang();
   const { loggedIn } = useAuth();
+
+  const [updateInfo, setUpdateInfo] = useState({
+    statusIcon: getStatusIcons({ status: GameUpdateStatusEnum.Checking }),
+    statusMessage: getStatusMessages({
+      status: GameUpdateStatusEnum.Checking,
+      dictionary,
+    }),
+    progress: 0,
+    file: '',
+  } as UpdateInfo);
+
+  const shouldLookForUpdates = useMemo(
+    () => loggedIn && isDownloaded && !touched,
+    [loggedIn, isDownloaded, touched],
+  );
+
+  const onUpToDate = useCallback(async () => {
+    const { version } = await getGameInfo();
+
+    setClientVersion(version || 'v0.0.0');
+    setIsUpdating(false);
+    setIsUpToDate(true);
+
+    setUpdateInfo({
+      statusIcon: getStatusIcons({ status: GameUpdateStatusEnum.Done }),
+      statusMessage: getStatusMessages({
+        status: GameUpdateStatusEnum.Done,
+        dictionary,
+      }),
+      progress: 100,
+      file: '',
+    });
+  }, [dictionary]);
 
   const handleUpdate = useCallback(async () => {
     setTouched(true);
 
     const updates = await checkForUpdates();
 
-    if (!updates) {
-      return;
+    if (!updates?.client) {
+      onUpToDate();
     }
 
     setIsUpToDate(false);
@@ -68,35 +103,37 @@ export function UpdateProvider({ children }: GameProviderProps) {
     if (updates.client) {
       ipcRenderer.sendMessage(IpcEventsEnum.DownloadLatestUpdates);
     }
-  }, []);
+  }, [onUpToDate]);
 
   const onFileChange = useCallback(
     async (props: OnFileChanges) => {
       setIsUpdating(true);
 
-      const progressValue = Math.floor(props.progress || 0);
+      const progressValue = Math.floor(props?.progress || 0);
 
       setUpdateInfo((oldState) => ({
         ...oldState,
-        fileUpdating: progressValue >= 100 ? '' : props.currentFilename || '',
         progress: progressValue,
-        status: statusMessages(dictionary)[props.status] || oldState.status,
-        icon: statusIcons()[props.status] || <X className="text-[#fff5]" />,
+        file: progressValue >= 100 ? '' : props?.currentFilename || '',
+        statusMessage:
+          getStatusMessages({ dictionary, status: props?.status }) ||
+          oldState.statusMessage,
+        statusIcon:
+          getStatusIcons({ status: props?.status }) || oldState?.statusIcon,
       }));
 
-      if (props.status === GameUpdateStatusEnum.Done) {
-        const { version } = await getGameInfo();
-        setClientVersion(version || 'v0.0.0');
+      if (props?.status === GameUpdateStatusEnum.Done) {
+        await onUpToDate();
       }
     },
-    [dictionary],
+    [dictionary, onUpToDate],
   );
 
   useEffect(() => {
-    if (loggedIn && !touched) {
+    if (shouldLookForUpdates) {
       handleUpdate();
     }
-  }, [loggedIn, handleUpdate, touched]);
+  }, [shouldLookForUpdates, handleUpdate]);
 
   useEffect(() => {
     ipcRenderer.on(IpcEventsEnum.DownloadLatestUpdates, onFileChange);

@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 
 import { AppProvider } from './app';
 import { AuthProvider } from './auth';
-import { GameProvider } from './game';
+import { DownloadProvider } from './download';
 import { LangProvider } from './lang';
 import { StageProvider } from './stage';
 import { UpdateProvider } from './update';
@@ -19,9 +19,9 @@ export const Providers = ({ children }: ProvidersProps) => {
         <StageProvider>
           <LangProvider>
             <AppProvider>
-              <UpdateProvider>
-                <GameProvider>{children}</GameProvider>
-              </UpdateProvider>
+              <DownloadProvider>
+                <UpdateProvider>{children}</UpdateProvider>
+              </DownloadProvider>
             </AppProvider>
           </LangProvider>
         </StageProvider>

@@ -1,4 +1,5 @@
 import fs from 'fs';
+import path from 'node:path';
 
 import progress from 'progress-stream';
 import * as unzipper from 'unzipper';
@@ -16,39 +17,41 @@ class UnzipConfig implements UnzipConfigDtoInterface {
   }: UnzipConfigDto): Promise<void> {
     return new Promise((resolve, reject) => {
       try {
-        // Obter o tamanho do arquivo zip
         const zipFileSize = fs.statSync(source).size;
 
-        // Criar um stream de progresso
         const progressStream = progress({
           length: zipFileSize,
-          time: 100, // Atualizar o progresso a cada 100ms
+          time: 100,
         });
 
-        // Lidar com as atualizações de progresso
         progressStream.on('progress', (data) => {
           if (onProgress && typeof onProgress === 'function') {
             onProgress({ progress: Math.round(data.percentage) });
           }
         });
 
-        // Criar um stream de leitura a partir do arquivo zip
         const readStream = fs.createReadStream(source);
 
         readStream
-          .pipe(progressStream) // Pipe através do stream de progresso
-          .pipe(unzipper.Parse()) // Parse o arquivo zip
+          .pipe(progressStream)
+          .pipe(unzipper.Parse())
           .on('entry', (entry: unzipper.Entry) => {
-            const filename = entry.path;
+            const filepath = entry.path;
 
             if (entry.type === 'File') {
-              const outputFilePath = `${destination}/${filename}`;
+              const outputFilePath = `${destination}/${filepath}`;
+              const dirname = path.dirname(outputFilePath);
+
+              if (!fs.existsSync(dirname)) {
+                fs.mkdirSync(dirname, { recursive: true });
+              }
+
               entry.pipe(fs.createWriteStream(outputFilePath));
 
               if (onProgress && typeof onProgress === 'function') {
                 onProgress({
                   progress: Math.round(progressStream.progress().percentage),
-                  filename,
+                  filename: filepath.split('/').pop(),
                 });
               }
             } else {

@@ -2,15 +2,16 @@ import { PlayCircle } from 'lucide-react';
 
 import { ApplicationStatusType } from '../../../main/interfaces';
 import { useAuth } from '../../hooks/auth';
-import { useGame } from '../../hooks/game';
 import { useLang } from '../../hooks/lang';
 import { useStage } from '../../hooks/stage';
+import { useUpdate } from '../../hooks/update';
 import { useUser } from '../../hooks/user';
 import { cn } from '../../lib/utils';
 import { api } from '../../services/api/functions';
 import * as gameUtils from '../../utils/game.utils';
 import { Button } from '../ui/button';
 import { toast } from '../ui/use-toast';
+import { GameOptionsMenu } from './game-options-menu';
 import { Icons } from './icons';
 
 type PlayButtonProps = {
@@ -23,7 +24,7 @@ export const PlayButton = ({
   className = '',
 }: PlayButtonProps) => {
   const { logout } = useAuth();
-  const { readToPlay } = useGame();
+  const { isUpToDate, clientVersion, isUpdating } = useUpdate();
   const { user } = useUser();
   const { gameVersion, gameIsRunning, setGameIsRunning } = useStage();
   const { dictionary: langDictionary, lang } = useLang();
@@ -78,8 +79,8 @@ export const PlayButton = ({
     <div className={`flex flex-col gap-2 ${className}`}>
       <div className="flex h-[64px]">
         <Button
-          className="flex h-full w-[100%] justify-start rounded-s-full rounded-ee-full bg-pink-500 py-8 shadow-md hover:bg-pink-600"
-          disabled={disabled || gameIsRunning}
+          className="flex h-full w-[100%] justify-start rounded-s-full  bg-pink-500 py-8 shadow-md hover:bg-pink-600"
+          disabled={disabled || gameIsRunning || isUpdating}
           onClick={play}
         >
           <div className="right-0 flex rounded-full bg-black p-2">
@@ -92,22 +93,18 @@ export const PlayButton = ({
 
           <span className="ml-3 text-xl font-bold">{dictionary.PLAY}</span>
         </Button>
-        {/* <Button
-          className="m-0 h-full w-[15%] rounded-none bg-pink-900 p-0 hover:bg-pink-950"
-          disabled={disabled}
-        >
-          <ChevronDown size={18} />
-        </Button> */}
+
+        <GameOptionsMenu />
       </div>
 
-      {gameVersion && (
+      {clientVersion && (
         <span
           className={cn(
             'self-end text-sm',
-            readToPlay ? 'text-[#eee]' : 'text-[#fff9]',
+            isUpToDate ? 'text-[#eee]' : 'text-[#fff9]',
           )}
         >
-          {dictionary.GAME_VERSION} {gameVersion}
+          {dictionary.GAME_VERSION} {clientVersion}
         </span>
       )}
     </div>

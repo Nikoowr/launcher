@@ -126,10 +126,9 @@ export class IpcEventsController implements IpcEventsControllerInterface {
   }
 
   public async [IpcEventsEnum.CheckForUpdates](event: Electron.IpcMainEvent) {
-    const updates = await this.services.checkForUpdatesService.execute({
+    await this.services.checkForUpdatesService.execute({
       ipcEvent: event,
     });
-    event.reply(IpcEventsEnum.CheckForUpdates, updates);
   }
 
   public async [IpcEventsEnum.DownloadLatestUpdates](

@@ -1,8 +1,4 @@
-import {
-  BUCKET_BASE_URL,
-  StagesEnum,
-  UpdateFilesEnum,
-} from '../constants/env.constants';
+import { BUCKET_BASE_URL, StagesEnum } from '../constants/env.constants';
 import { GameUpdateStatusEnum } from '../constants/game.constants';
 import { IpcEventsEnum } from '../constants/ipc-events.constants';
 import {
@@ -54,14 +50,16 @@ export class DownloadLatestUpdatesService
 
     console.log('[DownloadLatestUpdatesService] - Extracting update.zip...');
 
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-
-    console.log('[DownloadLatestUpdatesService] - Extracting update.zip...');
-
     await this.extractZip({
       zipFilename: updateFilename,
       downloadedFilePath,
       ipcEvent,
+    });
+
+    ipcEvent.reply(IpcEventsEnum.DownloadLatestUpdates, {
+      status: GameUpdateStatusEnum.Done,
+      currentFilename: '',
+      progress: 100,
     });
 
     console.log('[DownloadLatestUpdatesService] - Done');
@@ -82,11 +80,6 @@ export class DownloadLatestUpdatesService
     ipcEvent.reply(IpcEventsEnum.DownloadGame, {
       status: GameUpdateStatusEnum.Extracting,
       progress: 0,
-    });
-
-    console.log({
-      destination: this.fileConfig.gameDirectory,
-      source: downloadedFilePath,
     });
 
     await this.unzipConfig.unzip({
