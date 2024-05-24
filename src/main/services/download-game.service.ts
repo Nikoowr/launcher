@@ -13,6 +13,7 @@ import {
   DownloadGameService as DownloadGameServiceInterface,
   FileConfig,
   StageConfig,
+  UnzipConfig,
 } from '../interfaces';
 
 export class DownloadGameService implements DownloadGameServiceInterface {
@@ -20,6 +21,7 @@ export class DownloadGameService implements DownloadGameServiceInterface {
     private readonly fileConfig: FileConfig,
     private readonly apiConfig: ApiConfig,
     private readonly stageConfig: StageConfig,
+    private readonly unzipConfig: UnzipConfig,
   ) {}
 
   public async execute({ ipcEvent }: DownloadGameServiceDto): Promise<void> {
@@ -129,7 +131,7 @@ export class DownloadGameService implements DownloadGameServiceInterface {
       progress: 0,
     });
 
-    await this.fileConfig.unzip({
+    await this.unzipConfig.unzip({
       destination: this.fileConfig.gameDirectory,
       source: downloadedFilePath,
       onProgress: ({ progress, filename }) => {

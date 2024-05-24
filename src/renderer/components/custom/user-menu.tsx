@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { RoutesEnum } from '../../constants/routes.constants';
 import { useAuth } from '../../hooks/auth';
 import { useLang } from '../../hooks/lang';
+import { useUpdate } from '../../hooks/update';
 import { useUser } from '../../hooks/user';
 import { cn } from '../../lib/utils';
 import { Button, ButtonProps } from '../ui/button';
@@ -20,6 +21,7 @@ export interface UserMenuProps extends ButtonProps {}
 
 export const UserMenu = ({ className, ...props }: UserMenuProps) => {
   const navigate = useNavigate();
+  const { isUpdating } = useUpdate();
   const { dictionary } = useLang();
   const { logout } = useAuth();
   const { user } = useUser();
@@ -45,6 +47,7 @@ export const UserMenu = ({ className, ...props }: UserMenuProps) => {
         <DropdownMenuItem
           onClick={() => navigate(RoutesEnum.Settings)}
           className="cursor-pointer"
+          disabled={isUpdating}
         >
           <Settings className="mr-2 size-4" />
           <span>{dictionary.components.custom['user-menu'].SETTINGS}</span>
@@ -52,7 +55,11 @@ export const UserMenu = ({ className, ...props }: UserMenuProps) => {
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuItem className="cursor-pointer" onClick={logout}>
+        <DropdownMenuItem
+          className="cursor-pointer"
+          onClick={logout}
+          disabled={isUpdating}
+        >
           <LogOut className="mr-2 size-4" />
           <span>{dictionary.components.custom['user-menu'].LOGOUT}</span>
         </DropdownMenuItem>

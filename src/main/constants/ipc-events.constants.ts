@@ -24,4 +24,8 @@ export enum IpcEventsEnum {
   SignOut = 'sign-out',
   GetMAC = 'get-mac',
   Play = 'play',
+
+  // Auto updater
+  CheckForUpdates = 'check-for-updates',
+  DownloadLatestUpdates = 'download-latest-updates',
 }

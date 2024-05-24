@@ -173,3 +173,11 @@ ipcMain.on(IpcEventsEnum.GetMAC, async (event) =>
 ipcMain.on(IpcEventsEnum.DownloadEssentialFiles, async (event) =>
   ipcEventsController?.[IpcEventsEnum.DownloadEssentialFiles](event),
 );
+
+ipcMain.on(IpcEventsEnum.CheckForUpdates, async (event) =>
+  ipcEventsController?.[IpcEventsEnum.CheckForUpdates](event),
+);
+
+ipcMain.on(IpcEventsEnum.DownloadLatestUpdates, async (event) =>
+  ipcEventsController?.[IpcEventsEnum.DownloadLatestUpdates](event),
+);

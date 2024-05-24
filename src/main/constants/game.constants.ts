@@ -9,6 +9,7 @@ export enum GameUpdateStatusEnum {
   Checking = 'update-check',
   Downloading = 'downloading-updates',
   Updating = 'updating',
+  Extracting = 'extracting-updates',
   Done = 'update-done',
 }
 

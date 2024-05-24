@@ -4,6 +4,9 @@ export * from './configs/cryptography.config';
 export * from './configs/auto-updater.config';
 export * from './configs/game-updater.config';
 export * from './configs/storage.config';
+export * from './configs/version.config';
+export * from './configs/request.config';
+export * from './configs/unzip.config';
 export * from './configs/stage.config';
 export * from './configs/file.config';
 export * from './configs/menu.config';
@@ -16,12 +19,15 @@ export * from './controllers/ipc-events.controller';
 // Models
 export * from './models/game-info.model';
 export * from './models/session.model';
+export * from './models/updates.model';
 export * from './models/status.model';
 
 // Services
 export * from './services/download-essential-files.service';
+export * from './services/download-latest-updates.service';
 export * from './services/save-user-session.service';
 export * from './services/create-game-login.service';
+export * from './services/check-for-updates.service';
 export * from './services/get-user-session.service';
 export * from './services/change-game-lang.service';
 export * from './services/get-game-lang.service';

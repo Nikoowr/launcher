@@ -72,19 +72,20 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       try {
         setLoading(true);
+
         const session = await api.createSession(credentials);
+
         await sessionUtils.saveSession({ session });
         await handleSession();
       } catch {
-        if (error) {
-          toast({
-            title: error.title,
-            description: error.description,
-            variant: 'destructive',
-            type: 'foreground',
-            duration: 5000,
-          });
-        }
+        toast({
+          title: error?.title || 'Error',
+          description:
+            error?.description || 'An error occurred while logging in.',
+          variant: 'destructive',
+          type: 'foreground',
+          duration: 5000,
+        });
       } finally {
         setLoading(false);
       }

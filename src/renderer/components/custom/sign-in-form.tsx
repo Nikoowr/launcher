@@ -37,7 +37,6 @@ export const SignInForm = () => {
 
   const form = useForm<SignInFormValues>({
     resolver: zodResolver(signInSchema),
-    defaultValues: {},
     mode: 'onSubmit',
   });
 

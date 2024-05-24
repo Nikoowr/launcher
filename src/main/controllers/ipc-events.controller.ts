@@ -9,10 +9,12 @@ import { StagesEnum } from '../../constants/stage.constants';
 import { IpcEventsEnum } from '../constants/ipc-events.constants';
 import {
   ChangeGameLangService,
+  CheckForUpdatesService,
   CreateGameLoginService,
   CreateGameLoginServiceDto,
   DownloadEssentialFilesService,
   DownloadGameService,
+  DownloadLatestUpdatesService,
   FileConfig,
   GetGameInfoService,
   GetGameLangService,
@@ -30,6 +32,8 @@ import {
 
 type ConstructorServices = {
   downloadEssentialFilesService: DownloadEssentialFilesService;
+  downloadLatestUpdatesService: DownloadLatestUpdatesService;
+  checkForUpdatesService: CheckForUpdatesService;
   createGameLoginService: CreateGameLoginService;
   saveUserSessionService: SaveUserSessionService;
   getUserSessionService: GetUserSessionService;
@@ -119,6 +123,22 @@ export class IpcEventsController implements IpcEventsControllerInterface {
   ) {
     await this.services.downloadEssentialFilesService.execute();
     event.reply(IpcEventsEnum.DownloadEssentialFiles);
+  }
+
+  public async [IpcEventsEnum.CheckForUpdates](event: Electron.IpcMainEvent) {
+    await this.services.checkForUpdatesService.execute({
+      ipcEvent: event,
+    });
+  }
+
+  public async [IpcEventsEnum.DownloadLatestUpdates](
+    event: Electron.IpcMainEvent,
+  ) {
+    await this.services.downloadLatestUpdatesService.execute({
+      ipcEvent: event,
+    });
+
+    event.reply(IpcEventsEnum.DownloadLatestUpdates);
   }
 
   [IpcEventsEnum.WindowEvent] = (

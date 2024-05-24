@@ -1,6 +1,6 @@
 import { StagesEnum } from '../../../constants/stage.constants';
-import { useGame } from '../../hooks/game';
 import { useStage } from '../../hooks/stage';
+import { useUpdate } from '../../hooks/update';
 import {
   Select,
   SelectContent,
@@ -12,11 +12,11 @@ import {
 
 export const SelectStage = () => {
   const { loading, changeStage, stage, gameIsRunning } = useStage();
-  const { readToPlay } = useGame();
+  const { isUpToDate } = useUpdate();
 
   return (
     <Select
-      disabled={loading || !stage || !readToPlay || gameIsRunning}
+      disabled={loading || !stage || !isUpToDate || gameIsRunning}
       onValueChange={changeStage}
       defaultValue={stage || ''}
     >
